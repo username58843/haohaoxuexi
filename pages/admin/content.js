@@ -4,18 +4,19 @@ import { Button, Card, Segmented, Spinner, EmptyState, useToast } from '~/compon
 import { api, apiError } from '~/lib/api-client'
 import { markdownToHtml } from '~/lib/markdown'
 import { useSettings } from '~/lib/contexts/SettingsContext'
+import { translate } from '~/lib/i18n'
 import { DOC_DEFAULTS } from '~/components/docs/docDefaults'
+import { LANDING_SLOTS } from '~/lib/landing-slots'
 
 const CONTENT_LANGS = ['en', 'ru', 'tk', 'zh']
-const DOC_SCOPES = DOC_DEFAULTS.map((d) => d.scope)
 
 /**
  * /admin/content — the content override editor. Manages every CMS override:
  *
  *  A. Documents  — the markdown bodies for /privacy, /terms and /about, each
  *     with a live preview and a Save button.
- *  B. Page text  — the short inline slots (landing, etc.) that already have an
- *     override for the selected language, editable in place.
+ *  B. Landing text — every editable landing slot (from lib/landing-slots),
+ *     prefilled with the shipped translation for the selected language.
  *
  * A language selector chooses which content language is being edited (defaults
  * to the admin's own UI language). Overrides are per (scope, key, lang); an
@@ -106,21 +107,18 @@ export default function AdminContentPage() {
 
   const langOptions = CONTENT_LANGS.map((l) => ({ value: l, label: l.toUpperCase() }))
 
-  // Non-doc overrides (landing etc.), grouped by scope, for section B.
-  const pageGroups = useMemo(() => {
-    const groups = {}
-    for (const it of items) {
-      if (it.lang !== lang) continue
-      if (DOC_SCOPES.includes(it.scope)) continue
-      ;(groups[it.scope] ||= []).push(it)
-    }
-    for (const scope of Object.keys(groups)) {
-      groups[scope].sort((a, b) => a.key.localeCompare(b.key))
-    }
-    return groups
-  }, [items, lang])
-
-  const pageScopes = Object.keys(pageGroups).sort()
+  // Section B rows: EVERY landing slot from the registry, with the shipped
+  // translation for the selected language as its default and any stored
+  // override as the current value.
+  const landingRows = useMemo(
+    () =>
+      LANDING_SLOTS.map((slot) => ({
+        ...slot,
+        fallback: slot.tKey ? translate(lang, slot.tKey, slot.en) : slot.en,
+        override: byKeyForLang[`landing:${slot.id}`],
+      })),
+    [lang, byKeyForLang]
+  )
 
   return (
     <AdminLayout active="content" title={t('admContentTitle', 'Content')}>
@@ -139,7 +137,7 @@ export default function AdminContentPage() {
       <p className="cms-page__intro">
         {t(
           'admContentIntro',
-          'Edit the marketing landing text and the legal / about documents. Overrides are saved per language; clearing a field restores the shipped default. You can also edit the landing page in place using the floating "Edit content" button while browsing it.'
+          'Edit the marketing landing text and the legal / about documents. Overrides are saved per language; clearing a field restores the shipped default.'
         )}
       </p>
 
@@ -173,7 +171,7 @@ export default function AdminContentPage() {
                 <DocEditor
                   key={`${doc.scope}:${lang}`}
                   scope={doc.scope}
-                  defaultMd={doc.md}
+                  defaultMd={doc.md[lang] || doc.md.en}
                   override={byKeyForLang[`${doc.scope}:body`]}
                   onSave={(value) => saveEntry(doc.scope, 'body', value)}
                   toast={toast}
@@ -184,41 +182,31 @@ export default function AdminContentPage() {
           </section>
 
           <section className="cms-page__section">
-            <h2 className="cms-page__heading">{t('admContentPageTextTitle', 'Page text')}</h2>
+            <h2 className="cms-page__heading">
+              {t('admContentPageTextTitle', 'Landing text')}
+            </h2>
             <p className="cms-page__sub">
               {t(
                 'admContentPageTextSub',
-                'Short inline slots that have an override for this language. To create a new override, edit the text in place on the page using the floating "Edit content" button.'
+                'Every text slot on the landing page. The field shows the current text for this language; change it and press Save to override, or Restore to go back to the shipped translation.'
               )}
             </p>
 
-            {pageScopes.length === 0 ? (
-              <EmptyState
-                glyph="字"
-                title={t('admContentPageTextEmpty', 'No inline overrides yet')}
-                text={t(
-                  'admContentPageTextEmptyHint',
-                  'Open the landing page as an admin, toggle "Edit content", and edit any text to create an override here.'
-                )}
-              />
-            ) : (
-              pageScopes.map((scope) => (
-                <Card key={scope} className="cms-page__group">
-                  <h3 className="cms-page__group-title">{scope}</h3>
-                  <div className="cms-page__rows">
-                    {pageGroups[scope].map((it) => (
-                      <TextRow
-                        key={`${it.scope}:${it.key}:${lang}`}
-                        entry={it}
-                        onSave={(value) => saveEntry(it.scope, it.key, value)}
-                        toast={toast}
-                        t={t}
-                      />
-                    ))}
-                  </div>
-                </Card>
-              ))
-            )}
+            <Card className="cms-page__group">
+              <div className="cms-page__rows">
+                {landingRows.map((row) => (
+                  <TextRow
+                    key={`landing:${row.id}:${lang}`}
+                    slotKey={row.id}
+                    fallback={row.fallback}
+                    override={row.override}
+                    onSave={(value) => saveEntry('landing', row.id, value)}
+                    toast={toast}
+                    t={t}
+                  />
+                ))}
+              </div>
+            </Card>
           </section>
         </>
       )}
@@ -313,25 +301,34 @@ function DocEditor({ scope, defaultMd, override, onSave, toast, t }) {
   )
 }
 
-/** One inline-slot editable row: label + text field + save. */
-function TextRow({ entry, onSave, toast, t }) {
-  const [value, setValue] = useState(entry.value)
+/**
+ * One landing-slot row. Shows the effective text for the selected language
+ * (override when present, shipped translation otherwise); saving a changed
+ * value stores an override, Restore (or saving text equal to the shipped
+ * translation) clears it.
+ */
+function TextRow({ slotKey, fallback, override, onSave, toast, t }) {
+  const hasOverride = typeof override === 'string' && override.trim().length > 0
+  const published = hasOverride ? override : fallback
+
+  const [value, setValue] = useState(published)
   const [saving, setSaving] = useState(false)
 
-  // Re-seed when the stored value changes — render-time adjustment, no effect.
-  const [prevValue, setPrevValue] = useState(entry.value)
-  if (prevValue !== entry.value) {
-    setPrevValue(entry.value)
-    setValue(entry.value)
+  // Re-seed when the published value changes (e.g. after save/restore) —
+  // render-time adjustment, no effect. Language switches remount via key.
+  const [prevPublished, setPrevPublished] = useState(published)
+  if (prevPublished !== published) {
+    setPrevPublished(published)
+    setValue(published)
   }
 
-  const dirty = value !== entry.value
-  const multiline = (entry.value || '').length > 80
+  const dirty = value !== published
+  const multiline = (published || '').length > 80
 
-  const save = async () => {
+  const persist = async (next) => {
     setSaving(true)
     try {
-      await onSave(value)
+      await onSave(next)
       toast.success(t('admContentSaved', 'Saved'))
     } catch (err) {
       toast.error(apiError(err, t('admContentSaveFailed', 'Could not save')).message)
@@ -340,10 +337,22 @@ function TextRow({ entry, onSave, toast, t }) {
     }
   }
 
+  // Saving text identical to the shipped translation clears the override.
+  const save = () => persist(value.trim() === fallback.trim() ? '' : value)
+  const restore = async () => {
+    await persist('')
+    setValue(fallback)
+  }
+
   return (
     <div className="cms-page__row">
-      <code className="cms-page__key" title={`${entry.scope}:${entry.key}`}>
-        {entry.key}
+      <code className="cms-page__key" title={`landing:${slotKey}`}>
+        {slotKey}
+        {hasOverride && (
+          <span className="cms-page__badge is-custom">
+            {t('admContentBadgeCustom', 'Custom')}
+          </span>
+        )}
       </code>
       {multiline ? (
         <textarea
@@ -360,9 +369,16 @@ function TextRow({ entry, onSave, toast, t }) {
           onChange={(e) => setValue(e.target.value)}
         />
       )}
-      <Button variant="soft" size="sm" onClick={save} loading={saving} disabled={!dirty}>
-        {t('admContentSave', 'Save')}
-      </Button>
+      <div className="cms-page__row-actions">
+        <Button variant="soft" size="sm" onClick={save} loading={saving} disabled={!dirty}>
+          {t('admContentSave', 'Save')}
+        </Button>
+        {hasOverride && (
+          <Button variant="ghost" size="sm" onClick={restore} disabled={saving}>
+            {t('admContentRestore', 'Restore default')}
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

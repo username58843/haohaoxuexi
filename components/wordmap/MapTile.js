@@ -10,8 +10,13 @@ import React from 'react'
  */
 function MapTile({ word, tint, known, colorBy, label, onSelect }) {
   const isKnownMode = colorBy === 'known'
+  // Font size scales with word length (and tile size, via container queries):
+  // 1-2 chars render in one row, 3 in a tighter row, 4 wrap into a 2×2 block.
+  const chars = Array.from(word.simplified || '').length
+  const sizeClass = chars <= 1 ? 'n1' : chars === 2 ? 'n2' : chars === 3 ? 'n3' : chars === 4 ? 'n4' : 'n5'
   const cls = [
     'wmap-tile',
+    `wmap-tile--${sizeClass}`,
     known ? 'wmap-tile--known' : 'wmap-tile--unknown',
     isKnownMode ? 'wmap-tile--bwk' : 'wmap-tile--level',
   ].join(' ')

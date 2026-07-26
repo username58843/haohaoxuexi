@@ -26,13 +26,15 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.0
 
+# Icon sources: icon_full = the exact web logo (public/logo-512.png upscaled),
+# icon_fg = logo in the adaptive safe zone on paper fill, icon_mono = 好 glyph.
 flutter_launcher_icons:
   android: true
   ios: false
   image_path: assets/icon/icon_full.png
-  adaptive_icon_background: "#34C759"
+  adaptive_icon_background: "#DCB471"
   adaptive_icon_foreground: assets/icon/icon_fg.png
-  adaptive_icon_monochrome: assets/icon/icon_fg.png
+  adaptive_icon_monochrome: assets/icon/icon_mono.png
 
 flutter:
   uses-material-design: true

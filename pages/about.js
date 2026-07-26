@@ -29,7 +29,7 @@ export default function AboutPage() {
       </Head>
 
       <DocsLayout title={title} current="about" updated={updated}>
-        <CmsDoc scope="about" defaultMd={ABOUT_MD} />
+        <CmsDoc scope="about" defaults={ABOUT_MD} />
       </DocsLayout>
     </AppShell>
   )

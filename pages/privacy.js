@@ -29,7 +29,7 @@ export default function PrivacyPage() {
       </Head>
 
       <DocsLayout title={title} current="privacy" updated={updated}>
-        <CmsDoc scope="privacy" defaultMd={PRIVACY_MD} />
+        <CmsDoc scope="privacy" defaults={PRIVACY_MD} />
       </DocsLayout>
     </AppShell>
   )

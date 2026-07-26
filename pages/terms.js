@@ -29,7 +29,7 @@ export default function TermsPage() {
       </Head>
 
       <DocsLayout title={title} current="terms" updated={updated}>
-        <CmsDoc scope="terms" defaultMd={TERMS_MD} />
+        <CmsDoc scope="terms" defaults={TERMS_MD} />
       </DocsLayout>
     </AppShell>
   )
