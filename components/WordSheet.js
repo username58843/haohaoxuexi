@@ -28,16 +28,24 @@ function loadHanziWriter() {
 function StrokeOrder({ character }) {
   const hostRef = useRef(null)
   const [failed, setFailed] = useState(false)
+  const [prevCharacter, setPrevCharacter] = useState(character)
+
+  // Reset the failure flag when this instance is reused for a different
+  // character (render-time "adjust state when props change" pattern).
+  if (prevCharacter !== character) {
+    setPrevCharacter(character)
+    setFailed(false)
+  }
 
   useEffect(() => {
     let cancelled = false
     let writer = null
-    setFailed(false)
+    const host = hostRef.current
     loadHanziWriter()
       .then((HanziWriter) => {
-        if (cancelled || !hostRef.current) return
-        hostRef.current.innerHTML = ''
-        writer = HanziWriter.create(hostRef.current, character, {
+        if (cancelled || !host) return
+        host.innerHTML = ''
+        writer = HanziWriter.create(host, character, {
           width: 120,
           height: 120,
           padding: 6,
@@ -54,7 +62,7 @@ function StrokeOrder({ character }) {
     return () => {
       cancelled = true
       writer?.cancelQuiz?.()
-      if (hostRef.current) hostRef.current.innerHTML = ''
+      if (host) host.innerHTML = ''
     }
   }, [character])
 
@@ -69,10 +77,14 @@ function StrokeOrder({ character }) {
 export default function WordSheet({ word, open, onClose, actions = null }) {
   const { t } = useSettings()
   const [showStrokes, setShowStrokes] = useState(false)
+  const [prevWord, setPrevWord] = useState(word)
 
-  useEffect(() => {
+  // Collapse the stroke panel when the sheet switches to another word
+  // (render-time state adjustment instead of an effect).
+  if (prevWord !== word) {
+    setPrevWord(word)
     setShowStrokes(false)
-  }, [word])
+  }
 
   if (!word) return null
 

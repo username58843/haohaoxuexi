@@ -69,10 +69,15 @@ export default function AuthPage() {
       ? String(router.query.next)
       : '/'
 
-  // Deep link: /auth?mode=register opens the register tab.
-  useEffect(() => {
-    if (router.isReady && router.query.mode === 'register') setMode('register')
-  }, [router.isReady, router.query.mode])
+  // Deep link: /auth?mode=register opens the register tab. Applied by adjusting
+  // state during render when the route value changes (React docs pattern);
+  // router.isReady is false during SSR and hydration, so markup stays in sync.
+  const routeMode = router.isReady && router.query.mode === 'register' ? 'register' : null
+  const [prevRouteMode, setPrevRouteMode] = useState(routeMode)
+  if (prevRouteMode !== routeMode) {
+    setPrevRouteMode(routeMode)
+    if (routeMode) setMode(routeMode)
+  }
 
   // Already authenticated → leave the auth page.
   useEffect(() => {

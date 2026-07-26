@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminLayout from '~/components/admin/AdminLayout'
 import Pager from '~/components/admin/Pager'
 import { Button, Card, EmptyState, Spinner } from '~/components/ui'
@@ -11,32 +11,40 @@ export default function AdminAuditPage() {
   const { t, language } = useSettings()
 
   const [page, setPage] = useState(1)
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [reloadKey, setReloadKey] = useState(0)
+  // Result of the last completed fetch, tagged with the key it was fetched for.
+  // While the current key differs we are (re)loading; stale data is kept so the
+  // table stays visible with the `is-refreshing` treatment.
+  const [result, setResult] = useState(null) // { key, data, error }
 
-  const requestRef = useRef(0)
-
-  const load = useCallback(async () => {
-    const requestId = ++requestRef.current
-    setLoading(true)
-    setError(null)
-    try {
-      const { data: json } = await api.get('/admin/audit', { params: { page } })
-      if (requestId !== requestRef.current) return
-      setData(json)
-      if (page > json.pages) setPage(json.pages)
-    } catch (err) {
-      if (requestId !== requestRef.current) return
-      setError(apiError(err, t('admLoadFailed', 'Could not load data')).message)
-    } finally {
-      if (requestId === requestRef.current) setLoading(false)
-    }
-  }, [page, t])
+  const fetchKey = `${language}|${reloadKey}|${page}`
+  const loading = !result || result.key !== fetchKey
+  const data = result ? result.data : null
+  const error = loading ? null : result.error
 
   useEffect(() => {
-    load()
-  }, [load])
+    let stale = false
+    api
+      .get('/admin/audit', { params: { page } })
+      .then(({ data: json }) => {
+        if (stale) return
+        setResult({ key: fetchKey, data: json, error: null })
+        if (page > json.pages) setPage(json.pages)
+      })
+      .catch((err) => {
+        if (stale) return
+        setResult((prev) => ({
+          key: fetchKey,
+          data: prev ? prev.data : null,
+          error: apiError(err, t('admLoadFailed', 'Could not load data')).message,
+        }))
+      })
+    return () => {
+      stale = true
+    }
+  }, [fetchKey, page, t])
+
+  const retry = () => setReloadKey((k) => k + 1)
 
   const items = data?.items || []
 
@@ -51,7 +59,7 @@ export default function AdminAuditPage() {
       {error && (
         <Card className="adm-error">
           <p className="adm-error__text">{error}</p>
-          <Button variant="soft" size="sm" onClick={load}>
+          <Button variant="soft" size="sm" onClick={retry}>
             {t('admRetry', 'Retry')}
           </Button>
         </Card>

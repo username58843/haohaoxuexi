@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
@@ -39,8 +39,10 @@ export default function DecksPage() {
   const router = useRouter()
   const toast = useToast()
 
-  const [decks, setDecks] = useState(null)
-  const [error, setError] = useState(null)
+  // Result of the last completed fetch, tagged with the key it was fetched
+  // for. While the current key differs the page shows the loader.
+  const [result, setResult] = useState(null) // { key, decks, error }
+  const [reloadKey, setReloadKey] = useState(0)
   const [createOpen, setCreateOpen] = useState(false)
   const [createName, setCreateName] = useState('')
   const [createError, setCreateError] = useState(null)
@@ -50,21 +52,34 @@ export default function DecksPage() {
     if (!loading && !user) router.replace('/auth')
   }, [loading, user, router])
 
-  const fetchDecks = useCallback(async () => {
-    setError(null)
-    setDecks(null)
-    try {
-      const { data } = await api.get('/decks')
-      setDecks(Array.isArray(data.decks) ? data.decks : [])
-    } catch (err) {
-      setError(apiError(err).message)
-    }
-  }, [])
-
   const userId = user ? user.id : null
+  const fetchKey = `${userId}|${reloadKey}`
+  const loaded = Boolean(result) && result.key === fetchKey
+  const decks = loaded ? result.decks : null
+  const error = loaded ? result.error : null
+
   useEffect(() => {
-    if (userId) fetchDecks()
-  }, [userId, fetchDecks])
+    if (!userId) return undefined
+    let stale = false
+    api
+      .get('/decks')
+      .then(({ data }) => {
+        if (!stale)
+          setResult({
+            key: fetchKey,
+            decks: Array.isArray(data.decks) ? data.decks : [],
+            error: null,
+          })
+      })
+      .catch((err) => {
+        if (!stale) setResult({ key: fetchKey, decks: null, error: apiError(err).message })
+      })
+    return () => {
+      stale = true
+    }
+  }, [userId, fetchKey])
+
+  const refreshDecks = () => setReloadKey((k) => k + 1)
 
   const openCreate = () => {
     setCreateName('')
@@ -95,7 +110,7 @@ export default function DecksPage() {
         router.push(`/decks/${id}`)
       } else {
         setCreateOpen(false)
-        fetchDecks()
+        refreshDecks()
       }
     } catch (err) {
       setCreateError(apiError(err).message)
@@ -138,7 +153,7 @@ export default function DecksPage() {
           <Card className="deck-error">
             <p>{error}</p>
             <div className="deck-error__actions">
-              <Button variant="soft" onClick={fetchDecks}>
+              <Button variant="soft" onClick={refreshDecks}>
                 {t('deckRetry', 'Try again')}
               </Button>
             </div>

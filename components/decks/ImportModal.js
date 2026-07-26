@@ -16,15 +16,22 @@ export default function ImportModal({ open, onClose, existingWords, onConfirm })
   const [text, setText] = useState('')
   const [fileName, setFileName] = useState('')
   const [fileError, setFileError] = useState(null)
+  const [prevOpen, setPrevOpen] = useState(open)
   const fileRef = useRef(null)
 
-  useEffect(() => {
+  // Reset the form each time the dialog opens (render-time state adjustment).
+  if (open !== prevOpen) {
+    setPrevOpen(open)
     if (open) {
       setText('')
       setFileName('')
       setFileError(null)
-      if (fileRef.current) fileRef.current.value = ''
     }
+  }
+
+  // Clearing the native file input is a DOM-only side effect.
+  useEffect(() => {
+    if (open && fileRef.current) fileRef.current.value = ''
   }, [open])
 
   const analysis = useMemo(() => {

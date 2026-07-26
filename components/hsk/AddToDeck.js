@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Field, Spinner, useToast } from '~/components/ui'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api, apiError } from '~/lib/api-client'
@@ -49,14 +49,17 @@ export default function AddToDeck({ word }) {
   const [creating, setCreating] = useState(false)
 
   const wordKey = word ? makeWordId(word) : ''
+  const [prevWordKey, setPrevWordKey] = useState(wordKey)
 
-  // Collapse the submenu whenever the sheet switches to another word.
-  useEffect(() => {
+  // Collapse the submenu whenever the sheet switches to another word
+  // (render-time "adjust state when props change" pattern, not an effect).
+  if (wordKey !== prevWordKey) {
+    setPrevWordKey(wordKey)
     setOpen(false)
     setShowNew(false)
     setNewName('')
     setBusyId(null)
-  }, [wordKey])
+  }
 
   const loadDecks = async () => {
     setStatus('loading')

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminLayout from '~/components/admin/AdminLayout'
 import BarChart from '~/components/admin/BarChart'
 import { Button, Card, StatCard, Spinner } from '~/components/ui'
@@ -7,28 +7,38 @@ import { useSettings } from '~/lib/contexts/SettingsContext'
 
 /** /admin — platform overview: headline totals + 14-day activity charts. */
 export default function AdminOverviewPage() {
-  const { t } = useSettings()
+  const { t, language } = useSettings()
 
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  // Result of the last completed fetch, tagged with the key it was fetched for.
+  const [result, setResult] = useState(null) // { key, data, error }
+  const [reloadKey, setReloadKey] = useState(0)
 
-  const load = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const { data: json } = await api.get('/admin/overview')
-      setData(json)
-    } catch (err) {
-      setError(apiError(err, t('admLoadFailed', 'Could not load data')).message)
-    } finally {
-      setLoading(false)
-    }
-  }, [t])
+  const fetchKey = `${language}|${reloadKey}`
+  const loading = !result || result.key !== fetchKey
+  const data = loading ? null : result.data
+  const error = loading ? null : result.error
 
   useEffect(() => {
-    load()
-  }, [load])
+    let stale = false
+    api
+      .get('/admin/overview')
+      .then(({ data: json }) => {
+        if (!stale) setResult({ key: fetchKey, data: json, error: null })
+      })
+      .catch((err) => {
+        if (!stale)
+          setResult({
+            key: fetchKey,
+            data: null,
+            error: apiError(err, t('admLoadFailed', 'Could not load data')).message,
+          })
+      })
+    return () => {
+      stale = true
+    }
+  }, [fetchKey, t])
+
+  const retry = () => setReloadKey((k) => k + 1)
 
   const totals = data?.totals
 
@@ -43,7 +53,7 @@ export default function AdminOverviewPage() {
       {!loading && error && (
         <Card className="adm-error">
           <p className="adm-error__text">{error}</p>
-          <Button variant="soft" size="sm" onClick={load}>
+          <Button variant="soft" size="sm" onClick={retry}>
             {t('admRetry', 'Retry')}
           </Button>
         </Card>

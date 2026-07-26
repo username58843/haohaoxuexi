@@ -151,9 +151,24 @@ export default function DeckDetailPage() {
   const toast = useToast()
 
   const id = typeof router.query.id === 'string' ? router.query.id : ''
+  const userId = user ? user.id : null
 
-  const [deck, setDeck] = useState(null)
-  const [loadError, setLoadError] = useState(null)
+  // Result of the last completed fetch, tagged with the key it was fetched
+  // for. While the current key differs the page shows the loader.
+  const [fetched, setFetched] = useState(null) // { key, deck, error }
+  const [reloadKey, setReloadKey] = useState(0)
+
+  const fetchKey = `${userId}|${id}|${reloadKey}`
+  const loadedDeck = Boolean(fetched) && fetched.key === fetchKey
+  const deck = loadedDeck ? fetched.deck : null
+  const loadError = loadedDeck ? fetched.error : null
+
+  // Local mutations (rename, add/remove words, rollback) edit the fetched deck.
+  const setDeck = useCallback((next) => {
+    setFetched((prev) =>
+      prev ? { ...prev, deck: typeof next === 'function' ? next(prev.deck) : next } : prev
+    )
+  }, [])
 
   const [editingName, setEditingName] = useState(false)
   const [nameDraft, setNameDraft] = useState('')
@@ -170,10 +185,25 @@ export default function DeckDetailPage() {
   const [sheetOpen, setSheetOpen] = useState(false)
 
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState(null)
-  const [searching, setSearching] = useState(false)
-  const [searchError, setSearchError] = useState(null)
+  // Last completed dictionary lookup: { epoch, items, error }. `epoch` advances
+  // whenever the (trimmed) query changes, so `searching`/`searchError` can be
+  // derived instead of being reset from inside the effect.
+  const [search, setSearch] = useState(null)
+  const [searchEpoch, setSearchEpoch] = useState(0)
   const searchInputRef = useRef(null)
+
+  const trimmedQuery = query.trim()
+  const [prevQuery, setPrevQuery] = useState(trimmedQuery)
+  if (prevQuery !== trimmedQuery) {
+    // Adjust state during render when the query changes (React docs pattern).
+    setPrevQuery(trimmedQuery)
+    if (trimmedQuery) setSearchEpoch((e) => e + 1)
+    else setSearch(null)
+  }
+
+  const searching = Boolean(trimmedQuery) && (!search || search.epoch !== searchEpoch)
+  const results = search ? search.items : null
+  const searchError = search && search.epoch === searchEpoch ? search.error : null
 
   const deckRef = useRef(null)
   useEffect(() => {
@@ -184,22 +214,23 @@ export default function DeckDetailPage() {
     if (!authLoading && !user) router.replace('/auth')
   }, [authLoading, user, router])
 
-  const fetchDeck = useCallback(async () => {
-    if (!id) return
-    setLoadError(null)
-    setDeck(null)
-    try {
-      const { data } = await api.get(`/decks/${id}`)
-      setDeck((data && data.deck) || data)
-    } catch (err) {
-      setLoadError(apiError(err))
-    }
-  }, [id])
-
-  const userId = user ? user.id : null
   useEffect(() => {
-    if (userId && router.isReady && id) fetchDeck()
-  }, [userId, router.isReady, id, fetchDeck])
+    if (!userId || !router.isReady || !id) return undefined
+    let stale = false
+    api
+      .get(`/decks/${id}`)
+      .then(({ data }) => {
+        if (!stale) setFetched({ key: fetchKey, deck: (data && data.deck) || data, error: null })
+      })
+      .catch((err) => {
+        if (!stale) setFetched({ key: fetchKey, deck: null, error: apiError(err) })
+      })
+    return () => {
+      stale = true
+    }
+  }, [userId, router.isReady, id, fetchKey])
+
+  const retryLoad = () => setReloadKey((k) => k + 1)
 
   const words = useMemo(() => (deck && Array.isArray(deck.words) ? deck.words : []), [deck])
   const idsInDeck = useMemo(() => new Set(words.map(makeWordId)), [words])
@@ -221,7 +252,7 @@ export default function DeckDetailPage() {
         return false
       }
     },
-    [id, toast]
+    [id, toast, setDeck]
   )
 
   const startRename = () => {
@@ -311,37 +342,28 @@ export default function DeckDetailPage() {
   /* ---------- dictionary search (debounced) ---------- */
 
   useEffect(() => {
-    const q = query.trim()
-    if (!q) {
-      setResults(null)
-      setSearchError(null)
-      setSearching(false)
-      return undefined
-    }
+    if (!trimmedQuery) return undefined
     let cancelled = false
-    setSearching(true)
-    setSearchError(null)
     const timer = setTimeout(() => {
       api
-        .get('/words/search', { params: { q, limit: 20 } })
+        .get('/words/search', { params: { q: trimmedQuery, limit: 20 } })
         .then(({ data }) => {
-          if (!cancelled) setResults(Array.isArray(data.items) ? data.items : [])
+          if (!cancelled)
+            setSearch({
+              epoch: searchEpoch,
+              items: Array.isArray(data.items) ? data.items : [],
+              error: null,
+            })
         })
         .catch((err) => {
-          if (!cancelled) {
-            setResults(null)
-            setSearchError(apiError(err).message)
-          }
-        })
-        .finally(() => {
-          if (!cancelled) setSearching(false)
+          if (!cancelled) setSearch({ epoch: searchEpoch, items: null, error: apiError(err).message })
         })
     }, 350)
     return () => {
       cancelled = true
       clearTimeout(timer)
     }
-  }, [query])
+  }, [trimmedQuery, searchEpoch])
 
   /* ---------- word sheet ---------- */
 
@@ -391,7 +413,7 @@ export default function DeckDetailPage() {
             </p>
             <div className="deck-error__actions">
               {loadError.code !== 'not_found' && (
-                <Button variant="soft" onClick={fetchDeck}>
+                <Button variant="soft" onClick={retryLoad}>
                   {t('deckRetry', 'Try again')}
                 </Button>
               )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import AdminLayout from '~/components/admin/AdminLayout'
 import Pager from '~/components/admin/Pager'
 import UserDrawer from '~/components/admin/UserDrawer'
@@ -17,50 +17,65 @@ export default function AdminUsersPage() {
   const [q, setQ] = useState('')
   const [filter, setFilter] = useState('all')
   const [page, setPage] = useState(1)
+  const [reloadKey, setReloadKey] = useState(0)
 
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  // Result of the last completed fetch, tagged with the key it was fetched for.
+  // While the current key differs we are (re)loading; stale data is kept so the
+  // table stays visible with the `is-refreshing` treatment.
+  const [result, setResult] = useState(null) // { key, data, error }
 
   const [selected, setSelected] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const requestRef = useRef(0)
+  const fetchKey = `${language}|${reloadKey}|${q}|${filter}|${page}`
+  const loading = !result || result.key !== fetchKey
+  const data = result ? result.data : null
+  const error = loading ? null : result.error
 
-  // Debounce the search input → q.
+  // Debounce the search input → q; a new search goes back to page 1.
   useEffect(() => {
-    const timer = setTimeout(() => setQ(qInput.trim()), DEBOUNCE_MS)
+    const timer = setTimeout(() => {
+      const next = qInput.trim()
+      if (next !== q) {
+        setQ(next)
+        setPage(1)
+      }
+    }, DEBOUNCE_MS)
     return () => clearTimeout(timer)
-  }, [qInput])
+  }, [qInput, q])
 
-  // New search / filter → back to page 1.
   useEffect(() => {
-    setPage(1)
-  }, [q, filter])
-
-  const load = useCallback(async () => {
-    const requestId = ++requestRef.current
-    setLoading(true)
-    setError(null)
-    try {
-      const params = { page }
-      if (q) params.q = q
-      if (filter !== 'all') params.filter = filter
-      const { data: json } = await api.get('/admin/users', { params })
-      if (requestId !== requestRef.current) return
-      setData(json)
-      if (page > json.pages) setPage(json.pages)
-    } catch (err) {
-      if (requestId !== requestRef.current) return
-      setError(apiError(err, t('admLoadFailed', 'Could not load data')).message)
-    } finally {
-      if (requestId === requestRef.current) setLoading(false)
+    let stale = false
+    const params = { page }
+    if (q) params.q = q
+    if (filter !== 'all') params.filter = filter
+    api
+      .get('/admin/users', { params })
+      .then(({ data: json }) => {
+        if (stale) return
+        setResult({ key: fetchKey, data: json, error: null })
+        if (page > json.pages) setPage(json.pages)
+      })
+      .catch((err) => {
+        if (stale) return
+        setResult((prev) => ({
+          key: fetchKey,
+          data: prev ? prev.data : null,
+          error: apiError(err, t('admLoadFailed', 'Could not load data')).message,
+        }))
+      })
+    return () => {
+      stale = true
     }
-  }, [q, filter, page, t])
+  }, [fetchKey, q, filter, page, t])
 
-  useEffect(() => {
-    load()
-  }, [load])
+  const retry = () => setReloadKey((k) => k + 1)
+
+  const selectFilter = (next) => {
+    if (filter === next) return
+    setFilter(next)
+    setPage(1) // new filter → back to page 1
+  }
 
   const openUser = useCallback((user) => {
     setSelected(user)
@@ -69,9 +84,15 @@ export default function AdminUsersPage() {
 
   const handleSaved = useCallback((updated) => {
     setSelected(updated)
-    setData((prev) =>
-      prev
-        ? { ...prev, users: prev.users.map((u) => (u.id === updated.id ? updated : u)) }
+    setResult((prev) =>
+      prev && prev.data
+        ? {
+            ...prev,
+            data: {
+              ...prev.data,
+              users: prev.data.users.map((u) => (u.id === updated.id ? updated : u)),
+            },
+          }
         : prev
     )
   }, [])
@@ -79,8 +100,8 @@ export default function AdminUsersPage() {
   const handleDeleted = useCallback(() => {
     setDrawerOpen(false)
     setSelected(null)
-    load()
-  }, [load])
+    setReloadKey((k) => k + 1)
+  }, [])
 
   const FILTERS = [
     { value: 'all', label: t('admFilterAll', 'All') },
@@ -104,7 +125,7 @@ export default function AdminUsersPage() {
         />
         <div className="adm-toolbar__chips" role="group" aria-label={t('admFilterLabel', 'Filter users')}>
           {FILTERS.map((f) => (
-            <Chip key={f.value} active={filter === f.value} onClick={() => setFilter(f.value)}>
+            <Chip key={f.value} active={filter === f.value} onClick={() => selectFilter(f.value)}>
               {f.label}
             </Chip>
           ))}
@@ -120,7 +141,7 @@ export default function AdminUsersPage() {
       {error && (
         <Card className="adm-error">
           <p className="adm-error__text">{error}</p>
-          <Button variant="soft" size="sm" onClick={load}>
+          <Button variant="soft" size="sm" onClick={retry}>
             {t('admRetry', 'Retry')}
           </Button>
         </Card>

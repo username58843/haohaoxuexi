@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "analyze": "ANALYZE=true next build",
-    "lint": "next lint",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch"
+    "lint": "eslint pages components lib",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "axios": "^1.18.1",

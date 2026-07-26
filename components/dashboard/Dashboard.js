@@ -91,28 +91,42 @@ export default function Dashboard() {
   const [activity, setActivity] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [errorMsg, setErrorMsg] = useState('')
+  const [prevUser, setPrevUser] = useState(null)
+  const [loadKey, setLoadKey] = useState(0)
 
-  const load = useCallback(async () => {
+  // Show the loader whenever a (new) user triggers a refetch — render-time
+  // state adjustment, keeps the pre-refactor "loading on refetch" behavior.
+  if (user !== prevUser) {
+    setPrevUser(user)
+    if (user) {
+      setStatus('loading')
+      setErrorMsg('')
+    }
+  }
+
+  const retry = useCallback(() => {
     setStatus('loading')
     setErrorMsg('')
-    try {
-      const tzOffset = -new Date().getTimezoneOffset()
-      const [sumRes, actRes] = await Promise.all([
-        api.get('/srs/summary', { params: { tzOffset } }),
-        api.get('/stats/activity', { params: { days: 14, tzOffset } }),
-      ])
-      setSummary(sumRes.data)
-      setActivity(Array.isArray(actRes.data?.days) ? actRes.data.days : [])
-      setStatus('ready')
-    } catch (err) {
-      setErrorMsg(apiError(err).message)
-      setStatus('error')
-    }
+    setLoadKey((k) => k + 1)
   }, [])
 
   useEffect(() => {
-    if (user) load()
-  }, [user, load])
+    if (!user) return
+    const tzOffset = -new Date().getTimezoneOffset()
+    Promise.all([
+      api.get('/srs/summary', { params: { tzOffset } }),
+      api.get('/stats/activity', { params: { days: 14, tzOffset } }),
+    ])
+      .then(([sumRes, actRes]) => {
+        setSummary(sumRes.data)
+        setActivity(Array.isArray(actRes.data?.days) ? actRes.data.days : [])
+        setStatus('ready')
+      })
+      .catch((err) => {
+        setErrorMsg(apiError(err).message)
+        setStatus('error')
+      })
+  }, [user, loadKey])
 
   const locale = LOCALE_MAP[language] || 'en-US'
 
@@ -128,14 +142,17 @@ export default function Dashboard() {
     }
   }, [locale])
 
-  const weekdayLetter = useMemo(() => {
+  // Cheap enough to build per call — no manual memoization needed
+  // (the returned-closure useMemo defeated the compiler's memo analysis).
+  const weekdayLetter = (day) => {
+    let fmt
     try {
-      const fmt = new Intl.DateTimeFormat(locale, { weekday: 'narrow' })
-      return (day) => fmt.format(new Date(`${day}T00:00:00`))
+      fmt = new Intl.DateTimeFormat(locale, { weekday: 'narrow' })
     } catch {
-      return () => ''
+      return ''
     }
-  }, [locale])
+    return fmt.format(new Date(`${day}T00:00:00`))
+  }
 
   const greeting = useMemo(() => {
     const hour = new Date().getHours()
@@ -185,7 +202,7 @@ export default function Dashboard() {
               title={t('dashErrorTitle', 'Could not load your dashboard')}
               text={errorMsg}
               action={
-                <Button variant="primary" onClick={load}>
+                <Button variant="primary" onClick={retry}>
                   {t('dashRetry', 'Try again')}
                 </Button>
               }

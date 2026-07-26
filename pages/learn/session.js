@@ -42,19 +42,18 @@ async function fetchSource(source) {
   return (Array.isArray(data?.items) ? data.items : []).map(ensureWordId).filter(Boolean)
 }
 
-export default function SessionPage() {
-  const { user, loading } = useAuth()
+function SessionRunner({ params, userId, onReload }) {
   const { t, language } = useSettings()
   const router = useRouter()
   const toast = useToast()
 
   const [phase, setPhase] = useState('loading') // loading | error | empty | active | results
   const [errorMsg, setErrorMsg] = useState('')
-  const [reloadNonce, setReloadNonce] = useState(0)
 
   // review state
   const [remaining, setRemaining] = useState([])
   const [done, setDone] = useState(0)
+  const [gradedCount, setGradedCount] = useState(0) // cards graded at least once
   const [flipped, setFlipped] = useState(false)
   const [posting, setPosting] = useState(false)
 
@@ -64,55 +63,24 @@ export default function SessionPage() {
   const [answered, setAnswered] = useState(null) // { index, correct } | null
   const [correctCount, setCorrectCount] = useState(0)
 
+  // Final results, set once when the session finishes.
+  const [results, setResults] = useState(null) // { total, correct, mistakes }
+
   const [leaveOpen, setLeaveOpen] = useState(false)
 
-  const statsRef = useRef({ firstGrades: {}, mistakes: [], mistakeIds: {} })
+  const statsRef = useRef({ firstGrades: {}, correct: 0, mistakes: [], mistakeIds: {} })
   const poolRef = useRef([]) // distractor pool, reused as retry extras
   const usedModesRef = useRef(['cp', 'ct'])
   const timerRef = useRef(null)
 
-  useEffect(() => {
-    if (!loading && !user) router.replace('/auth')
-  }, [loading, user, router])
-
-  const params = useMemo(() => {
-    if (!router.isReady) return null
-    const q = router.query
-    const qmodes = listParam(q.qmodes).filter((m) => ALL_QMODES.includes(m))
-    return {
-      mode: q.mode === 'quiz' ? 'quiz' : 'review',
-      packs: listParam(q.packs),
-      sources: listParam(q.sources),
-      limit: clampInt(q.limit, 1, 100, 20),
-      count: clampInt(q.count, 0, 500, 20),
-      qmodes: qmodes.length ? qmodes : ['cp', 'ct'],
-      retry: Boolean(q.retry),
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady, router.asPath])
-
   const mode = params?.mode || 'review'
-  const userId = user?.id
 
   // ------- load / build the session -------
+  // The runner is remounted (via its `key`) whenever the session identity
+  // changes, so every mount starts from fresh state and this effect only loads.
   useEffect(() => {
     if (!params || !userId) return undefined
     let cancelled = false
-
-    setPhase('loading')
-    setErrorMsg('')
-    setRemaining([])
-    setDone(0)
-    setFlipped(false)
-    setPosting(false)
-    setQuestions([])
-    setQi(0)
-    setAnswered(null)
-    setCorrectCount(0)
-    setLeaveOpen(false)
-    statsRef.current = { firstGrades: {}, mistakes: [], mistakeIds: {} }
-    poolRef.current = []
-    clearTimeout(timerRef.current)
 
     const load = async () => {
       try {
@@ -191,7 +159,7 @@ export default function SessionPage() {
       cancelled = true
       clearTimeout(timerRef.current)
     }
-  }, [params, userId, language, reloadNonce])
+  }, [params, userId, language])
 
   // ------- review: grading -------
   const gradeCard = useCallback(
@@ -207,6 +175,7 @@ export default function SessionPage() {
         const stats = statsRef.current
         if (!(card.wordId in stats.firstGrades)) {
           stats.firstGrades[card.wordId] = grade
+          setGradedCount((n) => n + 1)
           if (grade === 0) {
             const w = ensureWordId(card.word)
             if (w) stats.mistakes.push(w)
@@ -223,7 +192,15 @@ export default function SessionPage() {
         } else {
           setDone((d) => d + 1)
           setRemaining(rest)
-          if (!rest.length) setPhase('results')
+          if (!rest.length) {
+            const grades = Object.values(stats.firstGrades)
+            setResults({
+              total: grades.length,
+              correct: grades.filter((g) => g >= 2).length,
+              mistakes: stats.mistakes,
+            })
+            setPhase('results')
+          }
         }
       } catch {
         // Keep the card and let the user press the grade again.
@@ -241,8 +218,17 @@ export default function SessionPage() {
   const advance = useCallback(() => {
     clearTimeout(timerRef.current)
     setAnswered(null)
-    if (qi + 1 >= questions.length) setPhase('results')
-    else setQi((i) => i + 1)
+    if (qi + 1 >= questions.length) {
+      const stats = statsRef.current
+      setResults({
+        total: questions.length,
+        correct: stats.correct,
+        mistakes: stats.mistakes,
+      })
+      setPhase('results')
+    } else {
+      setQi((i) => i + 1)
+    }
   }, [qi, questions.length])
 
   const answerQuestion = useCallback(
@@ -264,6 +250,7 @@ export default function SessionPage() {
         .catch(() => {})
 
       if (correct) {
+        statsRef.current.correct += 1
         setCorrectCount((c) => c + 1)
         clearTimeout(timerRef.current)
         timerRef.current = setTimeout(advance, 650)
@@ -287,7 +274,7 @@ export default function SessionPage() {
   const inProgress =
     phase === 'active' &&
     (mode === 'review'
-      ? done > 0 || Object.keys(statsRef.current.firstGrades).length > 0
+      ? done > 0 || gradedCount > 0
       : qi > 0 || answered !== null || correctCount > 0)
 
   useEffect(() => {
@@ -337,14 +324,7 @@ export default function SessionPage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [params, phase, leaveOpen, flipped, posting, answered, gradeCard, answerQuestion, advance])
 
-  // ------- results -------
-  const resultTotals = useMemo(() => {
-    if (mode === 'quiz') return { total: questions.length, correct: correctCount }
-    const grades = Object.values(statsRef.current.firstGrades)
-    return { total: grades.length, correct: grades.filter((g) => g >= 2).length }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, phase, questions.length, correctCount])
-
+  // ------- results / retry -------
   const handleRetry = useCallback(() => {
     const words = dedupeWords(statsRef.current.mistakes.map(ensureWordId).filter(Boolean))
     if (!words.length) return
@@ -360,14 +340,6 @@ export default function SessionPage() {
     }
     router.push(`/learn/session?mode=quiz&retry=${Date.now()}`)
   }, [router])
-
-  if (loading || !user) {
-    return (
-      <AppShell bare>
-        <PageLoader />
-      </AppShell>
-    )
-  }
 
   const modeLabel = mode === 'quiz' ? t('sessModeQuiz', 'Quiz') : t('sessModeReview', 'Review')
 
@@ -429,7 +401,7 @@ export default function SessionPage() {
             text={errorMsg}
             action={
               <div className="sess-empty-actions">
-                <Button variant="primary" onClick={() => setReloadNonce((n) => n + 1)}>
+                <Button variant="primary" onClick={onReload}>
                   {t('sessRetry', 'Try again')}
                 </Button>
                 <Button variant="ghost" href="/learn">
@@ -496,12 +468,12 @@ export default function SessionPage() {
           />
         )}
 
-        {phase === 'results' && (
+        {phase === 'results' && results && (
           <Results
             mode={mode}
-            total={resultTotals.total}
-            correct={resultTotals.correct}
-            mistakes={statsRef.current.mistakes}
+            total={results.total}
+            correct={results.correct}
+            mistakes={results.mistakes}
             onRetry={handleRetry}
           />
         )}
@@ -530,5 +502,51 @@ export default function SessionPage() {
         </p>
       </Modal>
     </AppShell>
+  )
+}
+
+export default function SessionPage() {
+  const { user, loading } = useAuth()
+  const { language } = useSettings()
+  const router = useRouter()
+  const [reloadNonce, setReloadNonce] = useState(0)
+
+  useEffect(() => {
+    if (!loading && !user) router.replace('/auth')
+  }, [loading, user, router])
+
+  const params = useMemo(() => {
+    if (!router.isReady) return null
+    const q = router.query
+    const qmodes = listParam(q.qmodes).filter((m) => ALL_QMODES.includes(m))
+    return {
+      mode: q.mode === 'quiz' ? 'quiz' : 'review',
+      packs: listParam(q.packs),
+      sources: listParam(q.sources),
+      limit: clampInt(q.limit, 1, 100, 20),
+      count: clampInt(q.count, 0, 500, 20),
+      qmodes: qmodes.length ? qmodes : ['cp', 'ct'],
+      retry: Boolean(q.retry),
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.asPath])
+
+  if (loading || !user) {
+    return (
+      <AppShell bare>
+        <PageLoader />
+      </AppShell>
+    )
+  }
+
+  // Remount the runner whenever the session identity changes (URL, language,
+  // manual reload) — the `key` reset pattern replaces in-effect state resets.
+  return (
+    <SessionRunner
+      key={`${router.asPath}|${language}|${reloadNonce}`}
+      params={params}
+      userId={user.id}
+      onReload={() => setReloadNonce((n) => n + 1)}
+    />
   )
 }

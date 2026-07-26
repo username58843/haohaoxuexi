@@ -1,199 +1,76 @@
-# HSK Chinese Learning Platform
+# 好好学习 — HaoHao XueXi
 
-A comprehensive Next.js application for learning Chinese vocabulary and preparing for the HSK exam.
+Chinese-vocabulary learning platform: **web app + REST API** (Next.js 16, MongoDB)
+and a **Flutter Android app**, sharing one backend.
+
+Learn all ~5000 HSK 1–6 words with an SM-2 spaced-repetition system, quizzes,
+personal decks, streaks and per-level progress. Free, no ads.
+
+## Repository layout
+
+```
+/            Next.js app — web UI + /api/v1 REST API (deploys to Vercel)
+/mobile      Flutter Android app (Play-Store-ready, see docs/RELEASE_CHECKLIST.md)
+/words       Word packs (HSK 1–6 + 29 textbook packs, served via the API)
+/docs        Architecture contract, design system, store documents
+/scripts     smoke.mjs — end-to-end API test against an in-memory MongoDB
+```
 
 ## Features
 
-### 🆓 Free Features
-- **Dictionary Search**: Search through comprehensive Chinese dictionaries
-- **Text Translator**: Translate between Chinese, Russian, English, and Turkmen
-- **Learning Mode**: Interactive flashcards for vocabulary practice
-- **6 Example Sentences**: Per word for free users
+- **SRS reviews** — SM-2 scheduling (Again/Hard/Good/Easy), due queue, server-side
+  progress that syncs between web and Android
+- **Quizzes** — 4 directions (字↔pinyin, 字↔meaning), instant feedback, mistake retry
+- **HSK lexicon** — browse/search 5000 words, mark known, stroke-order animation,
+  browser TTS
+- **Personal decks** — create, edit, JSON/CSV import/export
+- **Progress** — daily goal, streaks, 14-day activity, per-level mastery bars
+- **Admin console** — metrics dashboard, user management (ban/premium/roles) with
+  audit log, feedback inbox
+- **4 UI languages** (en/ru/tk/zh) · dark/light themes · 8 accent colors · PWA
 
-### ⭐ Premium Features
-- **10 Example Sentences**: Per word for premium users
-- **Personal Dictionaries**: Create and manage your own word lists
-- **Search History**: Track your search history
-- **Priority Support**: Get help when you need it
-
-### 🔐 User Features
-- **Account System**: Register and login with email
-- **Profile Management**: Update name, avatar, and password
-- **Search History**: View your recent searches
-- **Premium Subscription**: Upgrade for advanced features
-
-### 👨‍💼 Admin Features
-- **User Management**: View and manage all users
-- **Premium Management**: Grant premium access to users
-- **Admin Controls**: Full administrative access
-
-## Installation
-
-### Prerequisites
-- Node.js 14+ and npm/yarn
-- MongoDB database (local or MongoDB Atlas)
-
-### Step 1: Clone and Install Dependencies
+## Quick start (web)
 
 ```bash
-git clone <repository-url>
-cd hsk-original
 npm install
-# or
-yarn install
+cp .env.example .env.local     # fill MONGODB_URI + JWT_SECRET
+npm run dev                    # http://localhost:3000
 ```
 
-### Step 2: Set Up Environment Variables
+First admin: register through the UI, then in MongoDB run
+`db.users.updateOne({email:'you@…'}, {$set:{role:'admin'}})` — there are
+deliberately no hardcoded admin accounts.
 
-Create a `.env.local` file in the root directory:
+## Quick start (Android)
 
 ```bash
-cp .env.example .env.local
+cd mobile
+flutter pub get
+flutter run --dart-define=API_BASE_URL=https://your-deployment.example
 ```
 
-Edit `.env.local` and fill in your values:
+Release build & Play submission: see `docs/RELEASE_CHECKLIST.md`.
 
-```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/hsk-app
-JWT_SECRET=your-random-secret-key-here
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your-recaptcha-site-key
-RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
-OPENAI_API_KEY=your-openai-api-key (optional)
-```
-
-### Step 3: Set Up MongoDB
-
-#### Option A: MongoDB Atlas (Recommended for Vercel)
-
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Create a free account
-3. Create a new cluster (free tier available)
-4. Create a database user
-5. Whitelist your IP address (or use 0.0.0.0/0 for Vercel)
-6. Get your connection string and add it to `.env.local`
-
-#### Option B: Local MongoDB
-
-1. Install MongoDB locally
-2. Start MongoDB service
-3. Use `mongodb://localhost:27017/hsk-app` as your `MONGODB_URI`
-
-### Step 4: Set Up Google reCAPTCHA
-
-1. Go to [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin)
-2. Register a new site
-3. Choose reCAPTCHA v2
-4. Add your domain (localhost for development)
-5. Copy Site Key and Secret Key to `.env.local`
-
-### Step 5: Run the Development Server
+## Testing
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm test               # unit tests (SRS scheduler, validators, word ids)
+npm run build          # production build
+node scripts/smoke.mjs # full API smoke test (in-memory MongoDB, ~60 checks)
+npx eslint pages components lib
+cd mobile && flutter analyze
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## Architecture
 
-## Deployment to Vercel
+The single source of truth is [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md):
+data model (users, decks, srs_cards, review_logs, feedback, audit_logs),
+the full `/api/v1` endpoint table, auth (JWT HS256 + tokenVersion revocation,
+httpOnly cookie for web / Bearer for mobile), the SRS algorithm, and the
+security invariants. The visual language lives in [`docs/DESIGN.md`](docs/DESIGN.md).
 
-### Step 1: Push to GitHub
-
-```bash
-git add .
-git commit -m "Initial commit"
-git push origin main
-```
-
-### Step 2: Deploy to Vercel
-
-1. Go to [Vercel](https://vercel.com)
-2. Import your GitHub repository
-3. Add environment variables in Vercel dashboard:
-   - `MONGODB_URI`
-   - `JWT_SECRET`
-   - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
-   - `RECAPTCHA_SECRET_KEY`
-   - `OPENAI_API_KEY` (optional)
-
-### Step 3: Configure MongoDB Atlas for Vercel
-
-1. In MongoDB Atlas, go to Network Access
-2. Add IP address: `0.0.0.0/0` (allows all IPs)
-3. Or add Vercel's IP ranges
-
-### Step 4: Update reCAPTCHA Domain
-
-1. In Google reCAPTCHA Admin, add your Vercel domain
-2. Update `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` if needed
-
-## Creating the First Admin User
-
-After deployment, you need to create an admin user. You can do this by:
-
-1. Register a new account through the website
-2. Connect to your MongoDB database
-3. Update the user document to set `isAdmin: true`:
-
-```javascript
-// In MongoDB shell or MongoDB Compass
-db.users.updateOne(
-  { email: "your-admin@email.com" },
-  { $set: { isAdmin: true } }
-)
-```
-
-## Project Structure
-
-```
-hsk-original/
-├── components/          # React components
-│   ├── Auth/           # Authentication components
-│   ├── Search/         # Search components
-│   └── ...
-├── lib/                # Utility libraries
-│   ├── contexts/       # React contexts
-│   ├── models/         # Database models
-│   └── ...
-├── pages/              # Next.js pages
-│   ├── api/           # API routes
-│   ├── admin/         # Admin pages
-│   └── ...
-├── words/             # Dictionary data files
-└── styles/            # SCSS styles
-```
-
-## API Routes
-
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/logout` - Logout user
-- `GET /api/search?q=...` - Search dictionary
-- `GET /api/search/examples?word=...` - Get example sentences
-- `POST /api/translate` - Translate text
-- `PUT /api/user/profile` - Update profile
-- `PUT /api/user/password` - Change password
-- `GET /api/admin/users` - Get all users (admin only)
-- `PUT /api/admin/users/[id]` - Update user (admin only)
-- `DELETE /api/admin/users/[id]` - Delete user (admin only)
-
-## Technologies Used
-
-- **Next.js 9.3.5** - React framework
-- **React 16.13.1** - UI library
-- **MongoDB** - Database
-- **Bootstrap/Reactstrap** - UI components
-- **bcryptjs** - Password hashing
-- **jsonwebtoken** - Authentication
-- **axios** - HTTP client
-- **react-google-recaptcha** - CAPTCHA
+Environment variables: `MONGODB_URI`, `JWT_SECRET`, `APP_URL` (see `.env.example`).
 
 ## License
 
 MIT
-
-## Support
-
-For issues and questions, please open an issue on GitHub.

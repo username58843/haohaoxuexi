@@ -48,18 +48,22 @@ export default function UserDrawer({ user, open, onClose, onSaved, onDeleted }) 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmText, setConfirmText] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [prevUser, setPrevUser] = useState(null)
 
-  // Re-seed the form whenever a different user is opened.
-  useEffect(() => {
-    if (!user) return
-    setRole(user.role || 'user')
-    setIsPremium(!!user.isPremium)
-    setPremiumExpires(toDateInput(user.premiumExpiresAt))
-    setIsBanned(!!user.isBanned)
-    setBanReason(user.banReason || '')
-    setConfirmOpen(false)
-    setConfirmText('')
-  }, [user])
+  // Re-seed the form whenever a different user is opened (render-time
+  // "adjust state when props change" pattern instead of an effect).
+  if (user !== prevUser) {
+    setPrevUser(user)
+    if (user) {
+      setRole(user.role || 'user')
+      setIsPremium(!!user.isPremium)
+      setPremiumExpires(toDateInput(user.premiumExpiresAt))
+      setIsBanned(!!user.isBanned)
+      setBanReason(user.banReason || '')
+      setConfirmOpen(false)
+      setConfirmText('')
+    }
+  }
 
   // Body scroll lock while the drawer is open (re-applied after the
   // confirm Modal closes, since Modal restores overflow on unmount).

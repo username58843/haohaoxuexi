@@ -106,43 +106,52 @@ export default function LearnPage() {
     if (!loading && !user) router.replace('/auth')
   }, [loading, user, router])
 
-  // Hydrate the form from the last saved config.
-  useEffect(() => {
+  // Hydrate the form from the last saved config. localStorage is unavailable
+  // during SSR, so this runs on the client only — once, guarded by state,
+  // using the documented "adjust state during render" pattern.
+  const [cfgHydrated, setCfgHydrated] = useState(false)
+  if (typeof window !== 'undefined' && !cfgHydrated) {
+    setCfgHydrated(true)
     const cfg = readConfig()
-    if (!cfg) return
-    setSavedCfg(cfg)
-    if (cfg.mode === 'review' || cfg.mode === 'quiz') setTab(cfg.mode)
-    if (cfg.review && typeof cfg.review === 'object') {
-      if (Array.isArray(cfg.review.packs)) {
-        setReviewPacks(cfg.review.packs.filter((p) => typeof p === 'string'))
+    if (cfg) {
+      setSavedCfg(cfg)
+      if (cfg.mode === 'review' || cfg.mode === 'quiz') setTab(cfg.mode)
+      if (cfg.review && typeof cfg.review === 'object') {
+        if (Array.isArray(cfg.review.packs)) {
+          setReviewPacks(cfg.review.packs.filter((p) => typeof p === 'string'))
+        }
+        if (REVIEW_LIMITS.includes(cfg.review.limit)) setReviewLimit(cfg.review.limit)
       }
-      if (REVIEW_LIMITS.includes(cfg.review.limit)) setReviewLimit(cfg.review.limit)
-    }
-    if (cfg.quiz && typeof cfg.quiz === 'object') {
-      if (Array.isArray(cfg.quiz.sources)) {
-        setQuizSources(cfg.quiz.sources.filter((s) => typeof s === 'string'))
+      if (cfg.quiz && typeof cfg.quiz === 'object') {
+        if (Array.isArray(cfg.quiz.sources)) {
+          setQuizSources(cfg.quiz.sources.filter((s) => typeof s === 'string'))
+        }
+        if (QUIZ_COUNTS.includes(cfg.quiz.count)) setQuizCount(cfg.quiz.count)
+        const modes = (Array.isArray(cfg.quiz.qmodes) ? cfg.quiz.qmodes : []).filter((m) =>
+          ALL_QMODES.includes(m)
+        )
+        if (modes.length) setQuizModes(modes)
       }
-      if (QUIZ_COUNTS.includes(cfg.quiz.count)) setQuizCount(cfg.quiz.count)
-      const modes = (Array.isArray(cfg.quiz.qmodes) ? cfg.quiz.qmodes : []).filter((m) =>
-        ALL_QMODES.includes(m)
-      )
-      if (modes.length) setQuizModes(modes)
     }
-  }, [])
+  }
 
-  // ?mode=quiz deep link (used by the "all caught up" suggestion).
-  useEffect(() => {
-    if (!router.isReady) return
-    const m = router.query.mode
-    if (m === 'quiz' || m === 'review') setTab(m)
-  }, [router.isReady, router.query.mode])
+  // ?mode=quiz deep link (used by the "all caught up" suggestion): adjust the
+  // tab during render when the route-provided mode changes.
+  const routeMode =
+    router.isReady && (router.query.mode === 'quiz' || router.query.mode === 'review')
+      ? router.query.mode
+      : null
+  const [prevRouteMode, setPrevRouteMode] = useState(null)
+  if (routeMode !== prevRouteMode) {
+    setPrevRouteMode(routeMode)
+    if (routeMode) setTab(routeMode)
+  }
 
   const userId = user?.id
 
   useEffect(() => {
     if (!userId) return undefined
     let cancelled = false
-    setLoadState('loading')
     const load = async () => {
       try {
         const tzOffset = -new Date().getTimezoneOffset()
@@ -179,27 +188,46 @@ export default function LearnPage() {
   }, [userId, reloadNonce])
 
   // Drop selections that reference packs/decks that no longer exist.
-  useEffect(() => {
-    if (loadState !== 'ready' || !packs) return
+  // Adjusted during render, guarded by a previous-value comparison.
+  const [prunedFor, setPrunedFor] = useState(null)
+  if (
+    loadState === 'ready' &&
+    packs &&
+    (!prunedFor || prunedFor.packs !== packs || prunedFor.decks !== decks)
+  ) {
+    setPrunedFor({ packs, decks })
     const packIds = new Set(packs.map((p) => p.id))
     const deckIds = new Set(decks.map((d) => `deck:${d.id}`))
-    setReviewPacks((prev) => prev.filter((id) => packIds.has(id)))
-    setQuizSources((prev) =>
-      prev.filter((s) => (s.startsWith('deck:') ? deckIds.has(s) : packIds.has(s)))
-    )
-  }, [loadState, packs, decks])
+    setReviewPacks((prev) => {
+      const next = prev.filter((id) => packIds.has(id))
+      return next.length === prev.length ? prev : next
+    })
+    setQuizSources((prev) => {
+      const next = prev.filter((s) => (s.startsWith('deck:') ? deckIds.has(s) : packIds.has(s)))
+      return next.length === prev.length ? prev : next
+    })
+  }
 
   // Auto-expand the textbook group when a textbook pack is already selected.
-  useEffect(() => {
-    if (!packs) return
-    const textbookIds = new Set(packs.filter((p) => p.group === 'textbook').map((p) => p.id))
-    if (
-      reviewPacks.some((id) => textbookIds.has(id)) ||
-      quizSources.some((s) => textbookIds.has(s))
-    ) {
-      setShowTextbook(true)
+  // Adjusted during render, guarded by a previous-value comparison.
+  const [prevSelection, setPrevSelection] = useState(null)
+  if (
+    !prevSelection ||
+    prevSelection.packs !== packs ||
+    prevSelection.reviewPacks !== reviewPacks ||
+    prevSelection.quizSources !== quizSources
+  ) {
+    setPrevSelection({ packs, reviewPacks, quizSources })
+    if (packs) {
+      const textbookIds = new Set(packs.filter((p) => p.group === 'textbook').map((p) => p.id))
+      if (
+        reviewPacks.some((id) => textbookIds.has(id)) ||
+        quizSources.some((s) => textbookIds.has(s))
+      ) {
+        setShowTextbook(true)
+      }
     }
-  }, [packs, reviewPacks, quizSources])
+  }
 
   const hskPacks = useMemo(() => (packs || []).filter((p) => p.group === 'hsk'), [packs])
   const textbookPacks = useMemo(
@@ -321,7 +349,13 @@ export default function LearnPage() {
             title={t('learnLoadFailed', 'Could not load study data')}
             text={loadErr}
             action={
-              <Button variant="soft" onClick={() => setReloadNonce((n) => n + 1)}>
+              <Button
+                variant="soft"
+                onClick={() => {
+                  setLoadState('loading')
+                  setReloadNonce((n) => n + 1)
+                }}
+              >
                 {t('learnRetry', 'Try again')}
               </Button>
             }
