@@ -14,7 +14,16 @@ export default createApiHandler({
       const existing = await findUserByEmail(emailValue)
       if (existing) throw errors.conflict('email_taken', 'Email is already registered')
 
-      const user = await createUser({ email: emailValue, password, name })
+      let user
+      try {
+        user = await createUser({ email: emailValue, password, name })
+      } catch (err) {
+        // Concurrent registration for the same email (unique index).
+        if (err?.code === 'DUPLICATE_EMAIL') {
+          throw errors.conflict('email_taken', 'Email is already registered')
+        }
+        throw err
+      }
       const token = signToken(user)
       res.setHeader('Set-Cookie', buildAuthCookie(token))
       res.status(201).json({ user: publicUser(user), token })

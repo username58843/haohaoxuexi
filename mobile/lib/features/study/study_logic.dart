@@ -93,9 +93,12 @@ List<QuizQuestion> buildQuiz(
   ];
   words.shuffle(rng);
 
+  // count <= 0 means "the whole pool" (deck Study buttons pass count=0).
+  final target = count > 0 ? count : words.length;
+
   final questions = <QuizQuestion>[];
   for (final word in words) {
-    if (questions.length >= math.max(1, count)) break;
+    if (questions.length >= target) break;
     final hasMeaning = quizMeaning(word, language).isNotEmpty;
     final direction = hasMeaning && rng.nextBool()
         ? QuizDirection.meaning
@@ -108,6 +111,9 @@ List<QuizQuestion> buildQuiz(
     for (final other in candidates) {
       if (distractors.length >= 3) break;
       if (other.id == word.id) continue;
+      // A homograph shares the displayed hanzi prompt (还 hái/huán) — its
+      // pinyin/meaning would be a second valid answer, not a distractor.
+      if (other.simplified == word.simplified) continue;
       final text = _answerText(other, direction, language);
       if (text.isEmpty || text == correct) continue;
       distractors.add(text);

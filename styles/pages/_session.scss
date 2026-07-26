@@ -422,6 +422,16 @@
   font-size: 14.5px;
 }
 
+.sess-results__warn {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-control);
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
 .sess-results__mistakes {
   display: flex;
   flex-direction: column;

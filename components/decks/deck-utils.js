@@ -120,16 +120,20 @@ function findColumn(headerCells, names) {
   return -1
 }
 
+const SIMPLIFIED_HEADERS = ['simplified', 'hanzi', 'word']
+
 function csvRowsToObjects(rows) {
   if (rows.length === 0) return []
   const first = rows[0].map((c) => c.trim().toLowerCase())
-  const hasHeader = first.includes('simplified')
+  // A header is present if the first row names the key column by ANY alias,
+  // otherwise the header row would be imported as a bogus word.
+  const hasHeader = SIMPLIFIED_HEADERS.some((n) => first.includes(n))
 
   let idx = { simplified: 0, traditional: 1, pinyin: 2, definitions: 3 }
   let dataRows = rows
   if (hasHeader) {
     idx = {
-      simplified: findColumn(first, ['simplified', 'hanzi', 'word']),
+      simplified: findColumn(first, SIMPLIFIED_HEADERS),
       traditional: findColumn(first, ['traditional']),
       pinyin: findColumn(first, ['pinyin']),
       definitions: findColumn(first, ['definitions', 'definition', 'meanings', 'meaning']),

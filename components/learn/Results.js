@@ -8,7 +8,7 @@ import { meaningLine } from './session-utils'
  * End-of-session summary: accuracy ring, counts, list of missed words
  * (tap opens the WordSheet) and follow-up actions.
  */
-export default function Results({ mode, total, correct, mistakes, onRetry }) {
+export default function Results({ mode, total, correct, mistakes, syncFailed = 0, onRetry }) {
   const { t, language } = useSettings()
   const [sheetWord, setSheetWord] = useState(null)
 
@@ -45,6 +45,15 @@ export default function Results({ mode, total, correct, mistakes, onRetry }) {
 
       {wrong === 0 && total > 0 && (
         <p className="sess-results__perfect">{t('sessPerfect', 'Flawless run — no mistakes!')}</p>
+      )}
+
+      {syncFailed > 0 && (
+        <p className="sess-results__warn" role="alert">
+          {t(
+            'sessSyncFailed',
+            "Some answers couldn't be saved — check your connection. They may not count toward your progress."
+          )}
+        </p>
       )}
 
       {wrong > 0 && (

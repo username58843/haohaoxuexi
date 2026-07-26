@@ -1,4 +1,4 @@
-import { createApiHandler, errors, getClientIp } from '~/lib/server/api'
+import { createApiHandler, errors, userRateKey } from '~/lib/server/api'
 import { objectBody, str, int, tzOffset } from '~/lib/server/validate'
 import { applyReview } from '~/lib/server/srs'
 import { isValidWordSnapshot } from '~/lib/words-shared'
@@ -10,8 +10,8 @@ export default createApiHandler({
       name: 'review',
       max: 1200,
       windowMs: 60 * 60 * 1000,
-      // Bucket per token tail (Bearer clients); cookie-auth web falls back to IP.
-      keyFn: (req) => String(req.headers.authorization || '').slice(-24) || getClientIp(req),
+      // Per authenticated user (works for Bearer and cookie clients alike).
+      keyFn: userRateKey,
     },
     handler: async (req, res) => {
       const body = objectBody(req.body)

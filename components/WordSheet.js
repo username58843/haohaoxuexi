@@ -4,7 +4,9 @@ import Button from './ui/Button'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { speakChinese, canSpeak } from '~/lib/speech'
 
-const HANZI_WRITER_SRC = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js'
+// Vendored same-origin (public/vendor) — no third-party CDN in authenticated
+// sessions, no supply-chain surface. Update the file + path to upgrade.
+const HANZI_WRITER_SRC = '/vendor/hanzi-writer-3.5.0.min.js'
 
 let writerPromise = null
 function loadHanziWriter() {

@@ -68,7 +68,7 @@ function SessionRunner({ params, userId, onReload }) {
 
   const [leaveOpen, setLeaveOpen] = useState(false)
 
-  const statsRef = useRef({ firstGrades: {}, correct: 0, mistakes: [], mistakeIds: {} })
+  const statsRef = useRef({ firstGrades: {}, correct: 0, mistakes: [], mistakeIds: {}, syncFailed: 0 })
   const poolRef = useRef([]) // distractor pool, reused as retry extras
   const usedModesRef = useRef(['cp', 'ct'])
   const timerRef = useRef(null)
@@ -224,6 +224,7 @@ function SessionRunner({ params, userId, onReload }) {
         total: questions.length,
         correct: stats.correct,
         mistakes: stats.mistakes,
+        syncFailed: stats.syncFailed,
       })
       setPhase('results')
     } else {
@@ -240,14 +241,20 @@ function SessionRunner({ params, userId, onReload }) {
       setAnswered({ index, correct })
 
       // Auto-grade into SRS: first-try correct → Good, wrong → Again.
+      // Retry once on failure; if it still fails, count it so the results
+      // screen can warn that some progress wasn't saved.
+      const body = {
+        wordId: q.word.id,
+        grade: correct ? 2 : 0,
+        word: q.word,
+        tzOffset: -new Date().getTimezoneOffset(),
+      }
       api
-        .post('/srs/review', {
-          wordId: q.word.id,
-          grade: correct ? 2 : 0,
-          word: q.word,
-          tzOffset: -new Date().getTimezoneOffset(),
+        .post('/srs/review', body)
+        .catch(() => api.post('/srs/review', body))
+        .catch(() => {
+          statsRef.current.syncFailed += 1
         })
-        .catch(() => {})
 
       if (correct) {
         statsRef.current.correct += 1
@@ -474,6 +481,7 @@ function SessionRunner({ params, userId, onReload }) {
             total={results.total}
             correct={results.correct}
             mistakes={results.mistakes}
+            syncFailed={results.syncFailed}
             onRetry={handleRetry}
           />
         )}

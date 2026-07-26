@@ -7,10 +7,11 @@
 /// on the server.
 library;
 
-/// Canonical word id — port of `makeWordId` from `lib/words-shared.js`.
+/// Canonical word id — port of `makeWordId` from `lib/words-shared.js`
+/// (which trims `simplified` before joining).
 String makeWordId(String simplified, String pinyin) {
   final key = pinyin.toLowerCase().replaceAll(RegExp(r"[\s'’ʼ]+"), '');
-  return '$simplified·$key';
+  return '${simplified.trim()}·$key';
 }
 
 List<String> _strList(dynamic v) =>
@@ -51,9 +52,9 @@ class Word {
   factory Word.fromJson(Map<String, dynamic> json) {
     final translations = json['translations'];
     return Word(
-      simplified: (json['simplified'] ?? '').toString(),
-      traditional: (json['traditional'] ?? json['simplified'] ?? '').toString(),
-      pinyin: (json['pinyin'] ?? '').toString(),
+      simplified: (json['simplified'] ?? '').toString().trim(),
+      traditional: (json['traditional'] ?? json['simplified'] ?? '').toString().trim(),
+      pinyin: (json['pinyin'] ?? '').toString().trim(),
       definitions: _strList(json['definitions']),
       en: translations is Map ? _strList(translations['en']) : const [],
       ru: translations is Map ? _strList(translations['ru']) : const [],
@@ -79,6 +80,8 @@ class Word {
       };
 
   /// Deck/SRS snapshot shape (§5): only the server-validated snapshot fields.
+  /// `hsk` must be included — the server's byLevel progress (srs summary)
+  /// counts cards by `word.hsk`.
   Map<String, dynamic> toSnapshotJson() => {
         'simplified': simplified,
         'traditional': traditional,
@@ -88,6 +91,7 @@ class Word {
           if (en.isNotEmpty) 'en': en,
           if (ru.isNotEmpty) 'ru': ru,
         },
+        if (hsk != null) 'hsk': hsk,
       };
 
   @override

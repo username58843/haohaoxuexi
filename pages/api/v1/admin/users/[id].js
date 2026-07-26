@@ -132,9 +132,10 @@ export default createApiHandler({
       }
 
       await deleteUserCompletely(targetId)
+      // Record the action but no PII — the account (and its data) is now erased.
       await writeAuditLog(req.userId, 'user.delete', {
         targetUserId: targetId,
-        detail: { email: target.email, name: target.name },
+        detail: { deletedRole: target.role },
       })
 
       res.status(200).json({ ok: true })

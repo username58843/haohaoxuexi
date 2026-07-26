@@ -85,6 +85,7 @@ export function buildQuizQuestions({ pool, distractors, qmodes, count, lang }) {
     const qmode = wordModes[Math.floor(Math.random() * wordModes.length)]
     const def = QMODE_DEFS[qmode]
     const correctText = fieldText(word, def.answer, lang)
+    const promptText = norm(fieldText(word, def.prompt, lang))
     const usedTexts = new Set([norm(correctText)])
     const usedIds = new Set([word.id])
     const options = [{ text: correctText, wordId: word.id, correct: true }]
@@ -92,6 +93,9 @@ export function buildQuizQuestions({ pool, distractors, qmodes, count, lang }) {
     for (const cand of shuffle(distractors)) {
       if (options.length >= 4) break
       if (!cand || usedIds.has(cand.id)) continue
+      // Skip candidates that share the prompt (e.g. 他/她 both "tā", or the
+      // 还 hái/huán homograph) — they'd be a second valid answer, not a distractor.
+      if (norm(fieldText(cand, def.prompt, lang)) === promptText) continue
       const text = fieldText(cand, def.answer, lang)
       if (!text || usedTexts.has(norm(text))) continue
       usedIds.add(cand.id)
