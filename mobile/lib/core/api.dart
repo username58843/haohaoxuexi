@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'i18n.dart';
+
 /// Base URL of the HaoHao XueXi backend.
 /// Override at build time: `--dart-define=API_BASE_URL=https://example.com`.
 const String apiBaseUrl = String.fromEnvironment(
@@ -148,20 +150,25 @@ class Api {
     final res = e.response;
     if (res == null) {
       // Timeout / offline / DNS / TLS — never reached the server.
-      return const ApiException('network', 'Network error. Check your connection.');
+      // Client-generated messages are localized here so screens that surface
+      // `e.message` directly stay translated.
+      return ApiException('network',
+          tr(null, 'error.network', 'Network error. Check your connection.'));
     }
     final data = res.data;
     if (data is Map && data['error'] is Map) {
       final err = data['error'] as Map;
       return ApiException(
         (err['code'] ?? 'server_error').toString(),
-        (err['message'] ?? 'Something went wrong').toString(),
+        (err['message'] ??
+                tr(null, 'common.error', 'Something went wrong'))
+            .toString(),
         status: res.statusCode,
       );
     }
     return ApiException(
       'server_error',
-      'Server error (${res.statusCode})',
+      tr(null, 'error.server', 'Server error. Please try again later.'),
       status: res.statusCode,
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import '../../core/i18n.dart';
 import '../../core/models.dart';
 
 /// Pure session logic for the study screen:
@@ -32,15 +33,23 @@ double nextIntervalDays(SrsCard card, int grade) {
 }
 
 /// Compact interval label: `10m`, `2h`, `3d`, `4mo`, `1y`.
+/// Unit suffixes are localized via [tr] (`time.*` keys) so the grade-button
+/// hints follow the UI language.
 String formatInterval(double days) {
   if (days < 1) {
     final minutes = (days * 24 * 60).round();
-    if (minutes < 60) return '${math.max(1, minutes)}m';
-    return '${(minutes / 60).round()}h';
+    if (minutes < 60) {
+      return '${math.max(1, minutes)}${tr(null, 'time.m', 'm')}';
+    }
+    return '${(minutes / 60).round()}${tr(null, 'time.h', 'h')}';
   }
-  if (days < 30) return '${math.max(1, days.round())}d';
-  if (days < 360) return '${(days / 30.44).round()}mo';
-  return '${(days / 365).round()}y';
+  if (days < 30) {
+    return '${math.max(1, days.round())}${tr(null, 'time.d', 'd')}';
+  }
+  if (days < 360) {
+    return '${(days / 30.44).round()}${tr(null, 'time.mo', 'mo')}';
+  }
+  return '${(days / 365).round()}${tr(null, 'time.y', 'y')}';
 }
 
 /// Quiz question direction: characters → pinyin, or characters → meaning.

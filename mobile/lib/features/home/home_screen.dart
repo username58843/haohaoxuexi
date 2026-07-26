@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
@@ -18,6 +17,27 @@ const String _kStudyPacksPref = 'studyPacks';
 
 String _trN(BuildContext context, String key, String enDefault, int n) =>
     tr(context, key, enDefault).replaceAll('{n}', '$n');
+
+/// English defaults for the header date label ({wd} = weekday, {mon} = month).
+const List<String> _weekdayDefaults = [
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+];
+const List<String> _monthDefaults = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+/// Localized "Sunday · Jul 27" — hand-rolled (no intl date symbols for 'tk').
+String _dateLabel(BuildContext context, DateTime now) {
+  final wd = tr(context, 'date.wd.${now.weekday}',
+      _weekdayDefaults[now.weekday - 1]);
+  final mon =
+      tr(context, 'date.mon.${now.month}', _monthDefaults[now.month - 1]);
+  return tr(context, 'date.fmt', '{wd} · {mon} {d}')
+      .replaceAll('{wd}', wd)
+      .replaceAll('{mon}', mon)
+      .replaceAll('{d}', '${now.day}');
+}
 
 /// Dashboard data: SRS summary + last-14-days activity, fetched together.
 class HomeData {
@@ -91,6 +111,9 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
+        // extendBody shell: keep the bottom inset so content scrolls behind
+        // the floating dock; the ListView clears it via MediaQuery padding.
+        bottom: false,
         child: data.when(
           loading: () => const LoadingView(),
           error: (e, _) => ErrorView(
@@ -103,7 +126,8 @@ class HomeScreen extends ConsumerWidget {
                 .then<void>((_) {}, onError: (_) {}),
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+              padding: EdgeInsets.fromLTRB(
+                  16, 12, 16, 28 + MediaQuery.paddingOf(context).bottom),
               children: [
                 _Header(name: user?.name),
                 const SizedBox(height: 18),
@@ -424,7 +448,7 @@ class _Header extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionLabel(DateFormat('EEEE · MMM d').format(now)),
+        SectionLabel(_dateLabel(context, now)),
         const SizedBox(height: 6),
         Text(
           firstName.isEmpty ? greeting : '$greeting, $firstName',

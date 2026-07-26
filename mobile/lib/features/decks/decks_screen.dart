@@ -26,9 +26,24 @@ Deck deckCopyWith(Deck deck, {String? name, List<Word>? words}) => Deck(
 /// Human-readable message for a failed API call.
 String apiErrorText(Object? contextOrRef, Object error) {
   if (error is ApiException) {
-    return error.isNetwork
-        ? tr(contextOrRef, 'error.network', 'Network error. Check your connection.')
-        : error.message;
+    switch (error.code) {
+      case 'network':
+        return tr(contextOrRef, 'error.network',
+            'Network error. Check your connection.');
+      case 'rate_limited':
+        return tr(contextOrRef, 'error.rateLimited',
+            'Too many requests. Try again later.');
+      case 'unauthorized':
+        return tr(contextOrRef, 'error.unauthorized',
+            'Session expired. Sign in again.');
+      case 'server_error':
+        return tr(contextOrRef, 'error.server',
+            'Server error. Please try again later.');
+      default:
+        return error.message.isNotEmpty
+            ? error.message
+            : tr(contextOrRef, 'common.error', 'Something went wrong');
+    }
   }
   return tr(contextOrRef, 'common.error', 'Something went wrong');
 }
@@ -239,7 +254,9 @@ class DecksScreen extends ConsumerWidget {
               ? _emptyState(context, ref)
               : ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
+                  // extendBody shell: clear the floating dock at the end.
+                  padding: EdgeInsets.fromLTRB(
+                      16, 16, 16, 16 + MediaQuery.paddingOf(context).bottom),
                   itemCount: decks.length,
                   separatorBuilder: (e, s) => const SizedBox(height: 12),
                   itemBuilder: (context, i) => _DeckCard(deck: decks[i]),

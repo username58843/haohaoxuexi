@@ -367,6 +367,8 @@ String _apiErrorText(BuildContext context, ApiException e) {
       return tr(context, 'error.wrongPassword', 'Incorrect password');
     case 'unauthorized':
       return tr(context, 'error.unauthorized', 'Session expired. Sign in again.');
+    case 'server_error':
+      return tr(context, 'error.server', 'Server error. Please try again later.');
     case 'validation':
       return e.message;
     default:

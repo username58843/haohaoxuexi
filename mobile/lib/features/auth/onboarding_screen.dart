@@ -243,7 +243,12 @@ class _IntervalChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['10m', '1d', '4d', '2w'];
+    final labels = [
+      '10${tr(context, 'time.m', 'm')}',
+      '1${tr(context, 'time.d', 'd')}',
+      '4${tr(context, 'time.d', 'd')}',
+      '2${tr(context, 'time.w', 'w')}',
+    ];
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

@@ -25,7 +25,9 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(tr(context, 'settings.title', 'Settings'))),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+        // extendBody shell: clear the floating dock at the end of the scroll.
+        padding: EdgeInsets.fromLTRB(
+            16, 4, 16, 32 + MediaQuery.paddingOf(context).bottom),
         children: [
           SectionLabel(tr(context, 'settings.appearance', 'Appearance')),
           const SizedBox(height: 10),
@@ -75,7 +77,8 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     for (final entry in accentColors.entries)
                       _AccentSwatch(
-                        name: entry.key,
+                        // Localized name feeds the Semantics (a11y) label.
+                        name: tr(context, 'accent.${entry.key}', entry.key),
                         color: entry.value,
                         selected: settings.accent == entry.key,
                         onTap: () => notifier.setAccent(entry.key),
@@ -270,6 +273,8 @@ String _apiErrorText(BuildContext context, ApiException e) {
           context, 'error.rateLimited', 'Too many requests. Try again later.');
     case 'unauthorized':
       return tr(context, 'error.unauthorized', 'Session expired. Sign in again.');
+    case 'server_error':
+      return tr(context, 'error.server', 'Server error. Please try again later.');
     case 'validation':
       return e.message;
     default:

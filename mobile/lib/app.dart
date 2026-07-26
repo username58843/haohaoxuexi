@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/dock.dart';
 import 'core/i18n.dart';
 import 'core/providers.dart';
 import 'core/theme.dart';
@@ -12,6 +13,7 @@ import 'features/auth/auth_screen.dart';
 import 'features/auth/onboarding_screen.dart';
 import 'features/auth/splash_screen.dart';
 import 'features/browse/hsk_screen.dart';
+import 'features/browse/map_screen.dart';
 import 'features/decks/deck_detail_screen.dart';
 import 'features/decks/decks_screen.dart';
 import 'features/home/home_screen.dart';
@@ -75,6 +77,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             count: int.tryParse(params['count'] ?? '') ?? 20,
           );
         },
+      ),
+      GoRoute(
+        path: '/hsk/map',
+        builder: (context, state) => const MapScreen(),
       ),
       GoRoute(
         path: '/decks/:id',
@@ -159,39 +165,37 @@ class HomeShell extends ConsumerWidget {
     final index = _indexOf(location);
 
     return Scaffold(
+      // Content scrolls behind the frosted dock; tab screens pad their
+      // scrollables with MediaQuery.paddingOf(context).bottom.
+      extendBody: true,
       body: child,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: hairlineOf(context))),
-        ),
-        child: NavigationBar(
-          selectedIndex: index,
-          onDestinationSelected: (i) {
-            if (i != index) context.go(_tabPaths[i]);
-          },
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.school_outlined),
-              selectedIcon: const Icon(Icons.school),
-              label: tr(context, 'nav.home', 'Home'),
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.grid_view_outlined),
-              selectedIcon: const Icon(Icons.grid_view),
-              label: tr(context, 'nav.hsk', 'HSK'),
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.style_outlined),
-              selectedIcon: const Icon(Icons.style),
-              label: tr(context, 'nav.decks', 'Decks'),
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.settings_outlined),
-              selectedIcon: const Icon(Icons.settings),
-              label: tr(context, 'nav.settings', 'Settings'),
-            ),
-          ],
-        ),
+      bottomNavigationBar: FloatingDock(
+        selectedIndex: index,
+        onSelect: (i) {
+          if (i != index) context.go(_tabPaths[i]);
+        },
+        destinations: [
+          DockDestination(
+            icon: Icons.school_outlined,
+            selectedIcon: Icons.school,
+            label: tr(context, 'nav.home', 'Home'),
+          ),
+          DockDestination(
+            icon: Icons.grid_view_outlined,
+            selectedIcon: Icons.grid_view,
+            label: tr(context, 'nav.hsk', 'HSK'),
+          ),
+          DockDestination(
+            icon: Icons.style_outlined,
+            selectedIcon: Icons.style,
+            label: tr(context, 'nav.decks', 'Decks'),
+          ),
+          DockDestination(
+            icon: Icons.settings_outlined,
+            selectedIcon: Icons.settings,
+            label: tr(context, 'nav.settings', 'Settings'),
+          ),
+        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/i18n.dart';
 import '../../core/models.dart';
@@ -104,7 +105,16 @@ class _HskScreenState extends ConsumerState<HskScreen> {
         q.isEmpty ? words : [for (final w in words) if (_matches(w, q, qns)) w];
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'hsk.title', 'HSK'))),
+      appBar: AppBar(
+        title: Text(tr(context, 'hsk.title', 'HSK')),
+        actions: [
+          IconButton(
+            tooltip: tr(context, 'wmap.title', 'Word Map'),
+            icon: const Icon(Icons.grid_on_rounded),
+            onPressed: () => context.push('/hsk/map'),
+          ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -183,7 +193,9 @@ class _HskScreenState extends ConsumerState<HskScreen> {
       );
     }
     return ListView.separated(
-      padding: const EdgeInsets.only(bottom: 24),
+      // extendBody shell: clear the floating dock at the end of the scroll.
+      padding:
+          EdgeInsets.only(bottom: 24 + MediaQuery.paddingOf(context).bottom),
       itemCount: filtered.length,
       separatorBuilder: (e, s) => const Divider(indent: 16, endIndent: 16),
       itemBuilder: (context, i) {

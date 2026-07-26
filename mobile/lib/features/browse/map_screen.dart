@@ -1,0 +1,681 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../core/i18n.dart';
+import '../../core/models.dart';
+import '../../core/providers.dart';
+import '../../core/theme.dart';
+import '../../core/widgets.dart';
+import '../decks/decks_screen.dart' show apiErrorText;
+import 'word_sheet.dart';
+
+/// Muted per-level tints — same values as the web `--hsk-1..6` tokens.
+const Map<int, Color> hskLevelColors = {
+  1: Color(0xFF4A7A5C),
+  2: Color(0xFF3D6F78),
+  3: Color(0xFF45607A),
+  4: Color(0xFF5C5278),
+  5: Color(0xFF7A4F62),
+  6: Color(0xFF7A5A3D),
+};
+
+const List<int> _levels = [1, 2, 3, 4, 5, 6];
+
+/// Device-local "known words" set (canonical [Word.id]s), persisted in
+/// SharedPreferences under 'known_words_v1' — the word map's mastery store.
+class KnownWordsNotifier extends Notifier<Set<String>> {
+  static const _storeKey = 'known_words_v1';
+
+  @override
+  Set<String> build() {
+    final prefs = ref.read(sharedPreferencesProvider);
+    return (prefs.getStringList(_storeKey) ?? const []).toSet();
+  }
+
+  void toggle(String wordId) {
+    if (wordId.isEmpty) return;
+    final next = Set<String>.of(state);
+    if (!next.add(wordId)) next.remove(wordId);
+    state = next;
+    ref
+        .read(sharedPreferencesProvider)
+        .setStringList(_storeKey, next.toList(growable: false));
+  }
+}
+
+final knownWordsProvider =
+    NotifierProvider<KnownWordsNotifier, Set<String>>(KnownWordsNotifier.new);
+
+/// A readable version of a level tint for text/icons on tinted washes:
+/// lightened in dark mode, darkened in light mode.
+Color _tintText(BuildContext context, Color tint) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return isDark
+      ? Color.lerp(tint, Colors.white, 0.45)!
+      : Color.lerp(tint, Colors.black, 0.2)!;
+}
+
+/// HSK word map: the whole HSK 1–6 lexicon (bundled packs, offline) rendered
+/// as a wall of hanzi tiles tinted by level, with a device-local known/unknown
+/// overlay, level filter chips, search, and per-level lazy sliver grids.
+class MapScreen extends ConsumerStatefulWidget {
+  const MapScreen({super.key});
+
+  @override
+  ConsumerState<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends ConsumerState<MapScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+
+  /// Selected HSK level; null = all levels.
+  int? _level;
+  String _query = '';
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onQueryChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 250), () {
+      if (mounted) setState(() => _query = value.trim());
+    });
+  }
+
+  void _clearQuery() {
+    _debounce?.cancel();
+    _searchController.clear();
+    setState(() => _query = '');
+  }
+
+  static String _normalize(String s) =>
+      s.toLowerCase().replaceAll(RegExp(r"[\s'’ʼ]+"), '');
+
+  static bool _matches(Word w, String q, String qns) {
+    if (w.simplified.contains(q) || w.traditional.contains(q)) return true;
+    final pinyin = w.pinyin.toLowerCase();
+    if (pinyin.contains(q)) return true;
+    if (qns.isNotEmpty && _normalize(w.pinyin).contains(qns)) return true;
+    for (final d in w.definitions) {
+      if (d.toLowerCase().contains(q)) return true;
+    }
+    for (final t in w.en) {
+      if (t.toLowerCase().contains(q)) return true;
+    }
+    for (final t in w.ru) {
+      if (t.toLowerCase().contains(q)) return true;
+    }
+    return false;
+  }
+
+  void _openWord(Word word) {
+    showWordSheet(
+      context,
+      ref,
+      word,
+      actions: [
+        _KnownToggleAction(word: word),
+        PillButton(
+          label: tr(context, 'word.addToDeck', 'Add to deck'),
+          icon: Icons.playlist_add_rounded,
+          onPressed: () => showAddToDeckSheet(context, ref, word),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(languageProvider);
+    final known = ref.watch(knownWordsProvider);
+    // All six packs are bundled assets: watch them all so the stats card
+    // covers every level while the wall respects the active filter.
+    final packs = <int, AsyncValue<List<Word>>>{
+      for (final l in _levels) l: ref.watch(wordPacksProvider('hsk$l')),
+    };
+    final active = _level == null ? _levels : <int>[_level!];
+
+    AsyncValue<List<Word>>? errorPack;
+    for (final l in active) {
+      final p = packs[l]!;
+      if (p.hasError && !p.hasValue) {
+        errorPack = p;
+        break;
+      }
+    }
+    final anyLoading = active.any((l) => packs[l]!.isLoading);
+
+    // Stats across ALL loaded levels (not just the filtered view).
+    final levelStats = <int, ({int known, int total})>{};
+    var totalWords = 0;
+    var totalKnown = 0;
+    for (final l in _levels) {
+      final words = packs[l]!.value ?? const <Word>[];
+      var k = 0;
+      for (final w in words) {
+        if (known.contains(w.id)) k++;
+      }
+      levelStats[l] = (known: k, total: words.length);
+      totalWords += words.length;
+      totalKnown += k;
+    }
+
+    final q = _query.toLowerCase();
+    final qns = _normalize(_query);
+    final hasQuery = q.isNotEmpty;
+    final sections = <({int level, List<Word> filtered})>[
+      for (final l in active)
+        (
+          level: l,
+          filtered: hasQuery
+              ? [
+                  for (final w in packs[l]!.value ?? const <Word>[])
+                    if (_matches(w, q, qns)) w,
+                ]
+              : packs[l]!.value ?? const <Word>[],
+        ),
+    ];
+    final anyTiles = sections.any((s) => s.filtered.isNotEmpty);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(tr(context, 'wmap.title', 'Word Map'))),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: _onQueryChanged,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: tr(context, 'hsk.search.hint',
+                    'Search hanzi, pinyin, meaning…'),
+                prefixIcon: Icon(Icons.search, color: text3Of(context)),
+                suffixIcon: _query.isEmpty
+                    ? null
+                    : IconButton(
+                        icon: Icon(Icons.close, color: text3Of(context)),
+                        onPressed: _clearQuery,
+                      ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 40,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                _levelChip(null, tr(context, 'hsk.level.all', 'All')),
+                for (var l = 1; l <= 6; l++) _levelChip(l, 'HSK $l'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Expanded(
+            child: _wall(
+              errorPack: errorPack,
+              anyLoading: anyLoading,
+              anyTiles: anyTiles,
+              hasQuery: hasQuery,
+              sections: sections,
+              levelStats: levelStats,
+              totalKnown: totalKnown,
+              totalWords: totalWords,
+              knownIds: known,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _levelChip(int? level, String label) {
+    final tint = level == null ? null : hskLevelColors[level];
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: tint == null
+            ? Text(label)
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration:
+                        BoxDecoration(color: tint, shape: BoxShape.circle),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(label),
+                ],
+              ),
+        selected: _level == level,
+        showCheckmark: false,
+        onSelected: (_) => setState(() => _level = level),
+      ),
+    );
+  }
+
+  Widget _wall({
+    required AsyncValue<List<Word>>? errorPack,
+    required bool anyLoading,
+    required bool anyTiles,
+    required bool hasQuery,
+    required List<({int level, List<Word> filtered})> sections,
+    required Map<int, ({int known, int total})> levelStats,
+    required int totalKnown,
+    required int totalWords,
+    required Set<String> knownIds,
+  }) {
+    if (errorPack != null) {
+      return ErrorView(
+        message: apiErrorText(context, errorPack.error ?? 'error'),
+        onRetry: () {
+          for (final l in _levels) {
+            ref.invalidate(wordPacksProvider('hsk$l'));
+          }
+        },
+      );
+    }
+    if (!anyTiles && anyLoading) return const LoadingView();
+    if (!anyTiles && hasQuery) {
+      return EmptyView(
+        glyph: '无',
+        title: tr(context, 'hsk.empty.title', 'No words found'),
+        text: tr(context, 'hsk.empty.text', 'Try a different search or level.'),
+      );
+    }
+
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: _StatsCard(
+              levelStats: levelStats,
+              totalKnown: totalKnown,
+              totalWords: totalWords,
+            ),
+          ),
+        ),
+        for (final s in sections)
+          if (s.filtered.isNotEmpty) ...[
+            SliverToBoxAdapter(
+              child: _LevelHeader(
+                level: s.level,
+                known: levelStats[s.level]!.known,
+                total: levelStats[s.level]!.total,
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 64,
+                  mainAxisSpacing: 6,
+                  crossAxisSpacing: 6,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) {
+                    final word = s.filtered[i];
+                    return _MapTile(
+                      word: word,
+                      tint: hskLevelColors[s.level]!,
+                      known: knownIds.contains(word.id),
+                      onTap: () => _openWord(word),
+                    );
+                  },
+                  childCount: s.filtered.length,
+                ),
+              ),
+            ),
+          ],
+        if (anyLoading)
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 3),
+                ),
+              ),
+            ),
+          ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: 24 + MediaQuery.paddingOf(context).bottom),
+        ),
+      ],
+    );
+  }
+}
+
+/// "Known" toggle inside the word sheet — a live consumer so the button
+/// flips between soft/primary while the sheet stays open.
+class _KnownToggleAction extends ConsumerWidget {
+  const _KnownToggleAction({required this.word});
+
+  final Word word;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isKnown = ref.watch(knownWordsProvider).contains(word.id);
+    return PillButton(
+      label: isKnown
+          ? tr(context, 'wmap.known', 'Known')
+          : tr(context, 'wmap.markKnown', 'Mark as known'),
+      icon: Icons.check_rounded,
+      variant: isKnown ? PillVariant.primary : PillVariant.soft,
+      onPressed: () => ref.read(knownWordsProvider.notifier).toggle(word.id),
+    );
+  }
+}
+
+/// Overall mastery + per-level legend with mini progress bars.
+class _StatsCard extends StatelessWidget {
+  const _StatsCard({
+    required this.levelStats,
+    required this.totalKnown,
+    required this.totalWords,
+  });
+
+  final Map<int, ({int known, int total})> levelStats;
+  final int totalKnown;
+  final int totalWords;
+
+  @override
+  Widget build(BuildContext context) {
+    final mastery =
+        totalWords > 0 ? (totalKnown / totalWords * 100).round() : 0;
+    return InkCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                '$mastery%',
+                style: monoStyle(
+                  context,
+                  size: 28,
+                  weight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  letterSpacing: 0,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tr(context, 'wmap.mastery', 'Mastery'),
+                      style: GoogleFonts.manrope(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      '$totalKnown/$totalWords',
+                      style: monoStyle(
+                        context,
+                        size: 11,
+                        color: text3Of(context),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          for (final l in _levels)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: hskLevelColors[l],
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 46,
+                    child: Text(
+                      'HSK $l',
+                      style: monoStyle(
+                        context,
+                        size: 10,
+                        color: text2Of(context),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _MiniBar(
+                      fraction: levelStats[l]!.total > 0
+                          ? levelStats[l]!.known / levelStats[l]!.total
+                          : 0,
+                      tint: hskLevelColors[l]!,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${levelStats[l]!.known}/${levelStats[l]!.total}',
+                    style: monoStyle(
+                      context,
+                      size: 10,
+                      color: text3Of(context),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Thin rounded progress bar tinted by level.
+class _MiniBar extends StatelessWidget {
+  const _MiniBar({required this.fraction, required this.tint});
+
+  final double fraction;
+  final Color tint;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(999),
+      child: SizedBox(
+        height: 5,
+        child: ColoredBox(
+          color: surface3Of(context),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: fraction.clamp(0, 1).toDouble(),
+              child: ColoredBox(color: tint),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Level section header: tinted "HSK n" tag + known/total + mini bar + %.
+class _LevelHeader extends StatelessWidget {
+  const _LevelHeader({
+    required this.level,
+    required this.known,
+    required this.total,
+  });
+
+  final int level;
+  final int known;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final tint = hskLevelColors[level]!;
+    final pct = total > 0 ? (known / total * 100).round() : 0;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+            decoration: BoxDecoration(
+              color: tint.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              'HSK $level',
+              style: monoStyle(
+                context,
+                size: 10,
+                color: _tintText(context, tint),
+                letterSpacing: 0.8,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            '$known/$total',
+            style: monoStyle(
+              context,
+              size: 10.5,
+              color: text2Of(context),
+              letterSpacing: 0.6,
+            ),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: 64,
+            child: _MiniBar(
+              fraction: total > 0 ? known / total : 0,
+              tint: tint,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '$pct%',
+            style: monoStyle(
+              context,
+              size: 10.5,
+              color: text2Of(context),
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One hanzi tile. Unknown: faint level-tint wash + muted glyph; known:
+/// stronger tint fill, tinted border and a small check.
+class _MapTile extends StatelessWidget {
+  const _MapTile({
+    required this.word,
+    required this.tint,
+    required this.known,
+    required this.onTap,
+  });
+
+  final Word word;
+  final Color tint;
+  final bool known;
+  final VoidCallback onTap;
+
+  /// Font size + optional 2-row split by character count so the word always
+  /// fits the square tile (the web version clipped long words). The outer
+  /// FittedBox(scaleDown) is the hard no-overflow guarantee.
+  static (String, double) _glyph(String text) {
+    final chars = text.characters;
+    final n = chars.length;
+    if (n <= 1) return (text, 26);
+    if (n == 2) return (text, 19);
+    if (n == 3) return (text, 13.5);
+    // 4 chars wrap 2×2; 5+ split into two rows.
+    final head = n == 4 ? 2 : (n + 1) ~/ 2;
+    final size = n == 4 ? 15.0 : 11.0;
+    return ('${chars.take(head)}\n${chars.skip(head)}', size);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final (display, size) = _glyph(word.simplified);
+    final glyphColor = known
+        ? Color.lerp(Theme.of(context).colorScheme.onSurface, tint, 0.35)!
+        : text2Of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: tint.withValues(alpha: known ? 0.26 : 0.08),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: known ? tint : hairlineOf(context)),
+        ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    display,
+                    textAlign: TextAlign.center,
+                    locale: const Locale('zh'),
+                    style: hanziStyle(
+                      context,
+                      size: size,
+                      color: glyphColor,
+                      weight: known ? FontWeight.w600 : FontWeight.w500,
+                      height: 1.12,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (known)
+              Positioned(
+                top: 3,
+                right: 3,
+                child: Icon(
+                  Icons.check_rounded,
+                  size: 10,
+                  color: _tintText(context, tint),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
