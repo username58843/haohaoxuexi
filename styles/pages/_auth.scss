@@ -1,1 +1,112 @@
 /* Page partial: auth — owned by the auth page build. */
+
+.auth {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px 26px 24px;
+}
+
+.auth__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.auth__logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.auth__brand-name {
+  font-size: 30px;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.auth__tagline {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-2);
+}
+
+.auth__segmented {
+  margin-bottom: 20px;
+}
+
+.auth__ban {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger-soft);
+  border-radius: var(--radius-control);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.auth__ban-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--danger);
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.auth__ban-text {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  overflow-wrap: anywhere; /* banReason is admin-supplied free text */
+}
+
+.auth__error {
+  background: var(--danger-soft);
+  border-radius: var(--radius-control);
+  color: var(--danger);
+  font-size: 13.5px;
+  line-height: 1.45;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.auth__submit {
+  margin-top: 4px;
+}
+
+.auth__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  font-size: 12.5px;
+  color: var(--text-3);
+
+  a {
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--t-fast);
+
+    &:hover {
+      color: var(--text-2);
+      text-decoration: underline;
+    }
+  }
+}

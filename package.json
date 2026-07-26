@@ -12,21 +12,14 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@hello-pangea/dnd": "^18.0.1",
     "axios": "^1.18.1",
     "bcryptjs": "^3.0.3",
-    "bootstrap": "^5.3.8",
     "jsonwebtoken": "^9.0.3",
-    "lodash": "^4.18.1",
     "mongodb": "^7.5.0",
     "next": "^16.2.10",
     "nextjs-toploader": "^3.9.17",
-    "prop-types": "^15.8.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-hook-form": "^7.81.0",
-    "react-hotkeys-hook": "^5.3.3",
-    "reactstrap": "^9.2.3",
     "sass": "^1.101.0"
   },
   "devDependencies": {

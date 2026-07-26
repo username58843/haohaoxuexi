@@ -15,19 +15,10 @@ const nextConfig = {
       '~/*': './*',
     },
   },
-  // Bootstrap SCSS + modern dart-sass need explicit include paths
   sassOptions: {
-    includePaths: [
-      path.join(__dirname, 'node_modules'),
-      path.join(__dirname, 'node_modules/bootstrap/scss'),
-      path.join(__dirname, 'styles'),
-    ],
+    includePaths: [path.join(__dirname, 'styles')],
     quietDeps: true,
     silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
-  },
-  assetPrefix: process.env.BASE_URL || '',
-  env: {
-    base: process.env.BASE_URL || ''
   },
   webpack: (config) => {
     config.resolve.alias['~'] = path.resolve(__dirname);
@@ -36,13 +27,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Allow Android app and other clients to access API
-        source: '/api/:path*',
+        source: '/:path*',
         headers: [
-          { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization, Cookie' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
     ];

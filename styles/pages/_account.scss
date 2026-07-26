@@ -1,1 +1,461 @@
-/* Page partial: account — owned by the account page build. */
+/* ============================================================
+   Page partial: account — /more, /profile, /settings.
+   Prefix: acct-. Tokens only (see _tokens.scss).
+   ============================================================ */
+
+.acct-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.acct-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+}
+
+/* ---------- identity: avatar + name + email ---------- */
+.acct-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  color: var(--accent);
+  font-size: 26px;
+  font-weight: 800;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.acct-avatar--sm {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.acct-hub {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 2px;
+}
+
+.acct-hub__id {
+  min-width: 0;
+}
+
+.acct-hub__name {
+  margin: 0;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.acct-hub__email {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 13.5px;
+  overflow-wrap: anywhere;
+}
+
+/* Identity row inside the profile card */
+.acct-id {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.acct-id__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.acct-id__name {
+  font-weight: 700;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.acct-id__email {
+  color: var(--text-2);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- badges ---------- */
+.acct-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.acct-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+}
+
+.acct-badge--admin {
+  background: var(--accent-soft);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  color: var(--accent);
+}
+
+.acct-badge--premium {
+  background: var(--warn-soft);
+  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+  color: var(--warn);
+}
+
+/* ---------- menu (hub rows) ---------- */
+.acct-menu {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.acct-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--t-fast);
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    background: var(--surface-2);
+    text-decoration: none;
+  }
+}
+
+.acct-row__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  color: var(--text-2);
+  flex-shrink: 0;
+
+  svg {
+    width: 19px;
+    height: 19px;
+  }
+}
+
+.acct-row__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.acct-row__chevron {
+  display: inline-flex;
+  color: var(--text-3);
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.acct-row--danger {
+  color: var(--danger);
+
+  .acct-row__icon {
+    background: var(--danger-soft);
+    border-color: transparent;
+    color: var(--danger);
+  }
+
+  .acct-row__chevron {
+    color: var(--danger);
+    opacity: 0.55;
+  }
+
+  &:hover {
+    background: var(--danger-soft);
+  }
+}
+
+/* ---------- footer ---------- */
+.acct-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 18px 0 6px;
+  color: var(--text-3);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+
+  .hanzi {
+    font-size: 14px;
+  }
+}
+
+/* ---------- cards (profile/settings) ---------- */
+.acct-card__title {
+  margin: 0 0 2px;
+  font-size: 17px;
+}
+
+.acct-card__desc {
+  margin: 0 0 16px;
+  color: var(--text-2);
+  font-size: 13.5px;
+}
+
+.acct-card__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Read-only field (email) */
+.acct-ro .field__input {
+  color: var(--text-2);
+  cursor: default;
+
+  &:focus {
+    border-color: var(--hairline);
+    background: var(--surface-2);
+  }
+}
+
+/* Password fields: room for the visibility toggle */
+.acct-pw .field__input {
+  padding-right: 48px;
+}
+
+/* ---------- danger zone ---------- */
+.acct-danger {
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+
+  .acct-card__title {
+    color: var(--danger);
+  }
+}
+
+.acct-delete__warn {
+  background: var(--danger-soft);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-size: 13.5px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+}
+
+/* ---------- feedback modal ---------- */
+.acct-fb__intro {
+  color: var(--text-2);
+  font-size: 13.5px;
+  margin: 0 0 14px;
+}
+
+.acct-fb__topic {
+  margin-bottom: 16px;
+}
+
+/* ---------- settings rows ---------- */
+.acct-set__row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & + & {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+  }
+}
+
+.acct-set__label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Accent swatches */
+.acct-swatches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.acct-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-2);
+  padding: 0;
+  cursor: pointer;
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    transform: scale(1.08);
+  }
+
+  &.is-active {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text);
+  }
+}
+
+/* Language chips */
+.acct-langs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Daily-goal stepper */
+.acct-stepper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.acct-stepper__btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-2);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--t-fast);
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    background: var(--surface-3);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.acct-stepper__value {
+  min-width: 92px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.acct-stepper__unit {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+/* Display toggles */
+.acct-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  & + & {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hairline);
+  }
+}
+
+.acct-toggle__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.acct-toggle__label {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.acct-toggle__desc {
+  color: var(--text-2);
+  font-size: 12.5px;
+}
+
+.acct-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-2);
+  background: var(--surface-3);
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--t-fast), border-color var(--t-fast);
+  -webkit-tap-highlight-color: transparent;
+
+  &.is-on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+}
+
+.acct-switch__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform var(--t-fast), background-color var(--t-fast);
+
+  .acct-switch.is-on & {
+    transform: translateX(20px);
+    background: var(--on-accent);
+  }
+}

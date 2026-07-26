@@ -1,1 +1,143 @@
 /* Page partial: learn — owned by the learn page build. */
+
+.learn-page {
+  padding-bottom: 32px;
+}
+
+.learn-head {
+  margin-bottom: 22px;
+
+  h1 {
+    margin: 2px 0 0;
+    font-size: 30px;
+  }
+}
+
+/* "Continue last" card */
+.learn-continue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.learn-continue__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.learn-continue__desc {
+  font-weight: 600;
+  font-size: 14.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learn-tabs {
+  margin-bottom: 22px;
+}
+
+.learn-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Due-count summary */
+.learn-due {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.learn-due__num {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  min-width: 56px;
+  text-align: center;
+}
+
+.learn-due__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  strong {
+    font-size: 15px;
+  }
+
+  span {
+    color: var(--text-2);
+    font-size: 13px;
+  }
+}
+
+/* Chip pickers */
+.learn-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.learn-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.learn-chip__count {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.chip.is-active .learn-chip__count {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.learn-toggle {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--text-2);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--t-fast);
+
+  svg {
+    transition: transform var(--t-fast);
+  }
+
+  &[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.learn-start {
+  margin-top: 4px;
+}
+
+.learn-hint {
+  color: var(--text-3);
+  font-size: 13px;
+  margin: -12px 0 0;
+  text-align: center;
+}

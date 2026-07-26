@@ -1,0 +1,325 @@
+import React, { useState, useEffect, useCallback } from 'react'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import AppShell from '~/components/AppShell'
+import { Button, Card, Field, Segmented, PageLoader } from '~/components/ui'
+import { useAuth } from '~/lib/contexts/AuthContext'
+import { useSettings } from '~/lib/contexts/SettingsContext'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function IconEye({ off = false }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="3" />
+      {off && <line x1="4.5" y1="19.5" x2="19.5" y2="4.5" />}
+    </svg>
+  )
+}
+
+function IconAlert() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3.5 22 20H2L12 3.5Z" />
+      <line x1="12" y1="10" x2="12" y2="14" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  )
+}
+
+export default function AuthPage() {
+  const router = useRouter()
+  const { user, loading, login, register, banInfo } = useAuth()
+  const { t } = useSettings()
+
+  const [mode, setMode] = useState('login')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [errors, setErrors] = useState({})
+  const [formError, setFormError] = useState(null)
+  const [banNotice, setBanNotice] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  const nextTarget =
+    router.query.next && String(router.query.next).startsWith('/')
+      ? String(router.query.next)
+      : '/'
+
+  // Deep link: /auth?mode=register opens the register tab.
+  useEffect(() => {
+    if (router.isReady && router.query.mode === 'register') setMode('register')
+  }, [router.isReady, router.query.mode])
+
+  // Already authenticated → leave the auth page.
+  useEffect(() => {
+    if (router.isReady && !loading && user) router.replace(nextTarget)
+  }, [loading, user, router, nextTarget])
+
+  const clearFieldError = useCallback((field) => {
+    setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
+  }, [])
+
+  function validate() {
+    const errs = {}
+    const em = email.trim()
+    if (!em) {
+      errs.email = t('authErrEmailRequired', 'Email is required')
+    } else if (!EMAIL_RE.test(em)) {
+      errs.email = t('authErrEmailFormat', 'Enter a valid email address')
+    }
+    if (!password) {
+      errs.password = t('authErrPasswordRequired', 'Password is required')
+    } else if (mode === 'register' && password.length < 8) {
+      errs.password = t('authErrPasswordShort', 'Password must be at least 8 characters')
+    }
+    if (mode === 'register') {
+      const nm = name.trim()
+      if (nm.length < 2 || nm.length > 40) {
+        errs.name = t('authErrNameLength', 'Name must be 2–40 characters')
+      }
+    }
+    return errs
+  }
+
+  function switchMode(next) {
+    if (next === mode) return
+    setMode(next)
+    setErrors({})
+    setFormError(null)
+    setBanNotice(null)
+  }
+
+  async function onSubmit(e) {
+    e.preventDefault()
+    if (submitting) return
+    setFormError(null)
+    setBanNotice(null)
+    const errs = validate()
+    if (Object.values(errs).some(Boolean)) {
+      setErrors(errs)
+      return
+    }
+    setErrors({})
+    setSubmitting(true)
+    const result =
+      mode === 'login'
+        ? await login(email.trim(), password)
+        : await register(email.trim(), password, name.trim())
+
+    if (result.success) {
+      // Keep the button in its loading state while Next navigates away.
+      router.replace(nextTarget)
+      return
+    }
+
+    setSubmitting(false)
+    switch (result.code) {
+      case 'banned':
+        setBanNotice({ banReason: result.banReason || null })
+        break
+      case 'email_taken':
+        setErrors({
+          email: t('authErrEmailTaken', 'An account with this email already exists'),
+        })
+        break
+      case 'invalid_credentials':
+        setFormError(t('authErrInvalidCredentials', 'Incorrect email or password'))
+        break
+      case 'rate_limited':
+        setFormError(t('authErrRateLimited', 'Too many attempts — wait 15 minutes'))
+        break
+      case 'network':
+      case 'timeout':
+        setFormError(
+          t('authErrNetwork', 'Connection problem — check your internet and try again')
+        )
+        break
+      default:
+        setFormError(
+          result.error || t('authErrGeneric', 'Something went wrong — please try again')
+        )
+    }
+  }
+
+  const pageTitle =
+    mode === 'register'
+      ? t('authTitleRegister', 'Create account')
+      : t('authTitleLogin', 'Sign in')
+
+  if (loading || user) {
+    return (
+      <AppShell bare>
+        <Head>
+          <title>{`${pageTitle} · 好好学习`}</title>
+        </Head>
+        <PageLoader />
+      </AppShell>
+    )
+  }
+
+  const ban = banNotice || banInfo
+
+  return (
+    <AppShell bare>
+      <Head>
+        <title>{`${pageTitle} · 好好学习`}</title>
+      </Head>
+
+      <div className="auth">
+        <Card as="section" className="auth__card" aria-label={pageTitle}>
+          <div className="auth__brand">
+            <img src="/logo-180.png" alt="" width={48} height={48} className="auth__logo" />
+            <div className="auth__brand-name hanzi" lang="zh">
+              好好学习
+            </div>
+            <p className="auth__tagline">
+              {t('authTagline', 'HSK vocabulary with spaced repetition')}
+            </p>
+          </div>
+
+          {ban && (
+            <div className="auth__ban" role="alert">
+              <div className="auth__ban-title">
+                <IconAlert />
+                {t('authBanTitle', 'Account suspended')}
+              </div>
+              <p className="auth__ban-text">
+                {ban.banReason ||
+                  t(
+                    'authBanBody',
+                    'Your account has been suspended. Contact support if you believe this is a mistake.'
+                  )}
+              </p>
+            </div>
+          )}
+
+          <div className="auth__segmented">
+            <Segmented
+              block
+              ariaLabel={t('authModeSwitch', 'Sign in or create an account')}
+              value={mode}
+              onChange={switchMode}
+              options={[
+                { value: 'login', label: t('authModeLogin', 'Sign in') },
+                { value: 'register', label: t('authModeRegister', 'Create account') },
+              ]}
+            />
+          </div>
+
+          <form className="auth__form" onSubmit={onSubmit} noValidate>
+            {mode === 'register' && (
+              <Field
+                label={t('authNameLabel', 'Name')}
+                type="text"
+                name="name"
+                autoComplete="name"
+                maxLength={40}
+                placeholder={t('authNamePlaceholder', 'What should we call you?')}
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  clearFieldError('name')
+                }}
+                error={errors.name}
+              />
+            )}
+
+            <Field
+              label={t('authEmailLabel', 'Email')}
+              type="email"
+              name="email"
+              autoComplete="email"
+              inputMode="email"
+              placeholder={t('authEmailPlaceholder', 'you@example.com')}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                clearFieldError('email')
+              }}
+              error={errors.email}
+            />
+
+            <Field
+              label={t('authPasswordLabel', 'Password')}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                clearFieldError('password')
+              }}
+              error={errors.password}
+              hint={
+                mode === 'register' ? t('authPasswordHint', 'At least 8 characters') : undefined
+              }
+              trailing={
+                <button
+                  type="button"
+                  className="field__trailing"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={
+                    showPassword
+                      ? t('authHidePassword', 'Hide password')
+                      : t('authShowPassword', 'Show password')
+                  }
+                >
+                  <IconEye off={showPassword} />
+                </button>
+              }
+            />
+
+            {formError && (
+              <div className="auth__error" role="alert">
+                {formError}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              variant="primary"
+              block
+              loading={submitting}
+              className="auth__submit"
+            >
+              {mode === 'register'
+                ? t('authSubmitRegister', 'Create account')
+                : t('authSubmitLogin', 'Sign in')}
+            </Button>
+          </form>
+
+          <div className="auth__footer">
+            <Link href="/privacy">{t('authPrivacy', 'Privacy')}</Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/terms">{t('authTerms', 'Terms')}</Link>
+          </div>
+        </Card>
+      </div>
+    </AppShell>
+  )
+}

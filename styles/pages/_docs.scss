@@ -1,1 +1,152 @@
-/* Page partial: docs — owned by the docs page build. */
+/* ============================================================
+   Docs pages (/privacy, /terms, /about) — narrow prose column.
+   All classes are prefixed with .docs. Tokens only, no raw hex.
+   ============================================================ */
+
+.docs {
+  padding: 32px 20px 64px;
+}
+
+.docs__col {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Back-home link */
+.docs__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  color: var(--text-2);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: color var(--t-fast);
+
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+}
+
+/* Header: eyebrow, big serif title, muted meta line */
+.docs__header {
+  margin: 28px 0 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.docs__eyebrow {
+  margin: 0 0 14px;
+}
+
+.docs__eyebrow-sep {
+  margin: 0 6px;
+  color: var(--text-3);
+}
+
+.docs__title {
+  margin: 0 0 10px;
+  font-family: var(--font-hanzi);
+  font-weight: 700;
+  font-size: clamp(30px, 6vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.docs__meta {
+  margin: 0;
+  color: var(--text-3);
+  font-size: 13.5px;
+}
+
+/* Prose body */
+.docs__body {
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.75;
+
+  h2 {
+    margin: 36px 0 12px;
+    color: var(--text);
+    font-size: 20px;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    margin: 24px 0 8px;
+    color: var(--text);
+    font-size: 17px;
+  }
+
+  p {
+    margin: 0 0 14px;
+  }
+
+  ul {
+    margin: 0 0 14px;
+    padding-left: 22px;
+  }
+
+  li {
+    margin-bottom: 7px;
+
+    &::marker {
+      color: var(--accent);
+    }
+  }
+
+  strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+}
+
+/* Slightly larger intro paragraph */
+.docs__lede {
+  font-size: 16.5px;
+  color: var(--text-2);
+}
+
+/* About page version line */
+.docs__version {
+  margin-top: 32px;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+/* Footer nav between the three doc pages */
+.docs__footer {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+}
+
+.docs__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  font-size: 13.5px;
+
+  a {
+    color: var(--text-2);
+    font-weight: 600;
+    transition: color var(--t-fast);
+
+    &:hover {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    &.is-current {
+      color: var(--accent);
+      pointer-events: none;
+    }
+  }
+}
