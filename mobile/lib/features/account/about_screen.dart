@@ -6,7 +6,7 @@ import '../../core/i18n.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 
-const String _appVersion = '2.0.0';
+const String _appVersion = '1.0.0';
 const String _privacyUrl = 'https://haohaoxuexi.vercel.app/privacy';
 const String _termsUrl = 'https://haohaoxuexi.vercel.app/terms';
 const String _contactEmail = 'bobby.minecrafter06@gmail.com';

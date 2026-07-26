@@ -3,7 +3,7 @@ description: "好好学习 — HSK vocabulary with spaced repetition."
 publish_to: 'none'
 
 # versionName+versionCode for Android releases.
-version: 2.0.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.11.0
@@ -24,6 +24,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.0
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: assets/icon/icon_full.png
+  adaptive_icon_background: "#E0533D"
+  adaptive_icon_foreground: assets/icon/icon_fg.png
+  adaptive_icon_monochrome: assets/icon/icon_fg.png
 
 flutter:
   uses-material-design: true
