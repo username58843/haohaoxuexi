@@ -6,9 +6,9 @@
    ============================================================ */
 
 :root {
-  /* Accent (runtime-switchable) */
-  --accent: #e0533d;
-  --accent-rgb: 224, 83, 61;
+  /* Accent (runtime-switchable; default = jade) */
+  --accent: #34c759;
+  --accent-rgb: 52, 199, 89;
   --on-accent: #ffffff;
   --accent-soft: rgba(var(--accent-rgb), 0.14);
   --accent-glow: 0 8px 30px -6px rgba(var(--accent-rgb), 0.45);

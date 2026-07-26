@@ -14,10 +14,10 @@ export default function PrivacyPage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${title} · 好好学习`}</title>
+        <title>{`${title} · 好好学习汉语`}</title>
         <meta
           name="description"
-          content="Privacy Policy for 好好学习 (HaoHao XueXi): what data the web and Android apps collect, how it is stored and protected, and how to delete your account and data."
+          content="Privacy Policy for 好好学习汉语 (HaoHao XueXi): what data the web and Android apps collect, how it is stored and protected, and how to delete your account and data."
         />
       </Head>
 
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
         <p className="docs__lede">
           This policy explains what information{' '}
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>{' '}
           (HaoHao XueXi, “we”, “us”) collects when you use our website and our
           Android app, why we collect it, and how you can delete it. We have

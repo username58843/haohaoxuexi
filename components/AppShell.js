@@ -49,7 +49,7 @@ export default function AppShell({ children, bare = false }) {
         <Link href="/" className="rail__brand">
           <img src="/logo-180.png" alt="" width={30} height={30} />
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>
         </Link>
         {TABS.map(({ key, href, Icon, labelKey, label }) => (

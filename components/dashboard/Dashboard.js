@@ -182,7 +182,7 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>{`${t('dashTitle', 'Home')} · 好好学习`}</title>
+        <title>{`${t('dashTitle', 'Home')} · 好好学习汉语`}</title>
       </Head>
 
       <div className="col-app dash">

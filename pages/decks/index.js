@@ -123,7 +123,7 @@ export default function DecksPage() {
     return (
       <AppShell>
         <Head>
-          <title>{`${t('deckTitle', 'Decks')} · 好好学习`}</title>
+          <title>{`${t('deckTitle', 'Decks')} · 好好学习汉语`}</title>
         </Head>
         <PageLoader />
       </AppShell>
@@ -133,7 +133,7 @@ export default function DecksPage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${t('deckTitle', 'Decks')} · 好好学习`}</title>
+        <title>{`${t('deckTitle', 'Decks')} · 好好学习汉语`}</title>
       </Head>
 
       <div className="col-app deck-page">

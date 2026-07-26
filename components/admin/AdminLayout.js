@@ -61,9 +61,22 @@ function IconAudit() {
   )
 }
 
+function IconContent() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M4 5.5h16" />
+      <path d="M4 12h10" />
+      <path d="M4 18.5h7" />
+      <path d="m16.5 15 3.5 3.5-3.5 3.5" opacity="0" />
+      <path d="M15 20.5 18 14l3 6.5" />
+    </svg>
+  )
+}
+
 const NAV = [
   { key: 'overview', href: '/admin', Icon: IconOverview, labelKey: 'admNavOverview', label: 'Overview' },
   { key: 'users', href: '/admin/users', Icon: IconUsers, labelKey: 'admNavUsers', label: 'Users' },
+  { key: 'content', href: '/admin/content', Icon: IconContent, labelKey: 'admNavContent', label: 'Content' },
   { key: 'feedback', href: '/admin/feedback', Icon: IconFeedback, labelKey: 'admNavFeedback', label: 'Feedback' },
   { key: 'audit', href: '/admin/audit', Icon: IconAudit, labelKey: 'admNavAudit', label: 'Audit' },
 ]
@@ -94,7 +107,7 @@ export default function AdminLayout({ active, title, actions = null, children })
   return (
     <AppShell>
       <Head>
-        <title>{`${title} · 好好学习`}</title>
+        <title>{`${title} · 好好学习汉语`}</title>
       </Head>
       <div className="adm col-wide">
         <aside className="adm__side">

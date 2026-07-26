@@ -377,7 +377,7 @@ export default function DeckDetailPage() {
 
   /* ---------- render ---------- */
 
-  const pageTitle = `${deck ? deck.name : t('deckTitle', 'Decks')} · 好好学习`
+  const pageTitle = `${deck ? deck.name : t('deckTitle', 'Decks')} · 好好学习汉语`
 
   if (authLoading || !user) {
     return (

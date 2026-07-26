@@ -1,0 +1,87 @@
+/* CMS: inline content editor toolbar + editable-node affordances. */
+
+.cms-toolbar {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 14px;
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline-2);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-pop);
+
+  &.is-editing {
+    border-color: rgba(var(--accent-rgb), 0.6);
+  }
+}
+
+.cms-toolbar__hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.cms-toolbar__btn {
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  cursor: pointer;
+
+  &:hover { filter: brightness(1.08); }
+}
+
+.cms-editable {
+  outline: 1px dashed rgba(var(--accent-rgb), 0.6);
+  outline-offset: 3px;
+  border-radius: 3px;
+  cursor: text;
+  transition: background-color var(--t-fast);
+
+  &:hover { background: var(--accent-soft); }
+  &:focus {
+    outline: 2px solid var(--accent);
+    background: var(--accent-soft);
+  }
+  &.is-saving { opacity: 0.55; }
+}
+
+/* Admin content-editor page (rich doc bodies + inline strings) */
+.cms-admin__grid {
+  display: grid;
+  gap: 16px;
+}
+
+.cms-admin__entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cms-admin__doc-editor {
+  display: grid;
+  gap: 14px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cms-admin__preview {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-control);
+  padding: 16px 18px;
+  overflow-y: auto;
+  max-height: 60vh;
+}

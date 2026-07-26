@@ -53,7 +53,7 @@ function StrokeOrder({ character }) {
           padding: 6,
           strokeColor: getComputedStyle(document.documentElement)
             .getPropertyValue('--accent')
-            .trim() || '#e0533d',
+            .trim() || '#34c759',
           delayBetweenLoops: 1200,
         })
         writer.loopCharacterAnimation()

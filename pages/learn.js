@@ -333,7 +333,7 @@ export default function LearnPage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${t('learnTitle', 'Learn')} · 好好学习`}</title>
+        <title>{`${t('learnTitle', 'Learn')} · 好好学习汉语`}</title>
       </Head>
       <div className="learn-page col-app">
         <header className="learn-head">

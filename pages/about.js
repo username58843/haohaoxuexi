@@ -16,17 +16,17 @@ export default function AboutPage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${title} · 好好学习`}</title>
+        <title>{`${title} · 好好学习汉语`}</title>
         <meta
           name="description"
-          content="About 好好学习 (HaoHao XueXi) — a free Chinese-learning app with SRS flashcards, HSK 1–6 vocabulary, personal decks, quizzes, and progress tracking."
+          content="About 好好学习汉语 (HaoHao XueXi) — a free Chinese-learning app with SRS flashcards, HSK 1–6 vocabulary, personal decks, quizzes, and progress tracking."
         />
       </Head>
 
       <DocsLayout title={title} current="about">
         <p className="docs__lede">
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>{' '}
           (HaoHao XueXi) is a free tool for learning Chinese vocabulary. It
           runs in the browser and as an Android app, with one account and your
@@ -37,7 +37,7 @@ export default function AboutPage() {
         <h2>The name</h2>
         <p>
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>{' '}
           (<em>hǎohǎo xuéxí</em>) means “study well”. It comes from the classic
           encouragement{' '}

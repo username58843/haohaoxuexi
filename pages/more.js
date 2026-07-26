@@ -55,7 +55,7 @@ export default function MorePage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${t('acctMoreTitle', 'More')} · 好好学习`}</title>
+        <title>{`${t('acctMoreTitle', 'More')} · 好好学习汉语`}</title>
       </Head>
 
       <div className="col-app acct-page">
@@ -119,7 +119,7 @@ export default function MorePage() {
 
         <footer className="acct-footer u-mono">
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>
           <span>{APP_VERSION}</span>
         </footer>

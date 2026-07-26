@@ -353,7 +353,7 @@ function SessionRunner({ params, userId, onReload }) {
   return (
     <AppShell bare>
       <Head>
-        <title>{`${modeLabel} · 好好学习`}</title>
+        <title>{`${modeLabel} · 好好学习汉语`}</title>
       </Head>
       <div className="sess-page">
         <header className="sess-top">

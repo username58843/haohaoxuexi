@@ -173,7 +173,7 @@ export default function Landing() {
   return (
     <div className="lp">
       <Head>
-        <title>{`${t('lpPageTitle', 'Learn Chinese vocabulary')} · 好好学习`}</title>
+        <title>{`${t('lpPageTitle', 'Learn Chinese vocabulary')} · 好好学习汉语`}</title>
         <meta
           name="description"
           content={t(
@@ -186,7 +186,7 @@ export default function Landing() {
       {/* Floating pill nav */}
       <header className={`lp-nav${scrolled ? ' is-scrolled' : ''}`}>
         <Link href="/" className="lp-nav__brand hanzi" lang="zh">
-          好好学习
+          好好学习汉语
         </Link>
         <div className="lp-nav__actions">
           <Button variant="ghost" size="sm" href="/auth" className="lp-nav__login">
@@ -204,7 +204,7 @@ export default function Landing() {
           {t('lpHeroEyebrow', 'Spaced repetition · HSK 1–6 · Free')}
         </p>
         <h1 className="lp-hero__title hanzi" lang="zh">
-          好好学习
+          好好学习汉语
           <span className="lp-hero__seal" aria-hidden="true" />
         </h1>
         <p className="lp-hero__sub u-two-tone">
@@ -315,7 +315,7 @@ export default function Landing() {
         <div className="col-wide lp-footer__inner">
           <div className="lp-footer__brand">
             <span className="hanzi" lang="zh">
-              好好学习
+              好好学习汉语
             </span>
             <span className="lp-footer__tag">HaoHao XueXi</span>
           </div>
@@ -328,7 +328,7 @@ export default function Landing() {
         <div className="col-wide lp-footer__copy u-mono">
           © {year}{' '}
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>{' '}
           · {t('lpFooterCopy', 'made for Chinese learners')}
         </div>

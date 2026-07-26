@@ -18,7 +18,7 @@ const themeBootScript = `
       : s.theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light'
       : 'dark';
     var colorKey = aliases[s.themeColor] || s.themeColor;
-    var hex = colors[colorKey] || colors.cinnabar;
+    var hex = colors[colorKey] || colors.jade;
     var m = /^#([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex);
     var r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
     var root = document.documentElement;

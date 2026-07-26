@@ -160,7 +160,7 @@ export default function ProfilePage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${t('acctProfileTitle', 'Profile')} · 好好学习`}</title>
+        <title>{`${t('acctProfileTitle', 'Profile')} · 好好学习汉语`}</title>
       </Head>
 
       <div className="col-app acct-page">

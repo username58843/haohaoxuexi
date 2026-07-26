@@ -73,7 +73,7 @@ export default function SettingsPage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${t('acctSettingsTitle', 'Settings')} · 好好学习`}</title>
+        <title>{`${t('acctSettingsTitle', 'Settings')} · 好好学习汉语`}</title>
       </Head>
 
       <div className="col-app acct-page">

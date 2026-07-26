@@ -1,6 +1,6 @@
 {
-  "name": "好好学习 — Learn Chinese",
-  "short_name": "好好学习",
+  "name": "好好学习汉语 — Learn Chinese",
+  "short_name": "好好学习汉语",
   "description": "HSK 1–6 vocabulary with spaced repetition, personal decks and progress tracking.",
   "start_url": "/",
   "display": "standalone",

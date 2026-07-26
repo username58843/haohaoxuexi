@@ -15,10 +15,10 @@ export default function TermsPage() {
   return (
     <AppShell>
       <Head>
-        <title>{`${title} · 好好学习`}</title>
+        <title>{`${title} · 好好学习汉语`}</title>
         <meta
           name="description"
-          content="Terms of Service for 好好学习 (HaoHao XueXi), the free Chinese vocabulary learning app: accounts, acceptable use, your content, disclaimers, and contact."
+          content="Terms of Service for 好好学习汉语 (HaoHao XueXi), the free Chinese vocabulary learning app: accounts, acceptable use, your content, disclaimers, and contact."
         />
       </Head>
 
@@ -26,7 +26,7 @@ export default function TermsPage() {
         <p className="docs__lede">
           These Terms of Service (“Terms”) govern your use of{' '}
           <span className="hanzi" lang="zh">
-            好好学习
+            好好学习汉语
           </span>{' '}
           (HaoHao XueXi, “the service”, “we”, “us”), available as a website and
           an Android app. By creating an account or using the service, you

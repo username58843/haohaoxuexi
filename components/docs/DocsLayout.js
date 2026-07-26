@@ -56,7 +56,7 @@ export default function DocsLayout({
         <header className="docs__header">
           <p className="eyebrow docs__eyebrow">
             <span className="hanzi" lang="zh">
-              好好学习
+              好好学习汉语
             </span>
             <span className="docs__eyebrow-sep" aria-hidden="true">
               ·

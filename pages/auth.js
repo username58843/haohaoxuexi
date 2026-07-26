@@ -179,7 +179,7 @@ export default function AuthPage() {
     return (
       <AppShell bare>
         <Head>
-          <title>{`${pageTitle} · 好好学习`}</title>
+          <title>{`${pageTitle} · 好好学习汉语`}</title>
         </Head>
         <PageLoader />
       </AppShell>
@@ -191,7 +191,7 @@ export default function AuthPage() {
   return (
     <AppShell bare>
       <Head>
-        <title>{`${pageTitle} · 好好学习`}</title>
+        <title>{`${pageTitle} · 好好学习汉语`}</title>
       </Head>
 
       <div className="auth">
@@ -199,7 +199,7 @@ export default function AuthPage() {
           <div className="auth__brand">
             <img src="/logo-180.png" alt="" width={48} height={48} className="auth__logo" />
             <div className="auth__brand-name hanzi" lang="zh">
-              好好学习
+              好好学习汉语
             </div>
             <p className="auth__tagline">
               {t('authTagline', 'HSK vocabulary with spaced repetition')}

@@ -473,7 +473,7 @@ export default function HskPage() {
   return (
     <AppShell>
       <Head>
-        <title>HSK · 好好学习</title>
+        <title>HSK · 好好学习汉语</title>
       </Head>
 
       <div className="hsk">
