@@ -5,6 +5,7 @@ import AppShell from '~/components/AppShell'
 import WordSheet from '~/components/WordSheet'
 import MapSection from '~/components/wordmap/MapSection'
 import MapStats from '~/components/wordmap/MapStats'
+import AddToDeck from '~/components/hsk/AddToDeck'
 import { readKnown, writeKnown, migrateLegacyLevel } from '~/components/hsk/known-store'
 import { Button, Field, Chip, Segmented, EmptyState, PageLoader } from '~/components/ui'
 import { useAuth } from '~/lib/contexts/AuthContext'
@@ -40,7 +41,11 @@ function ClearIcon() {
   )
 }
 
-/** Normalize a string for accent-insensitive-ish pinyin/meaning search. */
+/**
+ * Normalize a string for search matching: lowercase only. Tone marks are
+ * preserved on purpose — the /hsk server search (lib/server/words.js) is
+ * equally tone-sensitive, so the two views stay consistent.
+ */
 function norm(s) {
   return String(s || '').toLowerCase()
 }
@@ -66,13 +71,18 @@ export default function HskMapPage() {
   const [query, setQuery] = useState('')
   const [hideKnown, setHideKnown] = useState(false)
   const [colorBy, setColorBy] = useState('level') // 'level' | 'known'
-  const [known, setKnown] = useState({})
+  // The SAME known-words map the /hsk list view uses. Lazily initialized:
+  // readKnown() returns {} on the server, and the page renders <PageLoader/>
+  // until auth resolves, so server/client first paints always match.
+  const [known, setKnown] = useState(() => readKnown())
   const [packs, setPacks] = useState({}) // { [level]: { status, words, error } }
   const [sheetWord, setSheetWord] = useState(null)
   const [sheetOpen, setSheetOpen] = useState(false)
 
   const inflightRef = useRef(new Set())
   const sentinelRef = useRef(null)
+  const wmapRef = useRef(null)
+  const stickyHeadRef = useRef(null)
 
   const levelNum = level === 'all' ? null : Number(level)
 
@@ -80,10 +90,11 @@ export default function HskMapPage() {
     if (!loading && !user) router.replace('/auth')
   }, [loading, user, router])
 
-  // Hydrate the SAME known-words map the /hsk list view uses.
+  // Persist the known map (updaters stay pure; the mount-time write simply
+  // rewrites what was just read).
   useEffect(() => {
-    setKnown(readKnown())
-  }, [])
+    writeKnown(known)
+  }, [known])
 
   // Debounce search (200ms).
   useEffect(() => {
@@ -91,31 +102,44 @@ export default function HskMapPage() {
     return () => clearTimeout(id)
   }, [queryInput])
 
-  const fetchPack = useCallback(async (lvl) => {
+  // All state updates happen inside .then/.catch so effect-triggered calls
+  // never set state synchronously (react-hooks/set-state-in-effect). The
+  // 'loading' record lands via a microtask, which always resolves before the
+  // network response, so ready/error can never be overwritten by it.
+  const fetchPack = useCallback((lvl) => {
     if (inflightRef.current.has(lvl)) return
     inflightRef.current.add(lvl)
-    setPacks((prev) => ({ ...prev, [lvl]: { status: 'loading', words: [], error: '' } }))
-    try {
-      const { data } = await api.get('/words', { params: { pack: `hsk${lvl}` } })
-      const words = Array.isArray(data?.items) ? data.items : []
-      setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
+    Promise.resolve().then(() => {
+      setPacks((prev) =>
+        prev[lvl]?.status === 'ready'
+          ? prev
+          : { ...prev, [lvl]: { status: 'loading', words: [], error: '' } }
+      )
+    })
+    api
+      .get('/words', { params: { pack: `hsk${lvl}` } })
+      .then(({ data }) => {
+        const words = Array.isArray(data?.items) ? data.items : []
+        setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
 
-      // Keep known-map migration behavior identical to the list view.
-      const migratedIds = migrateLegacyLevel(lvl, words)
-      if (migratedIds && migratedIds.length > 0) {
-        setKnown((prev) => {
-          const next = { ...prev }
-          for (const id of migratedIds) next[id] = true
-          writeKnown(next)
-          return next
-        })
-      }
-    } catch (err) {
-      const e = apiError(err)
-      setPacks((prev) => ({ ...prev, [lvl]: { status: 'error', words: [], error: e.message } }))
-    } finally {
-      inflightRef.current.delete(lvl)
-    }
+        // Keep known-map migration behavior identical to the list view.
+        // (Persistence happens in the writeKnown effect; the updater stays pure.)
+        const migratedIds = migrateLegacyLevel(lvl, words)
+        if (migratedIds && migratedIds.length > 0) {
+          setKnown((prev) => {
+            const next = { ...prev }
+            for (const id of migratedIds) next[id] = true
+            return next
+          })
+        }
+      })
+      .catch((err) => {
+        const e = apiError(err)
+        setPacks((prev) => ({ ...prev, [lvl]: { status: 'error', words: [], error: e.message } }))
+      })
+      .finally(() => {
+        inflightRef.current.delete(lvl)
+      })
   }, [])
 
   // Ensure the pack(s) needed for the active view are loading.
@@ -127,6 +151,17 @@ export default function HskMapPage() {
       fetchPack(1) // "All" starts with HSK 1; deeper levels load on scroll
     }
   }, [user, levelNum, packs, fetchPack])
+
+  // While searching in "All" mode, pull in every remaining level so the search
+  // covers the whole lexicon (the packs are small and would load on scroll
+  // anyway) instead of silently skipping levels that were never fetched.
+  useEffect(() => {
+    if (!user || !query || levelNum) return
+    for (const lvl of LEVELS) {
+      const st = packs[lvl]?.status
+      if (!st || st === 'idle') fetchPack(lvl)
+    }
+  }, [user, query, levelNum, packs, fetchPack])
 
   // The levels currently in view (stable per levelNum).
   const activeLevels = useMemo(() => (levelNum ? [levelNum] : LEVELS), [levelNum])
@@ -149,7 +184,11 @@ export default function HskMapPage() {
     }
   }, [nextIdleLevel, fetchPack])
 
-  // Progressive load-on-scroll sentinel.
+  // Progressive load-on-scroll sentinel. `sentinelVisible` mirrors the JSX
+  // render condition for the sentinel node: it must be a dependency so the
+  // observer re-binds when the node unmounts/remounts (e.g. after a search
+  // round-trip) instead of watching a detached element forever.
+  const sentinelVisible = !query && nextIdleLevel != null
   useEffect(() => {
     const el = sentinelRef.current
     if (!el || typeof IntersectionObserver === 'undefined') return undefined
@@ -161,21 +200,56 @@ export default function HskMapPage() {
     )
     io.observe(el)
     return () => io.disconnect()
-  }, [loadNext])
+  }, [loadNext, sentinelVisible])
+
+  // The level headers stick right below the control header, whose real height
+  // varies (rows wrap at intermediate widths and with longer locale strings).
+  // Measure it into a CSS var consumed by .wmap-section__head instead of
+  // trusting hardcoded offsets. Depends on [loading, user] because the refs
+  // only exist once the authed UI has replaced the boot <PageLoader/>.
+  useEffect(() => {
+    const root = wmapRef.current
+    const head = stickyHeadRef.current
+    if (!root || !head || typeof ResizeObserver === 'undefined') return undefined
+    const ro = new ResizeObserver(() => {
+      root.style.setProperty('--wmap-head-h', `${head.offsetHeight}px`)
+    })
+    ro.observe(head) // fires once on observe, so the var is set immediately
+    return () => ro.disconnect()
+  }, [loading, user])
 
   // ----- Derived per-level data (filter + stats) -------------------------
+  // Precomputed searchable text per word id — the same fields the /hsk server
+  // search covers (lib/server/words.js): hanzi (simplified + traditional),
+  // pinyin as written AND with whitespace stripped (so "nǐhǎo" finds "nǐ hǎo"),
+  // definitions, and EN + RU translations. One includes() per word beats the
+  // old multi-branch loop over ~5000 words on every keystroke.
+  const searchHay = useMemo(() => {
+    const map = new Map()
+    for (const lvl of LEVELS) {
+      const words = packs[lvl]?.words || []
+      for (const w of words) {
+        const tr = w.translations || {}
+        const hay = [
+          w.simplified,
+          w.traditional,
+          w.pinyin,
+          String(w.pinyin || '').replace(/\s+/g, ''),
+          ...(w.definitions || []),
+          ...(tr.en || []),
+          ...(tr.ru || []),
+        ]
+          .filter(Boolean)
+          .join('\n')
+        map.set(wid(w), norm(hay))
+      }
+    }
+    return map
+  }, [packs])
+
   const matches = useCallback(
-    (w) => {
-      if (!query) return true
-      if (norm(w.simplified).includes(query)) return true
-      if (norm(w.pinyin).includes(query)) return true
-      const defs = w.definitions || []
-      for (const d of defs) if (norm(d).includes(query)) return true
-      const en = (w.translations && w.translations.en) || []
-      for (const d of en) if (norm(d).includes(query)) return true
-      return false
-    },
-    [query]
+    (w) => !query || (searchHay.get(wid(w)) || '').includes(query),
+    [query, searchHay]
   )
 
   const sections = useMemo(() => {
@@ -221,11 +295,11 @@ export default function HskMapPage() {
   const toggleKnown = useCallback((word) => {
     const id = wid(word)
     if (!id) return
+    // Pure updater — persistence happens in the writeKnown effect above.
     setKnown((prev) => {
       const next = { ...prev }
       if (next[id]) delete next[id]
       else next[id] = true
-      writeKnown(next)
       return next
     })
   }, [])
@@ -266,8 +340,8 @@ export default function HskMapPage() {
         <title>{t('wmapTitle', 'Word Map')} · 好好学习汉语</title>
       </Head>
 
-      <div className="wmap">
-        <div className="wmap__sticky">
+      <div className="wmap" ref={wmapRef}>
+        <div className="wmap__sticky" ref={stickyHeadRef}>
           <div className="col-wide">
             <div className="wmap__topline">
               <Button href="/hsk" size="sm" variant="ghost" className="wmap__back">
@@ -353,9 +427,15 @@ export default function HskMapPage() {
                 </Button>
               }
             />
+          ) : nothingLoadedYet ? (
+            <div className="wmap__boot">
+              <PageLoader />
+            </div>
           ) : (
-            <div className={`wmap__wall${colorBy === 'known' ? ' wmap__wall--bwk' : ''}`}>
-              {sections.map((s) => (
+            <div className="wmap__wall">
+              {/* Idle levels stay hidden (the legend + load button already
+                  represent them) so the boot screen isn't a wall of 0/0 rows. */}
+              {sections.filter((s) => s.status !== 'idle').map((s) => (
                 <MapSection
                   key={s.level}
                   level={s.level}
@@ -376,18 +456,17 @@ export default function HskMapPage() {
             </div>
           )}
 
-          {/* Progressive-load sentinel + fallback button ("All" view only). */}
-          {!query && nextIdleLevel != null && (
+          {/* Progressive-load sentinel + fallback button ("All" view only).
+              The button hides while a level is loading — its label names the
+              NEXT idle level, so a spinner on it would point at the wrong
+              level (the loading section already shows its own spinner). */}
+          {sentinelVisible && (
             <div className="wmap__more" ref={sentinelRef}>
-              <Button variant="soft" onClick={loadNext} loading={anyLoading}>
-                {t('wmapLoadLevel', 'Load HSK')} {nextIdleLevel}
-              </Button>
-            </div>
-          )}
-
-          {nothingLoadedYet && !noSearchHits && (
-            <div className="wmap__boot">
-              <PageLoader />
+              {!anyLoading && (
+                <Button variant="soft" onClick={loadNext}>
+                  {t('wmapLoadLevel', 'Load HSK')} {nextIdleLevel}
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -406,6 +485,7 @@ export default function HskMapPage() {
                 >
                   <CheckIcon /> {sheetIsKnown ? knownLabel : t('wmapMarkKnown', 'Mark as known')}
                 </Button>
+                <AddToDeck word={sheetWord} />
               </div>
             )
           }

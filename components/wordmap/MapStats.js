@@ -27,9 +27,14 @@ function useCountUp(target) {
     const tick = (now) => {
       const p = Math.min(1, (now - start) / dur)
       const eased = 1 - Math.pow(1 - p, 3)
-      setValue(Math.round(from + (target - from) * eased))
+      const next = Math.round(from + (target - from) * eased)
+      // Advance fromRef every frame so that when `target` changes mid-flight
+      // (levels streaming in on first visit), the next animation continues
+      // from the value currently on screen instead of jumping back to the
+      // last settled one. At p === 1, `next` === target.
+      fromRef.current = next
+      setValue(next)
       if (p < 1) rafRef.current = requestAnimationFrame(tick)
-      else fromRef.current = target
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)

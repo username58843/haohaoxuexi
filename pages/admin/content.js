@@ -8,7 +8,6 @@ import { DOC_DEFAULTS } from '~/components/docs/docDefaults'
 
 const CONTENT_LANGS = ['en', 'ru', 'tk', 'zh']
 const DOC_SCOPES = DOC_DEFAULTS.map((d) => d.scope)
-const DOC_DEFAULT_BY_SCOPE = Object.fromEntries(DOC_DEFAULTS.map((d) => [d.scope, d.md]))
 
 /**
  * /admin/content — the content override editor. Manages every CMS override:
@@ -26,59 +25,76 @@ export default function AdminContentPage() {
   const { t, language } = useSettings()
   const toast = useToast()
 
-  const [lang, setLang] = useState(language)
+  const [lang, setLang] = useState(CONTENT_LANGS.includes(language) ? language : 'en')
   const [reloadKey, setReloadKey] = useState(0)
-  const [state, setState] = useState({ loading: true, error: null, items: [] })
+  // Latest fetch result, tagged with the reloadKey it answers. `loading` and
+  // the error message are derived at render, so nothing sets state
+  // synchronously inside the effect and `t` stays out of the fetch deps.
+  const [result, setResult] = useState(null) // { key, items, error: Error|null }
 
-  // Keep the editor language in sync with a change of UI language on first paint.
-  useEffect(() => {
-    setLang((prev) => (CONTENT_LANGS.includes(language) ? language : prev))
-  }, [language])
+  // Mirror a UI-language change into the editor language — render-time
+  // prev-value adjustment instead of an effect (react-compiler rule).
+  const [prevUiLang, setPrevUiLang] = useState(language)
+  if (prevUiLang !== language) {
+    setPrevUiLang(language)
+    if (CONTENT_LANGS.includes(language)) setLang(language)
+  }
 
   useEffect(() => {
     let stale = false
-    setState((s) => ({ ...s, loading: true, error: null }))
     api
       .get('/admin/content')
       .then(({ data }) => {
-        if (stale) return
-        setState({ loading: false, error: null, items: data.items || [] })
+        if (!stale) setResult({ key: reloadKey, items: data.items || [], error: null })
       })
       .catch((err) => {
-        if (stale) return
-        setState({
-          loading: false,
-          error: apiError(err, t('admContentLoadFailed', 'Could not load content')).message,
-          items: [],
-        })
+        if (!stale) setResult({ key: reloadKey, items: [], error: err })
       })
     return () => {
       stale = true
     }
-  }, [reloadKey, t])
+  }, [reloadKey])
 
+  // Bumping the key immediately re-derives `loading` below — the "start
+  // loading" state change lives in the event handler, not in the effect.
   const retry = () => setReloadKey((k) => k + 1)
+
+  const loading = !result || result.key !== reloadKey
+  const error =
+    !loading && result.error
+      ? apiError(result.error, t('admContentLoadFailed', 'Could not load content')).message
+      : null
+  const items = useMemo(() => {
+    if (!result || result.key !== reloadKey || result.error) return []
+    return result.items
+  }, [result, reloadKey])
 
   // Overrides that currently exist for the selected language.
   const byKeyForLang = useMemo(() => {
     const map = {}
-    for (const it of state.items) {
+    for (const it of items) {
       if (it.lang === lang) map[`${it.scope}:${it.key}`] = it.value
     }
     return map
-  }, [state.items, lang])
+  }, [items, lang])
 
   // Update local cache after a successful save so the UI reflects the change
-  // without a full refetch.
-  const applyLocal = useCallback((scope, key, value) => {
-    setState((s) => {
-      const items = s.items.filter((it) => !(it.scope === scope && it.key === key && it.lang === lang))
-      if (value && value.length > 0) {
-        items.push({ scope, key, lang, value, updatedAt: new Date().toISOString() })
-      }
-      return { ...s, items }
-    })
-  }, [lang])
+  // without a full refetch. Whitespace-only means the override was removed.
+  const applyLocal = useCallback(
+    (scope, key, value) => {
+      setResult((r) => {
+        if (!r) return r
+        const rest = r.items.filter(
+          (it) => !(it.scope === scope && it.key === key && it.lang === lang)
+        )
+        if (typeof value === 'string' && value.trim().length > 0) {
+          rest.push({ scope, key, lang, value, updatedAt: new Date().toISOString() })
+        }
+        return { ...r, items: rest }
+      })
+    },
+    [lang]
+  )
 
   const saveEntry = useCallback(
     async (scope, key, value) => {
@@ -93,7 +109,7 @@ export default function AdminContentPage() {
   // Non-doc overrides (landing etc.), grouped by scope, for section B.
   const pageGroups = useMemo(() => {
     const groups = {}
-    for (const it of state.items) {
+    for (const it of items) {
       if (it.lang !== lang) continue
       if (DOC_SCOPES.includes(it.scope)) continue
       ;(groups[it.scope] ||= []).push(it)
@@ -102,7 +118,7 @@ export default function AdminContentPage() {
       groups[scope].sort((a, b) => a.key.localeCompare(b.key))
     }
     return groups
-  }, [state.items, lang])
+  }, [items, lang])
 
   const pageScopes = Object.keys(pageGroups).sort()
 
@@ -127,22 +143,22 @@ export default function AdminContentPage() {
         )}
       </p>
 
-      {state.loading && (
+      {loading && (
         <div className="adm-loading">
           <Spinner />
         </div>
       )}
 
-      {state.error && (
+      {error && (
         <Card className="adm-error">
-          <p className="adm-error__text">{state.error}</p>
+          <p className="adm-error__text">{error}</p>
           <Button variant="soft" size="sm" onClick={retry}>
             {t('admRetry', 'Retry')}
           </Button>
         </Card>
       )}
 
-      {!state.loading && !state.error && (
+      {!loading && !error && (
         <>
           <section className="cms-page__section">
             <h2 className="cms-page__heading">{t('admContentDocsTitle', 'Documents')}</h2>
@@ -159,7 +175,6 @@ export default function AdminContentPage() {
                   scope={doc.scope}
                   defaultMd={doc.md}
                   override={byKeyForLang[`${doc.scope}:body`]}
-                  lang={lang}
                   onSave={(value) => saveEntry(doc.scope, 'body', value)}
                   toast={toast}
                   t={t}
@@ -212,19 +227,23 @@ export default function AdminContentPage() {
 }
 
 /** One document body editor: markdown textarea + live preview + save. */
-function DocEditor({ scope, defaultMd, override, lang, onSave, toast, t }) {
-  const resolved = typeof override === 'string' && override.length > 0 ? override : defaultMd
+function DocEditor({ scope, defaultMd, override, onSave, toast, t }) {
+  const hasOverride = typeof override === 'string' && override.trim().length > 0
+  const resolved = hasOverride ? override : defaultMd
   const [draft, setDraft] = useState(resolved)
   const [saving, setSaving] = useState(false)
 
-  // Re-seed when the resolved value or language changes.
-  useEffect(() => {
+  // Re-seed when the published value changes (language switches remount via
+  // the parent `key`) — render-time prev-value adjustment, not an effect.
+  const [prevResolved, setPrevResolved] = useState(resolved)
+  if (prevResolved !== resolved) {
+    setPrevResolved(resolved)
     setDraft(resolved)
-  }, [resolved, lang])
+  }
 
   const dirty = draft !== resolved
-  const isDefault = draft.trim() === defaultMd.trim()
-  const hasOverride = typeof override === 'string' && override.length > 0
+  // Text equal to the default — or cleared entirely — restores the default.
+  const isDefault = draft.trim() === defaultMd.trim() || draft.trim() === ''
 
   const save = async () => {
     setSaving(true)
@@ -299,9 +318,12 @@ function TextRow({ entry, onSave, toast, t }) {
   const [value, setValue] = useState(entry.value)
   const [saving, setSaving] = useState(false)
 
-  useEffect(() => {
+  // Re-seed when the stored value changes — render-time adjustment, no effect.
+  const [prevValue, setPrevValue] = useState(entry.value)
+  if (prevValue !== entry.value) {
+    setPrevValue(entry.value)
     setValue(entry.value)
-  }, [entry.value])
+  }
 
   const dirty = value !== entry.value
   const multiline = (entry.value || '').length > 80

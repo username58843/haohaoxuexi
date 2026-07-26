@@ -1,9 +1,16 @@
 /* Page partial: hsk word map (/hsk/map) — owned by the wordmap build.
    A dense "wall of characters" grid, colored by HSK level, with a known/total
-   progress overlay. Tokens only; no raw hex. */
+   progress overlay. Tokens only; the single raw value here is --on-hsk (see
+   note below). */
 
 .wmap {
   padding-bottom: 24px;
+
+  /* Foreground for text sitting directly on the --hsk-N tints. The tints are
+     fixed dark colors in BOTH themes, so this must be a static light value —
+     NOT --on-accent, which tracks the user's accent luminance and flips to
+     near-black for bright accents (unreadable on the dark tints). */
+  --on-hsk: #ffffff;
 }
 
 /* ---------- Sticky control header ---------- */
@@ -66,7 +73,7 @@
 @for $i from 1 through 6 {
   .wmap__chip--hsk#{$i} {
     &.is-active {
-      color: var(--on-accent);
+      color: var(--on-hsk);
       background: var(--hsk-#{$i});
       border-color: var(--hsk-#{$i});
     }
@@ -219,7 +226,11 @@
 
 .wmap-section__head {
   position: sticky;
-  top: 132px; /* clears the sticky control header on desktop */
+  /* --wmap-head-h is measured from the real .wmap__sticky height by a
+     ResizeObserver in /pages/hsk/map.js (the control rows wrap at intermediate
+     widths and with longer locale strings, so a hardcoded offset misaligns).
+     The fallback approximates the unwrapped desktop height. */
+  top: var(--wmap-head-h, 132px);
   z-index: 10;
   display: flex;
   align-items: center;
@@ -441,7 +452,8 @@
   }
 
   .wmap-section__head {
-    top: 176px; /* mobile control header is taller (wrapped rows) */
+    /* Fallback only (see above) — the mobile control header wraps taller. */
+    top: var(--wmap-head-h, 176px);
   }
 
   .wmap-stats__pct {

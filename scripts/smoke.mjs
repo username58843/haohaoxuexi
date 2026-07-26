@@ -208,6 +208,12 @@ async function main() {
     r = await req('POST', '/feedback', { body: { topic: 'bug', message: 'x'.repeat(3000) } })
     check('feedback too long 400', r.status === 400)
 
+    // --- CMS content (public read + admin write)
+    r = await req('GET', '/content?lang=en')
+    check('content public read', r.status === 200 && typeof r.json?.entries === 'object')
+    r = await req('PUT', '/admin/content', { token: alice, body: { scope: 'landing', key: 'x', lang: 'en', value: 'hi' } })
+    check('content write blocked for non-admin', r.status === 403 || r.status === 401, `got ${r.status}`)
+
     // --- admin (promote alice via DB, as documented bootstrap)
     const mc = new MongoClient(uri)
     await mc.connect()
@@ -247,6 +253,14 @@ async function main() {
     check('admin feedback list', r.status === 200 && (r.json?.items?.length ?? 0) >= 1, JSON.stringify(r.json))
     r = await req('GET', '/admin/audit', { token: alice })
     check('audit log recorded', r.status === 200 && (r.json?.items?.length ?? 0) >= 2, `items ${r.json?.items?.length}`)
+
+    // admin can now write + read back CMS content
+    r = await req('PUT', '/admin/content', { token: alice, body: { scope: 'landing', key: 'heroTitle', lang: 'ru', value: 'Привет' } })
+    check('admin content write', r.status === 200, `got ${r.status}`)
+    r = await req('GET', '/content?lang=ru')
+    check('content override readable', r.json?.entries?.['landing:heroTitle'] === 'Привет')
+    r = await req('PUT', '/admin/content', { token: alice, body: { scope: 'landing', key: 'heroTitle', lang: 'ru', value: '   ' } })
+    check('whitespace clears override', r.status === 200 && r.json?.removed === true, JSON.stringify(r.json))
 
     // --- password change bumps tokenVersion
     r = await req('PUT', '/user/password', {

@@ -389,7 +389,7 @@ export default function Landing() {
               HaoHao XueXi
             </EditableText>
           </div>
-          <nav className="lp-footer__links" aria-label="Footer">
+          <nav className="lp-footer__links" aria-label={t('lpFooterNavLabel', 'Footer')}>
             <Link href="/about">{t('lpFooterAbout', 'About')}</Link>
             <Link href="/privacy">{t('lpFooterPrivacy', 'Privacy')}</Link>
             <Link href="/terms">{t('lpFooterTerms', 'Terms')}</Link>

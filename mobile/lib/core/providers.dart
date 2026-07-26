@@ -193,6 +193,19 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = next;
   }
 
+  /// Fire-and-forget push of the full local settings to the server.
+  /// Called right after registering: a fresh account carries the server
+  /// DEFAULT_SETTINGS, which must not clobber the device's pre-auth choices
+  /// (detected/chosen language, theme, accent, daily goal).
+  void pushLocalSettings() {
+    _mirror({
+      'language': state.language,
+      'theme': state.themeMode.name,
+      'themeColor': state.accent,
+      'dailyGoal': state.dailyGoal,
+    });
+  }
+
   /// Fire-and-forget push of changed values to the server when authed.
   void _mirror(Map<String, dynamic> patch) {
     final authed = ref.read(authProvider).value != null;
@@ -297,10 +310,15 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     await _authenticate(
       '/auth/register',
       {'name': name.trim(), 'email': email.trim(), 'password': password},
+      freshAccount: true,
     );
   }
 
-  Future<void> _authenticate(String path, Map<String, dynamic> body) async {
+  Future<void> _authenticate(
+    String path,
+    Map<String, dynamic> body, {
+    bool freshAccount = false,
+  }) async {
     final api = ref.read(apiProvider);
     final previous = state;
     state = const AsyncLoading();
@@ -312,8 +330,20 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
       }
       final user =
           UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
-      ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
-      state = AsyncData(user);
+      final settings = ref.read(settingsProvider.notifier);
+      if (freshAccount) {
+        // Registration returns server DEFAULT_SETTINGS (language 'en', dark
+        // theme, ...). Adopting them would clobber the device's detected or
+        // explicitly chosen language/theme, so instead seed the new account
+        // with the current local settings (must happen after state is authed
+        // so the mirror is not skipped).
+        state = AsyncData(user);
+        settings.pushLocalSettings();
+      } else {
+        // Login: server settings win once, for cross-device sync.
+        settings.applyServerSettings(user.settings);
+        state = AsyncData(user);
+      }
     } on ApiException {
       state = previous.hasValue ? AsyncData(previous.value) : const AsyncData(null);
       rethrow;

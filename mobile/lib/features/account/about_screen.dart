@@ -6,7 +6,11 @@ import '../../core/i18n.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 
-const String _appVersion = '1.0.0';
+/// Injected at build time (`flutter build --dart-define=APP_VERSION=x.y.z`,
+/// sourced from pubspec.yaml in CI) so release bumps can't leave a stale
+/// hand-edited version here; the default only covers plain local runs.
+const String _appVersion =
+    String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
 const String _privacyUrl = 'https://haohaoxuexi.vercel.app/privacy';
 const String _termsUrl = 'https://haohaoxuexi.vercel.app/terms';
 const String _contactEmail = 'bobby.minecrafter06@gmail.com';

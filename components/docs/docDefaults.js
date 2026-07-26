@@ -8,8 +8,43 @@
  * the admin content editor; an empty override restores the default below.
  */
 
+import pkg from '~/package.json'
+
 export const DOC_CONTACT_EMAIL = 'bobby.minecrafter06@gmail.com'
-export const DOC_APP_VERSION = '2.0.0'
+// Derived from package.json so the About page can never drift from the release.
+export const DOC_APP_VERSION = pkg.version
+
+/**
+ * Shipped "Last updated" dates (ISO, UTC) for each doc — shown until an admin
+ * saves an override, whose stored `updatedAt` then takes over (see the doc
+ * pages + ContentContext.contentUpdatedAt). Bump when the default text changes.
+ */
+export const DOC_UPDATED = {
+  privacy: '2026-07-27',
+  terms: '2026-07-27',
+  about: '2026-07-27',
+}
+
+/** Localized long-form date for the docs meta line (UTC-stable, so SSR and client agree). */
+export function formatDocDate(value, locale = 'en') {
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return String(value)
+  try {
+    return d.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    })
+  } catch {
+    return d.toLocaleDateString('en', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    })
+  }
+}
 
 export const PRIVACY_MD = `This policy explains what information 好好学习汉语 (HaoHao XueXi, "we", "us") collects when you use our website and our Android app, why we collect it, and how you can delete it. We have tried to keep it short and honest: the service is free, shows no ads, and collects only what it needs to work.
 

@@ -35,15 +35,33 @@ function IconArrowLeft() {
  * Props:
  *  - title:   page heading (already translated by the page)
  *  - current: 'privacy' | 'terms' | 'about' — highlighted in the footer nav
- *  - updated: date string for the meta line
+ *  - updated: ISO date string (YYYY-MM-DD) for the meta line, formatted in
+ *             the active UI language
  */
+const DATE_LOCALES = { en: 'en', ru: 'ru', tk: 'tk', zh: 'zh-CN' }
+
+function formatUpdated(iso, language) {
+  const [y, m, d] = String(iso).split('-').map(Number)
+  if (!y || !m || !d) return iso
+  try {
+    return new Intl.DateTimeFormat(DATE_LOCALES[language] || 'en', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(Date.UTC(y, m - 1, d)))
+  } catch {
+    return iso
+  }
+}
+
 export default function DocsLayout({
   title,
   current,
-  updated = 'July 27, 2026',
+  updated = '2026-07-27',
   children,
 }) {
-  const { t } = useSettings()
+  const { t, language } = useSettings()
 
   return (
     <div className="docs">
@@ -65,7 +83,7 @@ export default function DocsLayout({
           </p>
           <h1 className="docs__title">{title}</h1>
           <p className="docs__meta">
-            {t('docsLastUpdated', 'Last updated:')} {updated}
+            {t('docsLastUpdated', 'Last updated:')} {formatUpdated(updated, language)}
           </p>
         </header>
 

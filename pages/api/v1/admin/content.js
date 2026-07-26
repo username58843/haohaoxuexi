@@ -19,7 +19,11 @@ export default createApiHandler({
       const key = str(body.key, { field: 'key', min: 1, max: 80 })
       const lang = oneOf(body.lang, CONTENT_LANGS, { field: 'lang' })
       // Empty value clears the override (falls back to the shipped default).
-      const value = optStr(body.value, { field: 'value', max: 20000, trim: false }) || ''
+      // Whitespace-only counts as empty — otherwise a stray newline would be
+      // stored as a "real" override and blank the page. Non-empty values are
+      // stored untrimmed, since markdown may legitimately end with newlines.
+      const rawValue = optStr(body.value, { field: 'value', max: 20000, trim: false }) || ''
+      const value = rawValue.trim().length === 0 ? '' : rawValue
 
       const result = await setContentEntry({ scope, key, lang, value, actorId: req.userId })
       await writeAuditLog(req.userId, 'content.update', {
