@@ -294,11 +294,16 @@ async function main() {
   console.log(`\n=== SMOKE RESULT: ${passed} passed, ${failed} failed ===`)
   if (failures.length) console.log(failures.map((f) => ` - ${f}`).join('\n'))
 
-  server.kill('SIGTERM')
-  try {
-    process.kill(-server.pid)
-  } catch {
-    /* best effort */
+  // Windows: kill the whole process tree, otherwise the next server survives
+  // the shell wrapper and keeps the port (and a dead DB) for the next run.
+  if (process.platform === 'win32') {
+    await new Promise((resolve) => {
+      const killer = spawn('taskkill', ['/F', '/T', '/PID', String(server.pid)], { shell: true })
+      killer.on('close', resolve)
+      killer.on('error', resolve)
+    })
+  } else {
+    server.kill('SIGTERM')
   }
   await mongod.stop()
   process.exit(failed > 0 ? 1 : 0)

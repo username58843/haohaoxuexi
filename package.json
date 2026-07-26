@@ -33,6 +33,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.10",
     "jest": "^30.4.2",
+    "mongodb-memory-server": "^11.2.0",
     "node-mocks-http": "^1.18.0"
   },
   "engines": {
