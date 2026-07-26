@@ -1,0 +1,156 @@
+/* ============================================================
+   Base: reset, typography, canvas, utilities.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color var(--t-med), color var(--t-med);
+}
+
+/* Accent-tinted canvas glow behind everything */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(52% 38% at 50% -6%, rgba(var(--accent-rgb), 0.07), transparent 70%),
+    radial-gradient(40% 30% at 88% 104%, rgba(var(--accent-rgb), 0.045), transparent 70%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.5em;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: rgba(var(--accent-rgb), 0.3);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Chinese text is always serif — the visual hero of the product. */
+.hanzi {
+  font-family: var(--font-hanzi);
+  font-synthesis: none;
+  font-weight: 600;
+}
+
+/* Mono uppercase eyebrow label */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-2);
+}
+
+/* Two-tone headline: bright span + muted rest */
+.u-two-tone {
+  color: var(--text-3);
+
+  span {
+    color: var(--text);
+  }
+}
+
+.u-muted { color: var(--text-2); }
+.u-center { text-align: center; }
+.u-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Layout columns */
+.col-app {
+  width: 100%;
+  max-width: var(--col-app);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.col-wide {
+  width: 100%;
+  max-width: var(--col-wide);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

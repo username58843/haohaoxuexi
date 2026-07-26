@@ -1,0 +1,86 @@
+/* ============================================================
+   Design tokens — the ONLY place raw colors are allowed.
+   Dark ("ink", default) + light ("rice paper") themes.
+   Accent vars (--accent, --accent-rgb, --on-accent) are written
+   at runtime by SettingsContext; defaults here match cinnabar.
+   ============================================================ */
+
+:root {
+  /* Accent (runtime-switchable) */
+  --accent: #e0533d;
+  --accent-rgb: 224, 83, 61;
+  --on-accent: #ffffff;
+  --accent-soft: rgba(var(--accent-rgb), 0.14);
+  --accent-glow: 0 8px 30px -6px rgba(var(--accent-rgb), 0.45);
+
+  /* Canvas & surfaces — ink */
+  --bg: #0e1113;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.08);
+  --surface-3: rgba(255, 255, 255, 0.12);
+  --surface-solid: #191d20;
+  --hairline: rgba(255, 255, 255, 0.09);
+  --hairline-2: rgba(255, 255, 255, 0.16);
+  --text: #eceff1;
+  --text-2: #9aa3a9;
+  --text-3: #5f676d;
+  --shadow-card: 0 24px 70px -32px rgba(0, 0, 0, 0.85);
+  --shadow-pop: 0 30px 90px -20px rgba(0, 0, 0, 0.9);
+  --overlay: rgba(6, 8, 9, 0.72);
+
+  /* Semantic */
+  --ok: #4ade80;
+  --ok-soft: rgba(74, 222, 128, 0.14);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.14);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+
+  /* Type */
+  --font-ui: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-hanzi: 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', 'NSimSun', '宋体', serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Mono', monospace;
+
+  /* Geometry */
+  --radius-card: 18px;
+  --radius-control: 12px;
+  --radius-pill: 999px;
+  --col-app: 720px;
+  --col-wide: 1080px;
+  --dock-height: 72px;
+
+  /* Motion */
+  --t-fast: 150ms ease-out;
+  --t-med: 250ms ease-out;
+
+  /* HSK level palette (muted, from v1) */
+  --hsk-1: #4a7a5c;
+  --hsk-2: #3d6f78;
+  --hsk-3: #45607a;
+  --hsk-4: #5c5278;
+  --hsk-5: #7a4f62;
+  --hsk-6: #7a5a3d;
+}
+
+[data-theme='light'] {
+  --bg: #f7f5f0;
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-2: #ffffff;
+  --surface-3: #ede9df;
+  --surface-solid: #ffffff;
+  --hairline: rgba(28, 25, 20, 0.1);
+  --hairline-2: rgba(28, 25, 20, 0.18);
+  --text: #1c1917;
+  --text-2: #57534e;
+  --text-3: #a8a29e;
+  --shadow-card: 0 20px 50px -28px rgba(60, 50, 30, 0.25);
+  --shadow-pop: 0 30px 70px -24px rgba(60, 50, 30, 0.35);
+  --overlay: rgba(40, 36, 28, 0.45);
+
+  --ok: #16a34a;
+  --ok-soft: rgba(22, 163, 74, 0.12);
+  --warn: #d97706;
+  --warn-soft: rgba(217, 119, 6, 0.12);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.1);
+}

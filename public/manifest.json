@@ -1,0 +1,13 @@
+{
+  "name": "好好学习 — Learn Chinese",
+  "short_name": "好好学习",
+  "description": "HSK 1–6 vocabulary with spaced repetition, personal decks and progress tracking.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1113",
+  "theme_color": "#0e1113",
+  "icons": [
+    { "src": "/logo-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/logo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
