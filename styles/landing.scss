@@ -1,0 +1,552 @@
+/* Landing — modern product page, matches app dock language */
+
+/* Break out of narrow app content shell on marketing pages */
+.page-content--marketing,
+.page-content:has(.lp) {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+}
+
+.lp {
+  color: #e8eaed;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 18px calc(48px + env(safe-area-inset-bottom, 0px));
+}
+
+.site-shell--app .lp {
+  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+}
+
+/* —— Nav —— */
+.lp-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lp-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  text-decoration: none !important;
+  color: #f2f2f7 !important;
+}
+
+.lp-nav__logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #1a1510;
+}
+
+.lp-nav__name {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.lp-nav__name .hanzi {
+  font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif !important;
+}
+
+.lp-nav__sep {
+  font-family: "Inter", "Noto Sans", system-ui, sans-serif !important;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+.lp-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* —— Buttons —— */
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 0.88rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-decoration: none !important;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, filter 0.15s ease,
+    color 0.15s ease;
+}
+
+.lp-btn--ghost {
+  color: #e8eaed !important;
+  background: #2c2c2e;
+  border-color: rgba(255, 255, 255, 0.12);
+
+  &:hover {
+    color: #fff !important;
+    background: #3a3a3c;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+}
+
+.lp-btn--primary {
+  color: var(--on-accent, #111) !important;
+  background: var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
+
+  &:hover {
+    filter: brightness(1.06);
+    color: var(--on-accent, #111) !important;
+  }
+}
+
+.lp-btn--lg {
+  min-height: 46px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+}
+
+/* —— Hero —— */
+.lp-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 36px 40px;
+  align-items: center;
+  padding: 48px 0 36px;
+}
+
+.lp-hero__eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: #8e8e93;
+  letter-spacing: 0.02em;
+}
+
+.lp-hero__title {
+  margin: 0 0 14px;
+  font-size: clamp(2.4rem, 5.5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #f2f2f7;
+
+  .hanzi {
+    font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif !important;
+    font-weight: 600;
+  }
+}
+
+.lp-hero__lead {
+  margin: 0 0 22px;
+  max-width: 34rem;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: #a1a1a6;
+}
+
+.lp-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.lp-hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #1c1c1e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #c7c7cc;
+  }
+}
+
+/* Demo card */
+.lp-hero__visual {
+  display: flex;
+  justify-content: center;
+}
+
+.lp-demo {
+  width: 100%;
+  max-width: 340px;
+  padding: 16px 16px 18px;
+  border-radius: 18px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+}
+
+.lp-demo__bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 14px;
+}
+
+.lp-demo__label {
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: #8e8e93;
+}
+
+.lp-demo__caption {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #8e8e93;
+  line-height: 1.35;
+}
+
+.lp-plain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lp-plain {
+  padding: 16px 16px 15px;
+  border-radius: 14px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lp-plain__title {
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #f2f2f7;
+}
+
+.lp-plain__text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #8e8e93;
+}
+
+.lp-hero--simple .lp-hero__lead {
+  font-size: 1.05rem;
+  max-width: 32rem;
+}
+
+.lp-demo__prompt {
+  text-align: center;
+  font-size: 3.4rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #fff;
+  font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif !important;
+}
+
+.lp-demo__pinyin {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--theme-color);
+}
+
+.lp-demo__def {
+  text-align: center;
+  margin: 6px 0 16px;
+  font-size: 0.86rem;
+  color: #8e8e93;
+}
+
+.lp-demo__answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 8px;
+    border-radius: 12px;
+    background: #2c2c2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #c7c7cc;
+
+    &.is-ok {
+      background: rgba(var(--theme-color-rgb), 0.18);
+      border-color: rgba(var(--theme-color-rgb), 0.45);
+      color: #f2f2f7;
+    }
+  }
+}
+
+/* —— Stats —— */
+.lp-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 14px;
+  margin-bottom: 48px;
+  border-radius: 18px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.lp-stats__item {
+  text-align: center;
+  padding: 10px 6px;
+}
+
+.lp-stats__value {
+  font-size: 1.35rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: #f2f2f7;
+  line-height: 1.15;
+}
+
+.lp-stats__label {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #8e8e93;
+  line-height: 1.3;
+}
+
+/* —— Sections —— */
+.lp-section {
+  margin-bottom: 48px;
+}
+
+.lp-section__head {
+  margin-bottom: 18px;
+  max-width: 36rem;
+}
+
+.lp-section__title {
+  margin: 0 0 8px;
+  font-size: 1.45rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: #f2f2f7;
+}
+
+.lp-section__sub {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #8e8e93;
+}
+
+.lp-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.lp-feature {
+  padding: 16px 16px 18px;
+  border-radius: 16px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lp-feature__icon {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--theme-color-rgb), 0.14);
+  color: var(--theme-color);
+  font-size: 0.82rem;
+  font-weight: 750;
+  font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif !important;
+}
+
+.lp-feature__title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f2f2f7;
+  letter-spacing: -0.02em;
+}
+
+.lp-feature__text {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #8e8e93;
+}
+
+.lp-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.lp-step {
+  padding: 18px 16px;
+  border-radius: 16px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lp-step__n {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f2f2f7;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.lp-step__title {
+  margin: 0 0 6px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #f2f2f7;
+}
+
+.lp-step__text {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: #8e8e93;
+}
+
+/* —— CTA —— */
+.lp-cta {
+  margin-bottom: 36px;
+}
+
+.lp-cta__inner {
+  padding: 28px 22px;
+  border-radius: 18px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.lp-cta__title {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #f2f2f7;
+}
+
+.lp-cta__sub {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  color: #8e8e93;
+  line-height: 1.45;
+}
+
+/* —— Footer —— */
+.lp-footer {
+  padding: 8px 0 20px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #636366;
+
+  .hanzi {
+    font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif !important;
+  }
+}
+
+/* —— Responsive —— */
+@media (max-width: 860px) {
+  .lp-hero {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 32px 0 28px;
+  }
+
+  .lp-hero__visual {
+    order: -1;
+  }
+
+  .lp-demo {
+    max-width: 100%;
+  }
+
+  .lp-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .lp-features {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .lp-nav__name {
+    font-size: 0.82rem;
+  }
+
+  .lp-nav__actions .lp-btn--ghost {
+    display: none;
+  }
+
+  .lp-hero__title {
+    font-size: 2.2rem;
+  }
+
+  .lp-hero__lead {
+    font-size: 0.95rem;
+  }
+}
+
+/* Legacy landing class hooks (if anything still references them) */
+.landing {
+  color: #e8eaed;
+}
+
+.landing__mesh,
+.landing__noise {
+  display: none;
+}

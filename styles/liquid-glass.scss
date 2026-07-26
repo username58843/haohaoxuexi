@@ -1,0 +1,745 @@
+﻿/* ═══════════════════════════════════════════════════
+   Liquid Glass — reusable “liquid glass” effect
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  /* Aligned with .dict-actions-menu — solid iOS dark surfaces */
+  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --glass-shadow-active: none;
+  --glass-shadow-indicator: none;
+  --glass-bg: #1c1c1e;
+  --glass-bg-strong: #1c1c1e;
+  --glass-bg-soft: #2c2c2e;
+  --glass-bg-elevated: #2c2c2e;
+  --glass-bg-input: #2c2c2e;
+  --glass-blur: 0px;
+  --glass-saturate: 100%;
+  --glass-radius: 14px;
+  --glass-radius-sm: 10px;
+  --glass-radius-pill: 999px;
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Utilities ───────────────────────────────────── */
+
+/* Base solid surface — hang on any panel (= dict menu) */
+.glass {
+  background: #1c1c1e !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55) !important;
+  border-radius: 14px !important;
+}
+
+/* Active surface — pressed / selected */
+.glass-active {
+  background: rgba(var(--theme-color-rgb), 0.28) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.4) !important;
+  box-shadow: var(--glass-shadow-active) !important;
+}
+
+/* Indicator slider */
+.glass-indicator {
+  background: rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: var(--glass-shadow-indicator) !important;
+}
+
+/* Stronger panel (modals, auth cards) */
+.glass-strong {
+  background: var(--glass-bg-strong) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+/* Soft chip / pill surface */
+.glass-chip {
+  background: var(--glass-bg-soft) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: var(--glass-radius-pill) !important;
+  color: var(--text-secondary, #8E8E93) !important;
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &.active,
+  &.glass-active {
+    background: rgba(var(--theme-color-rgb), 0.28) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
+    color: #fff !important;
+    box-shadow: var(--glass-shadow-active) !important;
+  }
+
+  &:hover {
+    border-color: var(--glass-highlight) !important;
+    color: #fff !important;
+  }
+}
+
+/* Segmented control shell */
+.glass-segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--glass-radius-pill);
+  background: rgba(0, 0, 0, 0.28) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+
+  &.w-100 {
+    display: flex;
+    width: 100%;
+  }
+
+  .more-nav-chip {
+    flex: 1;
+    justify-content: center;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-color: transparent !important;
+
+    &.active {
+      background: rgba(255, 255, 255, 0.12) !important;
+      box-shadow: var(--glass-shadow-indicator) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+  }
+}
+
+/* ── Global surface mapping ──────────────────────── */
+
+/* Ambient page backdrop so blur has something to refract */
+.site-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(var(--theme-color-rgb), 0.18), transparent 55%),
+    radial-gradient(900px 500px at 90% 10%, rgba(106, 27, 154, 0.16), transparent 50%),
+    radial-gradient(700px 400px at 50% 100%, rgba(30, 133, 56, 0.08), transparent 45%),
+    #0D0D0D;
+  background-attachment: fixed;
+}
+
+/* Cards */
+.card,
+.card-body,
+.learn-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.card {
+  border-radius: var(--glass-radius) !important;
+  // visible so dropdown menus (Actions) are not clipped
+  overflow: visible;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(var(--theme-color-rgb), 0.28) !important;
+  }
+}
+
+.card-body {
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: transparent !important;
+}
+
+.learn-card {
+  border-radius: var(--glass-radius) !important;
+}
+
+/* Bottom tab bar */
+.bottom-tab-bar {
+  background: #1c1c1e !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 1px solid var(--glass-border) !important;
+  box-shadow:
+    var(--glass-shadow),
+    0 -8px 32px rgba(0, 0, 0, 0.28) !important;
+
+  .tab-item {
+    border-radius: 12px;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+
+    &.active,
+    &.is-active {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+}
+
+/* Modals — solid dark panels (Create dictionary, etc.) */
+.modal-content {
+  background: #1c1c1e !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  background: #1c1c1e !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+
+.modal-backdrop {
+  background-color: #000 !important;
+  opacity: 0.72 !important;
+}
+
+/* Dropdowns — identical to .dict-actions-menu */
+.dropdown-menu {
+  z-index: 3000 !important;
+  background: #1c1c1e !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55) !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  padding: 6px !important;
+}
+
+.dropdown-item {
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff !important;
+
+  &:hover,
+  &:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff !important;
+  }
+
+  &.active,
+  &:active {
+    background: rgba(var(--theme-color-rgb), 0.22) !important;
+    box-shadow: none;
+  }
+
+  &.text-danger {
+    color: #ff6b63 !important;
+  }
+}
+
+.dropdown-divider {
+  border-top-color: rgba(255, 255, 255, 0.1) !important;
+  margin: 4px 0;
+}
+
+/* Forms — solid inputs (never checkboxes/radios) */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([type="hidden"]),
+textarea,
+select,
+.form-control:not([type="checkbox"]):not([type="radio"]),
+.form-select {
+  background: #2c2c2e !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+  border-radius: var(--glass-radius-sm) !important;
+  color: #fff !important;
+
+  &:focus {
+    border-color: rgba(var(--theme-color-rgb), 0.65) !important;
+    box-shadow: 0 0 0 3px rgba(var(--theme-color-rgb), 0.2) !important;
+    background: #323234 !important;
+  }
+}
+
+/* Checkboxes & radios — clear selected state on dark UI */
+input[type="checkbox"],
+input[type="radio"],
+.form-check-input {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  min-width: 1.2rem !important;
+  max-width: 1.2rem !important;
+  padding: 0 !important;
+  margin: 0.2rem 0.55rem 0 0 !important;
+  display: inline-grid !important;
+  place-content: center;
+  vertical-align: top;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="checkbox"],
+.form-check-input[type="checkbox"] {
+  border-radius: 5px !important;
+}
+
+input[type="radio"],
+.form-check-input[type="radio"] {
+  border-radius: 50% !important;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked,
+.form-check-input:checked {
+  background-color: var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-color-rgb), 0.22) !important;
+}
+
+/* White checkmark */
+input[type="checkbox"]:checked,
+.form-check-input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") !important;
+  background-size: 0.85rem 0.85rem !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* White radio dot */
+input[type="radio"]:checked,
+.form-check-input[type="radio"]:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.2' fill='%23fff'/%3E%3C/svg%3E") !important;
+  background-size: 100% 100% !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus,
+.form-check-input:focus {
+  outline: none !important;
+  border-color: var(--theme-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--theme-color-rgb), 0.28) !important;
+}
+
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled,
+.form-check-input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.form-check,
+.form-group.form-check,
+.form-check-inline {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 0.15rem;
+  margin-bottom: 0.55rem;
+  min-height: auto;
+  padding-left: 0 !important;
+}
+
+.form-check .form-check-input,
+.form-group.form-check .form-check-input,
+.form-check input[type="checkbox"],
+.form-check input[type="radio"],
+.form-group.form-check input[type="checkbox"],
+.form-group.form-check input[type="radio"] {
+  float: none !important;
+  margin-left: 0 !important;
+  margin-top: 0.2rem !important;
+  position: static !important;
+}
+
+.form-check-label,
+.form-check label,
+.form-group.form-check label {
+  color: #fff !important;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+  padding-left: 0 !important;
+}
+
+/* Selected mode row — soft highlight when checkbox is checked */
+.form-check,
+.form-group.form-check {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem !important;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-check.is-checked,
+.form-group.form-check.is-checked,
+.form-check:has(input:checked),
+.form-group.form-check:has(input:checked) {
+  background: rgba(var(--theme-color-rgb), 0.12);
+  border-color: rgba(var(--theme-color-rgb), 0.28);
+  box-shadow: var(--glass-shadow-active);
+}
+
+.mode-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--glass-radius-sm) !important;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+
+  &.btn-primary {
+    background: linear-gradient(180deg, rgba(var(--theme-color-rgb), 0.95), rgba(var(--theme-color-rgb), 0.88)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: var(--glass-shadow-active) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+
+    &:hover {
+      box-shadow: var(--glass-shadow) !important;
+    }
+  }
+
+  &.btn-secondary,
+  &.btn-dark,
+  &.btn-outline-light,
+  &.btn-outline-primary,
+  &.btn-outline-danger {
+    background: var(--glass-bg-soft) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  &.btn-outline-primary {
+    color: var(--theme-color) !important;
+  }
+
+  &.btn-outline-danger {
+    color: #ff6b63 !important;
+  }
+
+  &.btn-checkbox {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    box-shadow: var(--glass-shadow) !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    color: #c7c7cc !important;
+    opacity: 0.92;
+
+    &.active,
+    &.btn-primary,
+    &.btn-secondary,
+    &.btn-info {
+      background: rgba(var(--theme-color-rgb), 0.32) !important;
+      border-color: rgba(var(--theme-color-rgb), 0.55) !important;
+      box-shadow: var(--glass-shadow-active) !important;
+      color: #fff !important;
+      opacity: 1;
+    }
+
+    // Unselected outline variants stay muted
+    &.btn-outline-primary,
+    &.btn-outline-secondary,
+    &.btn-outline-info,
+    &.btn-outline-light {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
+      color: #c7c7cc !important;
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Alerts */
+.alert {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: 14px !important;
+}
+
+.alert-info {
+  background: rgba(var(--theme-color-rgb), 0.16) !important;
+}
+
+.alert-success {
+  background: rgba(30, 133, 56, 0.18) !important;
+}
+
+.alert-danger {
+  background: rgba(255, 69, 58, 0.16) !important;
+}
+
+.alert-warning {
+  background: rgba(106, 27, 154, 0.18) !important;
+}
+
+/* Badges */
+.badge {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: var(--glass-shadow-active);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* List group */
+.list-group-item {
+  background: var(--glass-bg-soft) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-color: var(--glass-border) !important;
+  box-shadow: none;
+
+  &:first-child {
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
+
+  &.active {
+    background: rgba(var(--theme-color-rgb), 0.22) !important;
+    box-shadow: var(--glass-shadow-active);
+  }
+}
+
+/* Tables */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+  background: transparent !important;
+
+  thead th {
+    background: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: none;
+  }
+}
+
+.table-responsive,
+.table-glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: var(--glass-radius) !important;
+  overflow: hidden;
+}
+
+/* Tabs / nav */
+.nav-tabs {
+  border-bottom: 1px solid var(--glass-border) !important;
+  gap: 4px;
+
+  .nav-link {
+    border-radius: 12px 12px 0 0 !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: rgba(var(--theme-color-rgb), 0.16) !important;
+      border-color: var(--glass-border) !important;
+      border-bottom-color: transparent !important;
+      box-shadow: var(--glass-shadow-active);
+      color: #fff !important;
+    }
+
+    &:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+  }
+}
+
+/* Progress */
+.progress {
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  border-radius: 999px !important;
+  overflow: hidden;
+
+  .progress-bar {
+    box-shadow: var(--glass-shadow-active);
+  }
+}
+
+/* Pre / code blocks */
+pre,
+code {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-active);
+  border-radius: 12px;
+}
+
+pre {
+  padding: 12px 14px;
+}
+
+/* Search result cards */
+.search-result-card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  border-radius: var(--glass-radius) !important;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateX(8px);
+    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
+    box-shadow:
+      var(--glass-shadow),
+      0 8px 28px rgba(var(--theme-color-rgb), 0.18) !important;
+  }
+}
+
+/* More-section chip nav */
+.more-nav-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.more-nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--glass-radius-pill);
+  text-decoration: none !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #8e8e93 !important;
+  background: var(--glass-bg-soft) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  transition: all 0.2s ease;
+
+  span {
+    color: inherit !important;
+  }
+
+  &:hover {
+    color: #fff !important;
+    border-color: var(--glass-highlight) !important;
+  }
+
+  &.active {
+    color: #fff !important;
+    background: rgba(var(--theme-color-rgb), 0.28) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.42) !important;
+    box-shadow: var(--glass-shadow-active) !important;
+  }
+}
+
+/* Auth / segmented glass tabs wrapper */
+.auth-glass-card {
+  border-radius: 22px !important;
+}
+
+/* Reduce harsh solid borders from inline styles on common wrappers */
+.modal-content[style],
+.card[style],
+.modal-header[style],
+.modal-body[style] {
+  /* glass classes + !important rules above still win for bg/shadow */
+}
+
+/* Safari / reduced motion */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-strong,
+  .glass-chip,
+  .glass-active,
+  .glass-indicator,
+  .card,
+  .learn-card,
+  .modal-content,
+  .dropdown-menu,
+  .bottom-tab-bar,
+  .search-result-card,
+  .more-nav-chip,
+  .btn.btn-secondary,
+  .btn.btn-dark,
+  .btn.btn-outline-light,
+  .btn.btn-outline-primary,
+  .btn.btn-outline-danger,
+  .btn.btn-checkbox,
+  .alert,
+  .list-group-item,
+  input,
+  textarea,
+  select,
+  .form-control,
+  .form-select {
+    background: rgba(28, 28, 30, 0.92) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong,
+  .glass-chip,
+  .card,
+  .learn-card,
+  .modal-content,
+  .dropdown-menu,
+  .bottom-tab-bar,
+  .search-result-card,
+  .more-nav-chip {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(28, 28, 30, 0.94) !important;
+  }
+}

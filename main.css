@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-apple-dark text-apple-text font-sans;
+}
+
+a {
+  @apply text-red-400 transition-colors duration-300;
+}
+a:hover {
+  @apply text-red-300;
+}
+
+header {
+  @apply py-6;
+}
+header .logo {
+  @apply font-bold text-3xl text-apple-text;
+}
+
+footer {
+  @apply py-6 text-center text-apple-text;
+}
+
+.learn-card {
+  @apply bg-apple-gray border border-gray-700 rounded-xl p-6 mb-6;
+}
+.learn-card .question {
+  @apply font-mono text-center text-5xl text-apple-text;
+}
+.learn-card .comment {
+  @apply text-xl text-apple-text mt-2;
+}
+
+input, textarea, select {
+  @apply bg-apple-gray text-apple-text border border-gray-600 rounded-lg p-3 w-full transition-all duration-300;
+}
+input::placeholder, textarea::placeholder, select::placeholder {
+  @apply text-gray-400;
+}
+input:focus, textarea:focus, select:focus {
+  @apply border-apple-accent outline-none ring-2 ring-apple-accent/50;
+}
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #2D3A3A inset !important;
+  -webkit-text-fill-color: #F5F5F7 !important;
+}
