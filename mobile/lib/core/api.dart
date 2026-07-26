@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// Override at build time: `--dart-define=API_BASE_URL=https://example.com`.
 const String apiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: 'https://xuehanyuapp.vercel.app',
+  defaultValue: 'https://haohaoxuexi.vercel.app',
 );
 
 /// Thrown for every failed API call.

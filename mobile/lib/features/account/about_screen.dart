@@ -7,8 +7,8 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 
 const String _appVersion = '2.0.0';
-const String _privacyUrl = 'https://xuehanyuapp.vercel.app/privacy';
-const String _termsUrl = 'https://xuehanyuapp.vercel.app/terms';
+const String _privacyUrl = 'https://haohaoxuexi.vercel.app/privacy';
+const String _termsUrl = 'https://haohaoxuexi.vercel.app/terms';
 const String _contactEmail = 'bobby.minecrafter06@gmail.com';
 
 /// About: serif hero, version, blurb, motto meaning and selectable links.

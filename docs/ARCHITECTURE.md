@@ -239,7 +239,7 @@ Goal met: `todayReviews ≥ settings.dailyGoal` (default 20).
 
 - Flutter 3.x, Dart 3, Material 3. State: `flutter_riverpod`. HTTP: `dio`.
   Router: `go_router`. Secure token store: `flutter_secure_storage`.
-- Base URL via `--dart-define=API_BASE_URL=...` (default `https://xuehanyuapp.vercel.app`).
+- Base URL via `--dart-define=API_BASE_URL=...` (default `https://haohaoxuexi.vercel.app`).
 - Screens: Splash → Onboarding (3 slides) → Auth; Home (streak, due, goal ring,
   quick start); Study (SRS flashcards with 4 grade buttons + MCQ quiz mode);
   HSK browser (packs bundled as assets for offline browse + API search);

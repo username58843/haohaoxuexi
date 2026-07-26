@@ -11,7 +11,7 @@
 | Content rating | Everyone (IARC questionnaire: no violence, no ads, no user-generated public content, no location) |
 | Price | Free, no in-app purchases, no ads |
 | Contact email | bobby.minecrafter06@gmail.com |
-| Privacy policy URL | https://<your-domain>/privacy |
+| Privacy policy URL | https://haohaoxuexi.vercel.app/privacy |
 
 ## Short description (80 chars max)
 

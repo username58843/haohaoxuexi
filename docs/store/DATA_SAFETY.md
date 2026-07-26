@@ -45,5 +45,5 @@ advertising IDs.
 
 ## Account deletion URL (required by Play policy)
 
-Point the "Account deletion" policy field to: `https://<your-domain>/privacy`
+Point the "Account deletion" policy field to: `https://haohaoxuexi.vercel.app/privacy`
 (the policy describes both in-app deletion and the email path).

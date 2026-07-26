@@ -26,14 +26,14 @@
 2. Set the production API URL and build the bundle:
    ```bash
    cd mobile
-   flutter build appbundle --release --dart-define=API_BASE_URL=https://<your-domain>
+   flutter build appbundle --release --dart-define=API_BASE_URL=https://haohaoxuexi.vercel.app
    ```
    Output: `build/app/outputs/bundle/release/app-release.aab`.
 3. Play Console → create app (`com.haohaoxuexi.app`), fill:
    - Store listing from `docs/store/PLAY_STORE_LISTING.md`
    - Data safety from `docs/store/DATA_SAFETY.md`
    - Content rating questionnaire (Everyone)
-   - Privacy policy URL → `https://<your-domain>/privacy`
+   - Privacy policy URL → `https://haohaoxuexi.vercel.app/privacy`
    - App access: provide a test account (create one specifically for review)
 4. Upload the `.aab` to Internal testing first; test on a real device.
 5. Promote to Production; roll out gradually (20% → 100%).
