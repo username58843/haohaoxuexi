@@ -43,6 +43,23 @@
   color: var(--text-2);
 }
 
+/* Map-view link: sits at the far right of the level bar. When the known/total
+   stat is present it already pushed itself right (margin-left:auto), so the link
+   just follows it; otherwise the link claims the auto margin. */
+.hsk__map-link {
+  flex-shrink: 0;
+  gap: 5px;
+
+  .hsk__level-stat + & {
+    margin-left: 8px;
+  }
+
+  &:first-child,
+  .hsk__levels + & {
+    margin-left: auto;
+  }
+}
+
 .hsk__search {
   flex: 1;
   min-width: 0;

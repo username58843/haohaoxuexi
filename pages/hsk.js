@@ -60,6 +60,27 @@ function ClearIcon() {
   )
 }
 
+function MapGridIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+    </svg>
+  )
+}
+
 /** Auth-gated HSK lexicon browser: level filter, search, known map, decks. */
 export default function HskPage() {
   const { user, loading } = useAuth()
@@ -496,6 +517,15 @@ export default function HskPage() {
                   {totalKnown}/{totalWords}
                 </span>
               )}
+              <Button
+                href="/hsk/map"
+                size="sm"
+                variant="ghost"
+                className="hsk__map-link"
+                aria-label={t('hskMapView', 'Map view')}
+              >
+                <MapGridIcon /> {t('hskMapView', 'Map')}
+              </Button>
             </div>
             <div className="hsk__bar hsk__bar--tools">
               <Field

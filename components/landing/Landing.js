@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { Button, Card } from '~/components/ui'
 import { useSettings } from '~/lib/contexts/SettingsContext'
+import EditableText from '~/components/EditableText'
 import DemoCard from './DemoCard'
 
 /**
@@ -190,41 +191,53 @@ export default function Landing() {
         </Link>
         <div className="lp-nav__actions">
           <Button variant="ghost" size="sm" href="/auth" className="lp-nav__login">
-            {t('lpNavSignIn', 'Sign in')}
+            <EditableText scope="landing" id="navSignIn">
+              {t('lpNavSignIn', 'Sign in')}
+            </EditableText>
           </Button>
           <Button variant="primary" size="sm" href="/auth">
-            {t('lpNavStart', 'Get started')}
+            <EditableText scope="landing" id="navStart">
+              {t('lpNavStart', 'Get started')}
+            </EditableText>
           </Button>
         </div>
       </header>
 
       {/* Hero */}
       <section className="lp-hero">
-        <p className="eyebrow lp-hero__eyebrow">
+        <EditableText scope="landing" id="heroEyebrow" as="p" className="eyebrow lp-hero__eyebrow">
           {t('lpHeroEyebrow', 'Spaced repetition · HSK 1–6 · Free')}
-        </p>
+        </EditableText>
         <h1 className="lp-hero__title hanzi" lang="zh">
           好好学习汉语
           <span className="lp-hero__seal" aria-hidden="true" />
         </h1>
         <p className="lp-hero__sub u-two-tone">
-          <span>{t('lpHeroSubLead', 'Learn Chinese words that stay learned.')}</span>{' '}
-          {t(
-            'lpHeroSubRest',
-            'Flashcards and quizzes scheduled by an SRS that knows exactly when you are about to forget.'
-          )}
+          <EditableText scope="landing" id="heroSubLead" as="span">
+            {t('lpHeroSubLead', 'Learn Chinese words that stay learned.')}
+          </EditableText>{' '}
+          <EditableText scope="landing" id="heroSubRest" as="span" className="lp-tt-rest">
+            {t(
+              'lpHeroSubRest',
+              'Flashcards and quizzes scheduled by an SRS that knows exactly when you are about to forget.'
+            )}
+          </EditableText>
         </p>
         <div className="lp-hero__ctas">
           <Button variant="primary" size="lg" href="/auth">
-            {t('lpHeroCta', 'Start learning free')}
+            <EditableText scope="landing" id="heroCta">
+              {t('lpHeroCta', 'Start learning free')}
+            </EditableText>
           </Button>
           <Link href="/auth" className="lp-hero__signin">
-            {t('lpHeroSignIn', 'Sign in')}
+            <EditableText scope="landing" id="heroSignIn">
+              {t('lpHeroSignIn', 'Sign in')}
+            </EditableText>
           </Link>
         </div>
-        <p className="lp-hero__micro u-mono">
+        <EditableText scope="landing" id="heroMicro" as="p" className="lp-hero__micro u-mono">
           {t('lpHeroMicro', 'free forever · no ads · no credit card')}
-        </p>
+        </EditableText>
 
         <div className="lp-hero__demo">
           <DemoCard />
@@ -234,10 +247,16 @@ export default function Landing() {
       {/* Features */}
       <section className="lp-section lp-features">
         <div className="col-wide">
-          <p className="eyebrow u-center">{t('lpFeaturesEyebrow', 'Why it sticks')}</p>
+          <EditableText scope="landing" id="featuresEyebrow" as="p" className="eyebrow u-center">
+            {t('lpFeaturesEyebrow', 'Why it sticks')}
+          </EditableText>
           <h2 className="lp-section__title u-two-tone u-center">
-            <span>{t('lpFeaturesTitleLead', 'Built for memory,')}</span>{' '}
-            {t('lpFeaturesTitleRest', 'not busywork.')}
+            <EditableText scope="landing" id="featuresTitleLead" as="span">
+              {t('lpFeaturesTitleLead', 'Built for memory,')}
+            </EditableText>{' '}
+            <EditableText scope="landing" id="featuresTitleRest" as="span" className="lp-tt-rest">
+              {t('lpFeaturesTitleRest', 'not busywork.')}
+            </EditableText>
           </h2>
           <div className="lp-features__grid">
             {features.map((f) => (
@@ -245,8 +264,22 @@ export default function Landing() {
                 <span className={`lp-feature__tile lp-feature__tile--${f.tint}`}>
                   {f.icon}
                 </span>
-                <h3 className="lp-feature__title">{f.title}</h3>
-                <p className="lp-feature__text">{f.text}</p>
+                <EditableText
+                  scope="landing"
+                  id={`feat_${f.key}_title`}
+                  as="h3"
+                  className="lp-feature__title"
+                >
+                  {f.title}
+                </EditableText>
+                <EditableText
+                  scope="landing"
+                  id={`feat_${f.key}_text`}
+                  as="p"
+                  className="lp-feature__text"
+                >
+                  {f.text}
+                </EditableText>
               </Card>
             ))}
           </div>
@@ -256,10 +289,16 @@ export default function Landing() {
       {/* How it works */}
       <section className="lp-section lp-steps">
         <div className="col-wide">
-          <p className="eyebrow u-center">{t('lpStepsEyebrow', 'How it works')}</p>
+          <EditableText scope="landing" id="stepsEyebrow" as="p" className="eyebrow u-center">
+            {t('lpStepsEyebrow', 'How it works')}
+          </EditableText>
           <h2 className="lp-section__title u-two-tone u-center">
-            <span>{t('lpStepsTitleLead', 'Three steps,')}</span>{' '}
-            {t('lpStepsTitleRest', 'a few minutes a day.')}
+            <EditableText scope="landing" id="stepsTitleLead" as="span">
+              {t('lpStepsTitleLead', 'Three steps,')}
+            </EditableText>{' '}
+            <EditableText scope="landing" id="stepsTitleRest" as="span" className="lp-tt-rest">
+              {t('lpStepsTitleRest', 'a few minutes a day.')}
+            </EditableText>
           </h2>
           <div className="lp-steps__list">
             <div className="lp-steps__line" aria-hidden="true">
@@ -268,8 +307,22 @@ export default function Landing() {
             {steps.map((s, i) => (
               <div className="lp-step" key={s.key}>
                 <span className="lp-step__marker u-mono">{i + 1}</span>
-                <h3 className="lp-step__title">{s.title}</h3>
-                <p className="lp-step__text">{s.text}</p>
+                <EditableText
+                  scope="landing"
+                  id={`step_${s.key}_title`}
+                  as="h3"
+                  className="lp-step__title"
+                >
+                  {s.title}
+                </EditableText>
+                <EditableText
+                  scope="landing"
+                  id={`step_${s.key}_text`}
+                  as="p"
+                  className="lp-step__text"
+                >
+                  {s.text}
+                </EditableText>
               </div>
             ))}
           </div>
@@ -282,7 +335,14 @@ export default function Landing() {
           {stats.map((s) => (
             <div className="lp-stats__item" key={s.key}>
               <span className="lp-stats__value u-mono">{s.value}</span>
-              <span className="lp-stats__label">{s.label}</span>
+              <EditableText
+                scope="landing"
+                id={`stat_${s.key}_label`}
+                as="span"
+                className="lp-stats__label"
+              >
+                {s.label}
+              </EditableText>
             </div>
           ))}
         </div>
@@ -295,17 +355,25 @@ export default function Landing() {
             <span className="lp-cta__glyph hanzi" lang="zh" aria-hidden="true">
               学
             </span>
-            <p className="eyebrow">{t('lpCtaEyebrow', 'Start today')}</p>
+            <EditableText scope="landing" id="ctaEyebrow" as="p" className="eyebrow">
+              {t('lpCtaEyebrow', 'Start today')}
+            </EditableText>
             <h2 className="lp-cta__title u-two-tone">
-              <span>{t('lpCtaTitleLead', 'Ready when you are.')}</span>{' '}
-              {t('lpCtaTitleRest', 'The first review takes a minute.')}
+              <EditableText scope="landing" id="ctaTitleLead" as="span">
+                {t('lpCtaTitleLead', 'Ready when you are.')}
+              </EditableText>{' '}
+              <EditableText scope="landing" id="ctaTitleRest" as="span" className="lp-tt-rest">
+                {t('lpCtaTitleRest', 'The first review takes a minute.')}
+              </EditableText>
             </h2>
             <Button variant="primary" size="lg" href="/auth">
-              {t('lpCtaButton', 'Start learning free')}
+              <EditableText scope="landing" id="ctaButton" as="span">
+                {t('lpCtaButton', 'Start learning free')}
+              </EditableText>
             </Button>
-            <p className="lp-cta__micro u-mono">
+            <EditableText scope="landing" id="ctaMicro" as="p" className="lp-cta__micro u-mono">
               {t('lpCtaMicro', 'no credit card · no ads · just hanzi')}
-            </p>
+            </EditableText>
           </div>
         </div>
       </section>
@@ -317,7 +385,9 @@ export default function Landing() {
             <span className="hanzi" lang="zh">
               好好学习汉语
             </span>
-            <span className="lp-footer__tag">HaoHao XueXi</span>
+            <EditableText scope="landing" id="footerTag" as="span" className="lp-footer__tag">
+              HaoHao XueXi
+            </EditableText>
           </div>
           <nav className="lp-footer__links" aria-label="Footer">
             <Link href="/about">{t('lpFooterAbout', 'About')}</Link>
@@ -330,7 +400,10 @@ export default function Landing() {
           <span className="hanzi" lang="zh">
             好好学习汉语
           </span>{' '}
-          · {t('lpFooterCopy', 'made for Chinese learners')}
+          ·{' '}
+          <EditableText scope="landing" id="footerCopy" as="span">
+            {t('lpFooterCopy', 'made for Chinese learners')}
+          </EditableText>
         </div>
       </footer>
     </div>

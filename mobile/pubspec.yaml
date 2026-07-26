@@ -1,5 +1,5 @@
 name: haohao_xuexi
-description: "好好学习 — HSK vocabulary with spaced repetition."
+description: "好好学习汉语 — HSK vocabulary with spaced repetition."
 publish_to: 'none'
 
 # versionName+versionCode for Android releases.
@@ -30,7 +30,7 @@ flutter_launcher_icons:
   android: true
   ios: false
   image_path: assets/icon/icon_full.png
-  adaptive_icon_background: "#E0533D"
+  adaptive_icon_background: "#34C759"
   adaptive_icon_foreground: assets/icon/icon_fg.png
   adaptive_icon_monochrome: assets/icon/icon_fg.png
 

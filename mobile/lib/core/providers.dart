@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui show PlatformDispatcher;
 
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/services.dart' show rootBundle;
@@ -73,16 +74,55 @@ class SettingsNotifier extends Notifier<AppSettings> {
   AppSettings build() {
     final p = _prefs;
     final accentRaw = p.getString(_kAccent);
+
+    // Language: honour the user's persisted choice; on a fresh install
+    // (nothing stored yet) fall back to the device locale. We persist the
+    // detected value so later launches never re-detect over an explicit choice.
+    final storedLang = _validLanguage(p.getString(_kLanguage));
+    final String language;
+    if (storedLang != null) {
+      language = storedLang;
+    } else {
+      language = _detectDeviceLanguage();
+      p.setString(_kLanguage, language);
+    }
+
     final settings = AppSettings(
       themeMode: _themeModeFrom(p.getString(_kTheme)),
       accent:
           accentColors.containsKey(accentRaw) ? accentRaw! : defaultAccentKey,
-      language: _validLanguage(p.getString(_kLanguage)) ?? 'en',
+      language: language,
       dailyGoal: p.getInt(_kDailyGoal) ?? 20,
       onboardingDone: p.getBool(_kOnboardingDone) ?? false,
     );
     I18n.setLanguage(settings.language);
     return settings;
+  }
+
+  /// First-launch language pick from the device locales, mapped to one of the
+  /// supported UI languages (en/ru/tk/zh). Falls back to 'en'.
+  static String _detectDeviceLanguage() {
+    final locales = ui.PlatformDispatcher.instance.locales;
+    for (final locale in locales) {
+      final mapped = _mapLocaleCode(locale.languageCode);
+      if (mapped != null) return mapped;
+    }
+    return 'en';
+  }
+
+  /// Maps a BCP-47 language subtag to a supported UI language, or null.
+  static String? _mapLocaleCode(String code) {
+    switch (code.toLowerCase()) {
+      case 'en':
+        return 'en';
+      case 'ru':
+        return 'ru';
+      case 'tk':
+        return 'tk';
+      case 'zh':
+        return 'zh';
+    }
+    return null;
   }
 
   void setThemeMode(ThemeMode mode) {

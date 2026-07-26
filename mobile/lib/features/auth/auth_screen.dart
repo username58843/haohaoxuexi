@@ -169,7 +169,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 children: [
                   Text('HAOHAO XUEXI', style: monoStyle(context)),
                   const SizedBox(height: 10),
-                  const HanziText('好好学习', size: 40, weight: FontWeight.w700),
+                  const HanziText('好好学习汉语', size: 32, weight: FontWeight.w700),
                   const SizedBox(height: 24),
                   InkCard(
                     padding: const EdgeInsets.all(20),

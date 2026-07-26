@@ -114,6 +114,89 @@
   color: var(--text-2);
 }
 
+/* ------------------------------------------------------------
+   Markdown-rendered doc body (CMS). Self-contained so it also
+   styles the admin editor's live preview outside .docs__body.
+   ------------------------------------------------------------ */
+.docs-prose {
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.75;
+
+  /* The lead paragraph is the first block of the body. */
+  > p:first-child {
+    font-size: 16.5px;
+  }
+
+  h1 {
+    margin: 0 0 16px;
+    color: var(--text);
+    font-family: var(--font-hanzi);
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.015em;
+  }
+
+  h2 {
+    margin: 36px 0 12px;
+    color: var(--text);
+    font-size: 20px;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    margin: 24px 0 8px;
+    color: var(--text);
+    font-size: 17px;
+  }
+
+  p {
+    margin: 0 0 14px;
+  }
+
+  ul,
+  ol {
+    margin: 0 0 14px;
+    padding-left: 22px;
+  }
+
+  li {
+    margin-bottom: 7px;
+
+    &::marker {
+      color: var(--accent);
+    }
+  }
+
+  strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 1px 5px;
+    border-radius: 5px;
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 /* About page version line */
 .docs__version {
   margin-top: 32px;

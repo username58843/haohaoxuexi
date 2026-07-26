@@ -127,7 +127,7 @@ class HaoHaoApp extends ConsumerWidget {
     final accent = accentColors[settings.accent] ?? accentColors[defaultAccentKey]!;
 
     return MaterialApp.router(
-      title: '好好学习',
+      title: '好好学习汉语',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(Brightness.light, accent),
       darkTheme: buildTheme(Brightness.dark, accent),

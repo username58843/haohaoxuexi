@@ -31,7 +31,7 @@ class AboutScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const HanziText('好好学习', size: 42, weight: FontWeight.w700),
+                  const HanziText('好好学习汉语', size: 34, weight: FontWeight.w700),
                   const SizedBox(width: 7),
                   // Accent "seal dot" next to the serif hero.
                   Padding(

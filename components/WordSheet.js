@@ -150,7 +150,7 @@ export default function WordSheet({ word, open, onClose, actions = null }) {
 
         {ru.length > 0 && (
           <div className="word-sheet__block">
-            <span className="eyebrow">Русский</span>
+            <span className="eyebrow">{t('wsLangRu', 'Russian')}</span>
             <ul className="word-sheet__defs">
               {ru.map((d, i) => (
                 <li key={i}>{d}</li>
@@ -161,7 +161,7 @@ export default function WordSheet({ word, open, onClose, actions = null }) {
 
         {en.length > 0 && en.join() !== primary.join() && (
           <div className="word-sheet__block">
-            <span className="eyebrow">English</span>
+            <span className="eyebrow">{t('wsLangEn', 'English')}</span>
             <ul className="word-sheet__defs">
               {en.map((d, i) => (
                 <li key={i}>{d}</li>

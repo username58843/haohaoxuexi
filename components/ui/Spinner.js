@@ -1,7 +1,9 @@
 import React from 'react'
+import { useSettings } from '~/lib/contexts/SettingsContext'
 
 export function Spinner() {
-  return <span className="spinner" role="status" aria-label="Loading" />
+  const { t } = useSettings()
+  return <span className="spinner" role="status" aria-label={t('navLoading', 'Loading')} />
 }
 
 export function PageLoader({ text = '' }) {

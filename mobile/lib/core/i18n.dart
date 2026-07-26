@@ -49,7 +49,7 @@ String tr(Object? contextOrRef, String key, String enDefault) {
 /// Override maps. en is always the inline default at the call site.
 const Map<String, Map<String, String>> _overrides = {
   'ru': {
-    'app.title': '好好学习',
+    'app.title': '好好学习汉语',
     'nav.home': 'Главная',
     'nav.hsk': 'HSK',
     'nav.decks': 'Колоды',
@@ -553,7 +553,7 @@ const Map<String, Map<String, String>> _overrides = {
     'profile.delete.done': '账户已删除',
     'about.title': '关于',
     'about.blurb':
-        '好好学习是一款免费的中文词汇学习应用：浏览 HSK 1–6 词汇，收集到卡组，并通过间隔重复卡片和测验来记忆。',
+        '好好学习汉语是一款免费的中文词汇学习应用：浏览 HSK 1–6 词汇，收集到卡组，并通过间隔重复卡片和测验来记忆。',
     'about.motto.meaning': '“好好学习，天天向上”——应用因这句经典谚语而得名。',
     'about.links': '链接',
     'about.privacy': '隐私政策',

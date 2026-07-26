@@ -87,7 +87,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const HanziText('好好学习', size: 52, weight: FontWeight.w700),
+                      const HanziText('好好学习汉语', size: 40, weight: FontWeight.w700),
                       const SizedBox(width: 10),
                       // Accent "seal dot" next to the hero hanzi.
                       Container(

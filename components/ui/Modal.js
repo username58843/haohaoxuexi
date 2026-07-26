@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { useSettings } from '~/lib/contexts/SettingsContext'
 
 /**
  * Accessible modal: portal, overlay/Esc close, focus containment,
@@ -7,6 +8,7 @@ import { createPortal } from 'react-dom'
  */
 export default function Modal({ open, onClose, title, footer, wide = false, children }) {
   const panelRef = useRef(null)
+  const { t } = useSettings()
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -67,7 +69,7 @@ export default function Modal({ open, onClose, title, footer, wide = false, chil
       >
         <div className="modal__header">
           <h2 className="modal__title">{title}</h2>
-          <button type="button" className="modal__close" onClick={onClose} aria-label="Close">
+          <button type="button" className="modal__close" onClick={onClose} aria-label={t('navClose', 'Close')}>
             ✕
           </button>
         </div>

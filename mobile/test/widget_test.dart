@@ -9,11 +9,11 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          body: Center(child: Text('好好学习')),
+          body: Center(child: Text('好好学习汉语')),
         ),
       ),
     );
 
-    expect(find.text('好好学习'), findsOneWidget);
+    expect(find.text('好好学习汉语'), findsOneWidget);
   });
 }

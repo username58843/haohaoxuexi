@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Design tokens — Flutter port of docs/DESIGN.md ("Ink & Cinnabar").
 
-/// The 8 runtime-switchable accent colors. Default: cinnabar.
+/// The 8 runtime-switchable accent colors. Default: jade.
 const Map<String, Color> accentColors = {
   'cinnabar': Color(0xFFE0533D),
   'orange': Color(0xFFFF9500),
@@ -15,7 +15,7 @@ const Map<String, Color> accentColors = {
   'cyan': Color(0xFF5AC8FA),
 };
 
-const String defaultAccentKey = 'cinnabar';
+const String defaultAccentKey = 'jade';
 
 // Canvas
 const Color inkCanvas = Color(0xFF0E1113); // dark "ink" background

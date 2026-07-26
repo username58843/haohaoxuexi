@@ -5,6 +5,13 @@
   overflow-x: clip;
 }
 
+/* The "rest" half of a two-tone headline is wrapped in <EditableText as="span">
+   so admins can edit it inline. Without this reset, `.u-two-tone span` would
+   brighten it and flatten the two-tone effect — keep it in the muted tone. */
+.u-two-tone .lp-tt-rest {
+  color: inherit;
+}
+
 /* ---------- Floating pill nav ---------- */
 .lp-nav {
   position: fixed;

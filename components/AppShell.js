@@ -45,7 +45,7 @@ export default function AppShell({ children, bare = false }) {
 
   return (
     <div className="app-shell app-shell--rail">
-      <nav className="rail" aria-label="Primary">
+      <nav className="rail" aria-label={t('navPrimary', 'Primary')}>
         <Link href="/" className="rail__brand">
           <img src="/logo-180.png" alt="" width={30} height={30} />
           <span className="hanzi" lang="zh">
@@ -70,7 +70,7 @@ export default function AppShell({ children, bare = false }) {
         {children}
       </main>
 
-      <nav className="dock" aria-label="Primary">
+      <nav className="dock" aria-label={t('navPrimary', 'Primary')}>
         {TABS.map(({ key, href, Icon, labelKey, label }) => (
           <Link
             key={key}
