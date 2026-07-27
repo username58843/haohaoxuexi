@@ -309,6 +309,7 @@ export default function AuthPage() {
             />
 
             <Turnstile
+              key={mode}
               onVerify={setCaptchaToken}
               onExpire={() => setCaptchaToken(null)}
             />
