@@ -95,6 +95,7 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.emailTaken': 'Аккаунт с этой почтой уже существует.',
     'auth.err.rateLimited': 'Слишком много попыток. Попробуйте позже.',
     'auth.err.banned': 'Аккаунт заблокирован.',
+    'auth.err.captcha': 'Ошибка капчи. Попробуйте ещё раз.',
     'auth.legal':
         'Продолжая, вы принимаете {terms} и {privacy}:',
     'auth.legal.terms': 'условия использования',
@@ -361,6 +362,7 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.emailTaken': 'Bu e-poçta bilen hasap eýýäm bar.',
     'auth.err.rateLimited': 'Synanyşyk gaty köp. Soňrak synanyşyň.',
     'auth.err.banned': 'Hasap petiklenen.',
+    'auth.err.captcha': 'Kapça saýlanmasy ýalňyşly. Täzeden synanyň.',
     'auth.legal':
         'Dowam etmek bilen {terms} we {privacy} kabul edýärsiňiz:',
     'auth.legal.terms': 'ulanyş şertlerini',
@@ -625,6 +627,7 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.emailTaken': '该邮箱已注册。',
     'auth.err.rateLimited': '尝试次数过多，请稍后再试。',
     'auth.err.banned': '账号已被封禁。',
+    'auth.err.captcha': '验证码错误，请重试。',
     'auth.legal': '继续即表示你同意{terms}和{privacy}：',
     'auth.legal.terms': '服务条款',
     'auth.legal.privacy': '隐私政策',

@@ -19,28 +19,34 @@ class CaptchaWidget extends StatefulWidget {
 }
 
 class _CaptchaWidgetState extends State<CaptchaWidget> {
-  late final WebViewController _controller;
+  WebViewController? _controller;
   bool _finished = false;
+  bool _loaded = false;
+  String? _loadError;
 
-  static const _siteKey = String.fromEnvironment(
-    'TURNSTILE_SITE_KEY',
-    defaultValue: '',
-  );
-
-  bool get _enabled => _siteKey.isNotEmpty;
+  // Public sitekey — safe to embed in client code.
+  static const _siteKey = '0x4AAAAAAD_HQtdS_M_AM8T2';
 
   @override
   void initState() {
     super.initState();
-    if (!_enabled) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.onToken('');
-      });
-      return;
-    }
+    _initWebView();
+  }
 
+  void _initWebView() {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: (_) {
+          if (mounted) setState(() => _loaded = true);
+        },
+        onWebResourceError: (err) {
+          if (mounted) {
+            setState(() => _loadError = 'WebView error: ${err.description}');
+          }
+          widget.onError?.call();
+        },
+      ))
       ..addJavaScriptChannel(
         'CaptchaToken',
         onMessageReceived: (msg) {
@@ -70,33 +76,40 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
   <style>
-    body { margin: 0; padding: 0; background: transparent; display: flex; justify-content: center; align-items: center; min-height: 65px; }
-    #cf-turnstile { transform: scale(0.85); transform-origin: center; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; display: flex; justify-content: center; align-items: center; min-height: 65px; overflow: hidden; }
+    #cf-turnstile { transform: scale(0.90); transform-origin: center; }
   </style>
 </head>
 <body>
-  <div class="cf-turnstile" id="cf-turnstile" data-sitekey="$_siteKey" data-action="turnstile-spin-v2"></div>
+  <div id="cf-turnstile"></div>
   <script>
-    turnstile.render('#cf-turnstile', {
-      sitekey: '$_siteKey',
-      action: 'turnstile-spin-v2',
-      theme: 'auto',
-      callback: function(token) {
-        CaptchaToken.postMessage(token);
-      },
-      'error-callback': function() {
-        CaptchaError.postMessage('');
-      },
-      'expired-callback': function() {
-        CaptchaExpired.postMessage('');
-      },
-      'timeout-callback': function() {
-        CaptchaExpired.postMessage('');
-      }
-    });
+    try {
+      turnstile.render('#cf-turnstile', {
+        sitekey: '$_siteKey',
+        action: 'turnstile-spin-v2',
+        theme: 'auto',
+        'retry': 'auto',
+        'retry-interval': 2000,
+        callback: function(token) {
+          CaptchaToken.postMessage(token);
+        },
+        'error-callback': function() {
+          CaptchaError.postMessage('');
+        },
+        'expired-callback': function() {
+          CaptchaExpired.postMessage('');
+        },
+        'timeout-callback': function() {
+          CaptchaExpired.postMessage('');
+        }
+      });
+    } catch(e) {
+      CaptchaError.postMessage('');
+    }
   </script>
 </body>
 </html>
@@ -104,13 +117,23 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_enabled) return const SizedBox.shrink();
+    if (_loadError != null) {
+      return Container(
+        padding: const EdgeInsets.all(8),
+        child: Text(
+          _loadError!,
+          style: const TextStyle(fontSize: 11, color: Colors.orange),
+        ),
+      );
+    }
 
     return SizedBox(
       height: 65,
-      child: ClipRect(
-        child: WebViewWidget(controller: _controller),
-      ),
+      child: _controller == null
+          ? const SizedBox.shrink()
+          : ClipRect(
+              child: WebViewWidget(controller: _controller!),
+            ),
     );
   }
 }

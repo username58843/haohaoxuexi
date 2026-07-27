@@ -120,10 +120,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         return tr(context, 'auth.err.rateLimited',
             'Too many attempts. Please wait a bit and try again.');
       case 'banned':
-        // Server message carries the ban details when available.
         return e.message.isNotEmpty && e.message.toLowerCase() != 'banned'
             ? e.message
             : tr(context, 'auth.err.banned', 'This account is suspended.');
+      case 'captcha_required':
+      case 'captcha_failed':
+        return tr(context, 'auth.err.captcha',
+            'Captcha verification failed. Please try again.');
       case 'network':
         return tr(context, 'error.network',
             'Network error. Check your connection.');
