@@ -1,15 +1,22 @@
 import { useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Script from 'next/script'
 import AppShell from '~/components/AppShell'
 import { Card, Field, Button } from '~/components/ui'
+import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api } from '~/lib/api-client'
+import Turnstile from '~/components/Turnstile'
 
 export default function ForgotPasswordPage() {
+  const router = useRouter()
+  const { t } = useSettings()
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState(null)
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -17,10 +24,10 @@ export default function ForgotPasswordPage() {
     setError(null)
     setLoading(true)
     try {
-      await api.post('/auth/forgot-password', { email: email.trim() })
+      await api.post('/auth/forgot-password', { email: email.trim(), captchaToken })
       setSent(true)
     } catch {
-      setError('Something went wrong. Please try again.')
+      setError(t('authErrGeneric', 'Something went wrong. Please try again.'))
     } finally {
       setLoading(false)
     }
@@ -29,32 +36,50 @@ export default function ForgotPasswordPage() {
   return (
     <AppShell bare>
       <Head>
-        <title>Forgot password · 好好学习汉语</title>
+        <title>{`${t('authForgotPassword', 'Forgot password')} · 好好学习汉语`}</title>
       </Head>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', padding: '32px 16px' }}>
-        <Card as="section" style={{ maxWidth: 420, width: '100%', padding: '32px 24px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <img src="/logo-180.png" alt="" width={48} height={48} style={{ borderRadius: 12 }} />
+
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        strategy="afterInteractive"
+        onLoad={() => window.dispatchEvent(new Event('turnstile-ready'))}
+      />
+
+      <div className="auth">
+        <Card as="section" className="auth__card">
+          <div className="auth__brand">
+            <Link href="/">
+              <img src="/logo-180.png" alt="" width={48} height={48} className="auth__logo" />
+            </Link>
+            <Link href="/" style={{ textDecoration: 'none' }}>
+              <div className="auth__brand-name hanzi" lang="zh">好好学习汉语</div>
+            </Link>
+            <p className="auth__tagline">
+              {t('authTagline', 'HSK vocabulary with spaced repetition')}
+            </p>
           </div>
-          <h2 style={{ margin: '0 0 8px', fontSize: 20, textAlign: 'center' }}>Forgot password?</h2>
+
+          <h2 style={{ margin: '0 0 8px', fontSize: 20, textAlign: 'center', color: 'var(--text)' }}>
+            {t('authForgotPasswordTitle', 'Forgot password?')}
+          </h2>
 
           {sent ? (
             <div style={{ textAlign: 'center' }}>
-              <p style={{ color: '#444', margin: '0 0 24px' }}>
-                If an account exists with <strong>{email}</strong>, we sent a password reset link. Check your inbox.
+              <p style={{ color: 'var(--text-2)', margin: '0 0 24px', lineHeight: 1.5 }}>
+                {t('authForgotSent', 'If an account exists with')} <strong style={{ color: 'var(--text)' }}>{email}</strong>, {t('authForgotSentSuffix', 'we sent a password reset link. Check your inbox.')}
               </p>
               <Link href="/auth">
-                <Button variant="primary" block>Back to sign in</Button>
+                <Button variant="primary" block>{t('authBackToLogin', 'Back to sign in')}</Button>
               </Link>
             </div>
           ) : (
             <>
-              <p style={{ color: '#666', margin: '0 0 24px', fontSize: 14, textAlign: 'center' }}>
-                Enter your email and we'll send you a link to reset your password.
+              <p style={{ color: 'var(--text-2)', margin: '0 0 24px', fontSize: 14, textAlign: 'center' }}>
+                {t('authForgotHint', "Enter your email and we'll send you a link to reset your password.")}
               </p>
               <form onSubmit={onSubmit}>
                 <Field
-                  label="Email"
+                  label={t('authEmailLabel', 'Email')}
                   type="email"
                   name="email"
                   autoComplete="email"
@@ -63,18 +88,32 @@ export default function ForgotPasswordPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+
+                <Turnstile
+                  onVerify={setCaptchaToken}
+                  onExpire={() => setCaptchaToken(null)}
+                />
+
                 {error && (
-                  <div style={{ color: '#ef4444', fontSize: 13, margin: '8px 0' }}>{error}</div>
+                  <div className="auth__error" role="alert">{error}</div>
                 )}
                 <Button type="submit" variant="primary" block loading={loading}>
-                  Send reset link
+                  {t('authForgotSubmit', 'Send reset link')}
                 </Button>
               </form>
               <div style={{ textAlign: 'center', marginTop: 16 }}>
-                <Link href="/auth" style={{ fontSize: 14, color: '#10b981' }}>Back to sign in</Link>
+                <Link href="/auth" style={{ fontSize: 14, color: 'var(--accent)' }}>
+                  {t('authBackToLogin', 'Back to sign in')}
+                </Link>
               </div>
             </>
           )}
+
+          <div className="auth__footer">
+            <Link href="/privacy">{t('authPrivacy', 'Privacy')}</Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/terms">{t('authTerms', 'Terms')}</Link>
+          </div>
         </Card>
       </div>
     </AppShell>

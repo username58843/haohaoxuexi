@@ -1,16 +1,18 @@
-import { createApiHandler, ApiError, rateLimit } from '~/lib/server/api'
+import { createApiHandler, ApiError, rateLimit, getClientIp } from '~/lib/server/api'
 import { findUserByEmail } from '~/lib/server/users'
 import { sendResetEmail, generateToken } from '~/lib/server/email'
 import { getCollection } from '~/lib/server/db'
+import { verifyTurnstile } from '~/lib/server/captcha'
 
 export default createApiHandler({
   POST: {
     handler: async (req, res) => {
-      const { email } = req.body || {}
+      const { email, captchaToken } = req.body || {}
       if (!email || typeof email !== 'string') {
         throw new ApiError(400, 'validation', 'Email is required')
       }
 
+      await verifyTurnstile(captchaToken, getClientIp(req))
       await rateLimit('forgot-password', email.toLowerCase().trim(), { max: 3, windowMs: 3600000 })
 
       const user = await findUserByEmail(email.toLowerCase().trim())
