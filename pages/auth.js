@@ -263,7 +263,7 @@ export default function AuthPage() {
               </div>
             </div>
           ) : (
-
+          <>
           {ban && (
             <div className="auth__ban" role="alert">
               <div className="auth__ban-title">
@@ -401,6 +401,7 @@ export default function AuthPage() {
             <span aria-hidden="true">·</span>
             <Link href="/terms">{t('authTerms', 'Terms')}</Link>
           </div>
+          </>
           )}
         </Card>
       </div>
