@@ -299,17 +299,17 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
 
   bool get isAuthed => state.value != null;
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String email, String password, {String captchaToken = ''}) async {
     await _authenticate(
       '/auth/login',
-      {'email': email.trim(), 'password': password},
+      {'email': email.trim(), 'password': password, 'captchaToken': captchaToken},
     );
   }
 
-  Future<void> register(String name, String email, String password) async {
+  Future<void> register(String name, String email, String password, {String captchaToken = ''}) async {
     await _authenticate(
       '/auth/register',
-      {'name': name.trim(), 'email': email.trim(), 'password': password},
+      {'name': name.trim(), 'email': email.trim(), 'password': password, 'captchaToken': captchaToken},
       freshAccount: true,
     );
   }

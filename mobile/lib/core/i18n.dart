@@ -96,7 +96,9 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.rateLimited': 'Слишком много попыток. Попробуйте позже.',
     'auth.err.banned': 'Аккаунт заблокирован.',
     'auth.legal':
-        'Продолжая, вы принимаете условия использования и политику конфиденциальности:',
+        'Продолжая, вы принимаете {terms} и {privacy}:',
+    'auth.legal.terms': 'условия использования',
+    'auth.legal.privacy': 'политику конфиденциальности',
     // Account feature (settings / profile / about)
     'common.save': 'Сохранить',
     'settings.title': 'Настройки',
@@ -343,7 +345,9 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.rateLimited': 'Synanyşyk gaty köp. Soňrak synanyşyň.',
     'auth.err.banned': 'Hasap petiklenen.',
     'auth.legal':
-        'Dowam etmek bilen ulanyş şertlerini we gizlinlik syýasatyny kabul edýärsiňiz:',
+        'Dowam etmek bilen {terms} we {privacy} kabul edýärsiňiz:',
+    'auth.legal.terms': 'ulanyş şertlerini',
+    'auth.legal.privacy': 'gizlinlik syýasatyny',
     // Account feature (settings / profile / about)
     'common.save': 'Ýatda sakla',
     'settings.title': 'Sazlamalar',
@@ -587,7 +591,9 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.emailTaken': '该邮箱已注册。',
     'auth.err.rateLimited': '尝试次数过多，请稍后再试。',
     'auth.err.banned': '账号已被封禁。',
-    'auth.legal': '继续即表示你同意服务条款和隐私政策：',
+    'auth.legal': '继续即表示你同意{terms}和{privacy}：',
+    'auth.legal.terms': '服务条款',
+    'auth.legal.privacy': '隐私政策',
     // Account feature (settings / profile / about)
     'common.save': '保存',
     'settings.title': '设置',

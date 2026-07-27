@@ -1,9 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/api.dart';
+import '../../core/captcha.dart';
 import '../../core/i18n.dart';
 import '../../core/providers.dart';
 import '../../core/theme.dart';
@@ -29,6 +32,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool _obscurePassword = true;
   bool _submitting = false;
   bool _submitted = false;
+  String _captchaToken = '';
 
   /// Mapped, human-readable error for the banner; null = no error.
   String? _errorText;
@@ -69,12 +73,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     final auth = ref.read(authProvider.notifier);
     try {
       if (_isLogin) {
-        await auth.login(_emailController.text, _passwordController.text);
+        await auth.login(_emailController.text, _passwordController.text,
+            captchaToken: _captchaToken);
       } else {
         await auth.register(
           _nameController.text,
           _emailController.text,
           _passwordController.text,
+          captchaToken: _captchaToken,
         );
       }
       if (!mounted) return;
@@ -167,7 +173,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('HAOHAO XUEXI', style: monoStyle(context)),
+                  Text('haohaoxuexi.tech', style: monoStyle(context)),
                   const SizedBox(height: 10),
                   const HanziText('好好学习汉语', size: 32, weight: FontWeight.w700),
                   const SizedBox(height: 24),
@@ -264,7 +270,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               ),
                               validator: _validatePassword,
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 16),
+                            CaptchaWidget(
+                              key: ValueKey(_isLogin),
+                              onToken: (t) => _captchaToken = t,
+                              onExpired: () => setState(() => _captchaToken = ''),
+                              onError: () => setState(() => _captchaToken = ''),
+                            ),
+                            const SizedBox(height: 16),
                             PillButton(
                               label: _isLogin
                                   ? tr(context, 'auth.submitLogin', 'Log in')
@@ -281,29 +294,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    tr(
-                      context,
-                      'auth.legal',
-                      'By continuing you agree to our Terms of Service and Privacy Policy:',
-                    ),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.manrope(
-                      fontSize: 12.5,
-                      height: 1.45,
-                      color: text3Of(context),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  SelectableText(
-                    '$apiBaseUrl/terms\n$apiBaseUrl/privacy',
-                    textAlign: TextAlign.center,
-                    style: monoStyle(
-                      context,
-                      size: 11,
-                      letterSpacing: 0.2,
-                      color: text3Of(context),
-                    ).copyWith(height: 1.6),
+                  _LegalLinks(
+                    termsUrl: '$apiBaseUrl/terms',
+                    privacyUrl: '$apiBaseUrl/privacy',
                   ),
                 ],
               ),
@@ -377,6 +370,73 @@ class _SegmentedModeSwitch extends StatelessWidget {
             login: false,
             label: tr(context, 'auth.registerTab', 'Sign up'),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Danger-wash banner for auth errors; optional bold [title] (ban notice).
+class _LegalLinks extends ConsumerWidget {
+  const _LegalLinks({required this.termsUrl, required this.privacyUrl});
+
+  final String termsUrl;
+  final String privacyUrl;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(languageProvider);
+    final accent = accentOf(context);
+    final textStyle = GoogleFonts.manrope(
+      fontSize: 12.5,
+      height: 1.45,
+      color: text3Of(context),
+    );
+
+    final legalText = tr(context, 'auth.legal',
+        'By continuing you agree to our {terms} and {privacy}:');
+    final termsLabel =
+        tr(context, 'auth.legal.terms', 'Terms of Service');
+    final privacyLabel =
+        tr(context, 'auth.legal.privacy', 'Privacy Policy');
+
+    final linkStyle = GoogleFonts.manrope(
+      fontSize: 12.5,
+      height: 1.45,
+      color: accent,
+      decoration: TextDecoration.underline,
+    );
+
+    final parts = legalText.split(RegExp(r'\{terms\}|\{privacy\}'));
+
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: textStyle,
+        children: [
+          if (parts.isNotEmpty) TextSpan(text: parts[0]),
+          TextSpan(
+            text: termsLabel,
+            style: linkStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => launchUrl(
+                    Uri.parse(termsUrl),
+                    mode: LaunchMode.externalApplication,
+                  ),
+          ),
+          if (parts.length > 1) ...[
+            TextSpan(text: parts[1]),
+            TextSpan(
+              text: privacyLabel,
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => launchUrl(
+                      Uri.parse(privacyUrl),
+                      mode: LaunchMode.externalApplication,
+                    ),
+            ),
+          ],
+          if (parts.length > 2) TextSpan(text: parts[2]),
         ],
       ),
     );

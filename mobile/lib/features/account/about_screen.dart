@@ -11,8 +11,8 @@ import '../../core/widgets.dart';
 /// hand-edited version here; the default only covers plain local runs.
 const String _appVersion =
     String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
-const String _privacyUrl = 'https://haohaoxuexi.vercel.app/privacy';
-const String _termsUrl = 'https://haohaoxuexi.vercel.app/terms';
+const String _privacyUrl = 'https://haohaoxuexi.tech/privacy';
+const String _termsUrl = 'https://haohaoxuexi.tech/terms';
 const String _contactEmail = 'bobby.minecrafter06@gmail.com';
 
 /// About: serif hero, version, blurb, motto meaning and selectable links.

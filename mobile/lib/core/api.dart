@@ -8,7 +8,7 @@ import 'i18n.dart';
 /// Override at build time: `--dart-define=API_BASE_URL=https://example.com`.
 const String apiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: 'https://haohaoxuexi.vercel.app',
+  defaultValue: 'https://haohaoxuexi.tech',
 );
 
 /// Thrown for every failed API call.

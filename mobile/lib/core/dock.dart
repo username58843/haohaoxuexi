@@ -57,7 +57,7 @@ class FloatingDock extends StatelessWidget {
           // screen-height constraints and Center would otherwise fill them.
           heightFactor: 1,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 440),
+            constraints: const BoxConstraints(maxWidth: 440, maxHeight: 80),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),

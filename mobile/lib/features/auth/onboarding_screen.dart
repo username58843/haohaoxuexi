@@ -60,7 +60,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               padding: const EdgeInsets.fromLTRB(24, 12, 12, 0),
               child: Row(
                 children: [
-                  Text('HAOHAO XUEXI', style: monoStyle(context)),
+                  Text('haohaoxuexi.tech', style: monoStyle(context)),
                   const Spacer(),
                   AnimatedOpacity(
                     duration: const Duration(milliseconds: 200),
@@ -82,8 +82,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 onPageChanged: (i) => setState(() => _page = i),
                 children: [
                   _OnboardPage(
-                    glyph: '好',
-                    pinyin: 'hǎo',
+                    iconPath: 'assets/icon/icon_full.png',
+                    label: '好好学习: Chinese Language',
                     eyebrow: tr(context, 'onboarding.p1.eyebrow', 'HSK 1–6'),
                     title: tr(
                         context, 'onboarding.p1.title', 'Learn 5000 HSK words'),
@@ -164,16 +164,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
 class _OnboardPage extends StatelessWidget {
   const _OnboardPage({
-    required this.glyph,
-    required this.pinyin,
+    this.glyph,
+    this.pinyin,
+    this.iconPath,
+    this.label,
     required this.eyebrow,
     required this.title,
     required this.text,
     this.extra,
   });
 
-  final String glyph;
-  final String pinyin;
+  final String? glyph;
+  final String? pinyin;
+  final String? iconPath;
+  final String? label;
   final String eyebrow;
   final String title;
   final String text;
@@ -188,21 +192,37 @@ class _OnboardPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Hero glyph tile.
-            Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                color: accentSoftOf(context),
-                borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: hairlineOf(context)),
-              ),
-              child: Center(
-                child: HanziText(glyph, size: 76, color: accent),
+            // App icon with rounded corners.
+            ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: SizedBox(
+                width: 140,
+                height: 140,
+                child: iconPath != null
+                    ? Image.asset(
+                        iconPath!,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                          color: accentSoftOf(context),
+                          border: Border.all(color: hairlineOf(context)),
+                        ),
+                        child: Center(
+                          child: HanziText(glyph!, size: 76, color: accent),
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 10),
-            Text(pinyin, style: monoStyle(context, size: 12)),
+            if (label != null)
+              Text(
+                label!,
+                textAlign: TextAlign.center,
+                style: monoStyle(context, size: 13),
+              )
+            else if (pinyin != null)
+              Text(pinyin!, style: monoStyle(context, size: 12)),
             const SizedBox(height: 28),
             SectionLabel(eyebrow),
             const SizedBox(height: 10),
