@@ -10,7 +10,9 @@ import 'features/account/about_screen.dart';
 import 'features/account/profile_screen.dart';
 import 'features/account/settings_screen.dart';
 import 'features/auth/auth_screen.dart';
+import 'features/auth/forgot_password_screen.dart';
 import 'features/auth/onboarding_screen.dart';
+import 'features/auth/reset_password_screen.dart';
 import 'features/auth/splash_screen.dart';
 import 'features/browse/hsk_screen.dart';
 import 'features/browse/map_screen.dart';
@@ -20,7 +22,12 @@ import 'features/home/home_screen.dart';
 import 'features/study/study_screen.dart';
 
 /// Routes that are reachable without authentication.
-const Set<String> _openPaths = {'/splash', '/onboarding', '/auth'};
+const Set<String> _openPaths = {
+  '/splash',
+  '/onboarding',
+  '/auth',
+  '/forgot-password',
+};
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Bridge riverpod auth changes into a Listenable for GoRouter.
@@ -60,6 +67,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/auth',
         builder: (context, state) => const AuthScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) {
+          final token = state.uri.queryParameters['token'] ?? '';
+          return ResetPasswordScreen(token: token);
+        },
       ),
       // Pushed (full-screen, outside the shell) routes.
       GoRoute(

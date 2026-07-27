@@ -370,6 +370,30 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     state = const AsyncData(null);
   }
 
+  /// Sends a password-reset email. Always returns successfully to prevent
+  /// email enumeration — the server returns 200 regardless.
+  Future<void> forgotPassword(String email, {String captchaToken = ''}) async {
+    final api = ref.read(apiProvider);
+    await api.post('/auth/forgot-password',
+        body: {'email': email.trim(), 'captchaToken': captchaToken});
+  }
+
+  /// Resets the password using a token from the email link.
+  Future<void> resetPassword(String token, String password) async {
+    final api = ref.read(apiProvider);
+    await api.post('/auth/reset-password',
+        body: {'token': token, 'password': password});
+  }
+
+  /// Requests a verification email to be sent to the current user.
+  Future<void> sendVerification() async {
+    final api = ref.read(apiProvider);
+    final user = state.value;
+    if (user == null) return;
+    await api.post('/auth/send-verification',
+        body: {'email': user.email});
+  }
+
   /// Re-fetches the profile (e.g. after a name change).
   Future<void> refresh() async {
     final api = ref.read(apiProvider);

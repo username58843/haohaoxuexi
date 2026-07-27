@@ -33,6 +33,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool _submitting = false;
   bool _submitted = false;
   String _captchaToken = '';
+  bool _registered = false;
 
   /// Mapped, human-readable error for the banner; null = no error.
   String? _errorText;
@@ -57,6 +58,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       _errorText = null;
       _isBanned = false;
       _submitted = false;
+      _registered = false;
     });
   }
 
@@ -84,7 +86,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         );
       }
       if (!mounted) return;
-      context.go('/');
+      if (_isLogin) {
+        context.go('/');
+      } else {
+        setState(() => _registered = true);
+      }
     } on ApiException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -204,6 +210,19 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               ),
                               const SizedBox(height: 14),
                             ],
+                            if (_registered) ...[
+                              _VerifyBanner(
+                                email: _emailController.text,
+                                onResend: () async {
+                                  try {
+                                    await ref
+                                        .read(authProvider.notifier)
+                                        .sendVerification();
+                                  } catch (_) {}
+                                },
+                              ),
+                              const SizedBox(height: 14),
+                            ],
                             AnimatedSize(
                               duration: const Duration(milliseconds: 220),
                               curve: Curves.easeOut,
@@ -270,6 +289,21 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               ),
                               validator: _validatePassword,
                             ),
+                            if (_isLogin) ...[
+                              const SizedBox(height: 6),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: GestureDetector(
+                                  onTap: () => context.push('/forgot-password'),
+                                  child: Text(
+                                    tr(context, 'auth.forgotPassword',
+                                        'Forgot password?'),
+                                    style: GoogleFonts.manrope(
+                                        fontSize: 13, color: accentOf(context)),
+                                  ),
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: 16),
                             CaptchaWidget(
                               key: ValueKey(_isLogin),
@@ -437,6 +471,63 @@ class _LegalLinks extends ConsumerWidget {
             ),
           ],
           if (parts.length > 2) TextSpan(text: parts[2]),
+        ],
+      ),
+    );
+  }
+}
+
+/// Info banner shown after registration prompting email verification.
+class _VerifyBanner extends StatelessWidget {
+  const _VerifyBanner({required this.email, required this.onResend});
+
+  final String email;
+  final VoidCallback onResend;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = accentOf(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: accent.withValues(alpha: 0.30)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.mark_email_unread_outlined, size: 18, color: accent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  tr(context, 'auth.verify.title', 'Check your email'),
+                  style: GoogleFonts.manrope(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w700,
+                    color: accent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '${tr(context, 'auth.verify.sent', 'We sent a verification link to')} $email',
+            style: GoogleFonts.manrope(
+                fontSize: 13, height: 1.4, color: text2Of(context)),
+          ),
+          const SizedBox(height: 6),
+          GestureDetector(
+            onTap: onResend,
+            child: Text(
+              tr(context, 'auth.verify.resend', 'Resend verification email'),
+              style: GoogleFonts.manrope(
+                  fontSize: 13, color: accent, fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       ),
     );
