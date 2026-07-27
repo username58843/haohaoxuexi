@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
+import Script from 'next/script'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
 import { Button, Card, Field, Segmented, PageLoader } from '~/components/ui'
+import Turnstile from '~/components/Turnstile'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 
@@ -63,6 +65,7 @@ export default function AuthPage() {
   const [formError, setFormError] = useState(null)
   const [banNotice, setBanNotice] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState(null)
 
   const nextTarget =
     router.query.next && String(router.query.next).startsWith('/')
@@ -132,8 +135,8 @@ export default function AuthPage() {
     setSubmitting(true)
     const result =
       mode === 'login'
-        ? await login(email.trim(), password)
-        : await register(email.trim(), password, name.trim())
+        ? await login(email.trim(), password, captchaToken)
+        : await register(email.trim(), password, name.trim(), captchaToken)
 
     if (result.success) {
       // Keep the button in its loading state while Next navigates away.
@@ -193,6 +196,11 @@ export default function AuthPage() {
       <Head>
         <title>{`${pageTitle} · 好好学习汉语`}</title>
       </Head>
+
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        strategy="lazyOnload"
+      />
 
       <div className="auth">
         <Card as="section" className="auth__card" aria-label={pageTitle}>
@@ -297,6 +305,11 @@ export default function AuthPage() {
                   <IconEye off={showPassword} />
                 </button>
               }
+            />
+
+            <Turnstile
+              onVerify={setCaptchaToken}
+              onExpire={() => setCaptchaToken(null)}
             />
 
             {formError && (
