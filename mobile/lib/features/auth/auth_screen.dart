@@ -312,7 +312,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               key: ValueKey(_isLogin),
                               onToken: (t) => _captchaToken = t,
                               onExpired: () => setState(() => _captchaToken = ''),
-                              onError: () => setState(() => _captchaToken = ''),
                             ),
                             const SizedBox(height: 16),
                             PillButton(

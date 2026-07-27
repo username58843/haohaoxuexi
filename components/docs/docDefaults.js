@@ -10,7 +10,7 @@
 
 import pkg from '~/package.json'
 
-export const DOC_CONTACT_EMAIL = 'bobby.minecrafter06@gmail.com'
+export const DOC_CONTACT_EMAIL = 'mail.tm.lb@gmail.com'
 // Derived from package.json so the About page can never drift from the release.
 export const DOC_APP_VERSION = pkg.version
 

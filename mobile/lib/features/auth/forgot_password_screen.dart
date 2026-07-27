@@ -144,8 +144,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               onToken: (t) => _captchaToken = t,
                               onExpired: () =>
                                   setState(() => _captchaToken = ''),
-                              onError: () =>
-                                  setState(() => _captchaToken = ''),
                             ),
                             if (_error != null) ...[
                               const SizedBox(height: 8),
