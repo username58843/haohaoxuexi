@@ -2,13 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// Cloudflare Turnstile captcha widget.
-///
-/// Renders the Turnstile challenge in a compact WebView.
-/// When the challenge completes, [onToken] fires with the verification token.
-/// When the challenge expires or fails, [onExpired] / [onError] fire.
-///
-/// If [TURNSTILE_SITE_KEY] is not configured (dev mode), the widget is
-/// hidden and [onToken] fires immediately with an empty string.
 class CaptchaWidget extends StatefulWidget {
   const CaptchaWidget({
     super.key,
@@ -48,19 +41,28 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
 
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel('CaptchaToken', onMessage: (msg) {
-        if (_finished) return;
-        _finished = true;
-        widget.onToken(msg.message as String);
-      })
-      ..addJavaScriptChannel('CaptchaExpired', onMessage: (_) {
-        _finished = false;
-        widget.onExpired?.call();
-      })
-      ..addJavaScriptChannel('CaptchaError', onMessage: (_) {
-        _finished = false;
-        widget.onError?.call();
-      })
+      ..addJavaScriptChannel(
+        'CaptchaToken',
+        onMessageReceived: (msg) {
+          if (_finished) return;
+          _finished = true;
+          widget.onToken(msg.message);
+        },
+      )
+      ..addJavaScriptChannel(
+        'CaptchaExpired',
+        onMessageReceived: (_) {
+          _finished = false;
+          widget.onExpired?.call();
+        },
+      )
+      ..addJavaScriptChannel(
+        'CaptchaError',
+        onMessageReceived: (_) {
+          _finished = false;
+          widget.onError?.call();
+        },
+      )
       ..loadHtmlString(_buildHtml());
   }
 

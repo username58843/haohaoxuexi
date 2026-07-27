@@ -64,8 +64,11 @@ export default function AuthPage() {
   const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState(null)
   const [banNotice, setBanNotice] = useState(null)
+  const [verifiedNotice, setVerifiedNotice] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(null)
+  const [registered, setRegistered] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState('')
 
   const nextTarget =
     router.query.next && String(router.query.next).startsWith('/')
@@ -86,6 +89,13 @@ export default function AuthPage() {
   useEffect(() => {
     if (router.isReady && !loading && user) router.replace(nextTarget)
   }, [loading, user, router, nextTarget])
+
+  // Show verified notice after email confirmation redirect.
+  useEffect(() => {
+    if (router.isReady && router.query.verified === '1') {
+      setVerifiedNotice(true)
+    }
+  }, [router.isReady, router.query.verified])
 
   const clearFieldError = useCallback((field) => {
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
@@ -139,7 +149,12 @@ export default function AuthPage() {
         : await register(email.trim(), password, name.trim(), captchaToken)
 
     if (result.success) {
-      // Keep the button in its loading state while Next navigates away.
+      if (mode === 'register') {
+        setRegistered(true)
+        setRegisteredEmail(email.trim())
+        setSubmitting(false)
+        return
+      }
       router.replace(nextTarget)
       return
     }
@@ -215,6 +230,40 @@ export default function AuthPage() {
             </p>
           </div>
 
+          {registered ? (
+            <div style={{ textAlign: 'center', padding: '16px 0' }}>
+              <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>
+                {t('authCheckEmail', 'Check your email')}
+              </p>
+              <p style={{ margin: '0 0 24px', color: '#666', fontSize: 14 }}>
+                {t('authVerifySent', 'We sent a verification link to')} <strong>{registeredEmail}</strong>
+              </p>
+              <p style={{ margin: '0 0 16px', color: '#999', fontSize: 13 }}>
+                {t('authVerifySpam', "Didn't receive it? Check your spam folder or")}
+              </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await fetch('/api/v1/auth/send-verification', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: registeredEmail }),
+                    })
+                  } catch {}
+                }}
+                style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}
+              >
+                {t('authResend', 'resend verification email')}
+              </button>
+              <div style={{ marginTop: 24 }}>
+                <Link href="/auth" style={{ fontSize: 14, color: '#10b981' }}>
+                  {t('authBackToLogin', 'Back to sign in')}
+                </Link>
+              </div>
+            </div>
+          ) : (
+
           {ban && (
             <div className="auth__ban" role="alert">
               <div className="auth__ban-title">
@@ -228,6 +277,12 @@ export default function AuthPage() {
                     'Your account has been suspended. Contact support if you believe this is a mistake.'
                   )}
               </p>
+            </div>
+          )}
+
+          {verifiedNotice && (
+            <div style={{ background: '#10b9811a', border: '1px solid #10b98140', borderRadius: 8, padding: '12px 16px', marginBottom: 16, color: '#10b981', fontSize: 14 }}>
+              {t('authVerifiedSuccess', 'Email confirmed! You can now sign in.')}
             </div>
           )}
 
@@ -308,6 +363,14 @@ export default function AuthPage() {
               }
             />
 
+            {mode === 'login' && (
+              <div style={{ textAlign: 'right', marginTop: -8, marginBottom: 8 }}>
+                <Link href="/auth/forgot-password" style={{ fontSize: 13, color: '#10b981' }}>
+                  {t('authForgotPassword', 'Forgot password?')}
+                </Link>
+              </div>
+            )}
+
             <Turnstile
               key={mode}
               onVerify={setCaptchaToken}
@@ -338,6 +401,7 @@ export default function AuthPage() {
             <span aria-hidden="true">·</span>
             <Link href="/terms">{t('authTerms', 'Terms')}</Link>
           </div>
+          )}
         </Card>
       </div>
     </AppShell>

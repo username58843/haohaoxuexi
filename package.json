@@ -21,6 +21,7 @@
     "nextjs-toploader": "^3.9.17",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "resend": "^6.18.0",
     "sass": "^1.101.0"
   },
   "devDependencies": {

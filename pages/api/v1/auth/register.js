@@ -2,6 +2,8 @@ import { createApiHandler, errors, signToken, buildAuthCookie, getClientIp } fro
 import { objectBody, str, email } from '~/lib/server/validate'
 import { findUserByEmail, createUser, publicUser } from '~/lib/server/users'
 import { verifyTurnstile } from '~/lib/server/captcha'
+import { sendVerifyEmail, generateToken } from '~/lib/server/email'
+import { getCollection } from '~/lib/server/db'
 
 export default createApiHandler({
   POST: {
@@ -21,12 +23,22 @@ export default createApiHandler({
       try {
         user = await createUser({ email: emailValue, password, name })
       } catch (err) {
-        // Concurrent registration for the same email (unique index).
         if (err?.code === 'DUPLICATE_EMAIL') {
           throw errors.conflict('email_taken', 'Email is already registered')
         }
         throw err
       }
+
+      // Generate and store verify token, then send email (best-effort).
+      const verifyToken = generateToken()
+      const verifyExpires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+      const users = await getCollection('users')
+      await users.updateOne(
+        { _id: user._id },
+        { $set: { verifyToken, verifyExpires } }
+      )
+      sendVerifyEmail({ to: user.email, name: user.name, token: verifyToken }).catch(() => {})
+
       const token = signToken(user)
       res.setHeader('Set-Cookie', buildAuthCookie(token))
       res.status(201).json({ user: publicUser(user), token })
