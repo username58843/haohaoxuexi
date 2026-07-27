@@ -29,7 +29,8 @@ export default createApiHandler({
         { $set: { resetToken: token, resetExpires: expires, updatedAt: new Date() } }
       )
 
-      await sendResetEmail({ to: user.email, name: user.name, token })
+      const lang = user.settings?.language || 'en'
+      await sendResetEmail({ to: user.email, name: user.name, token, lang })
       res.status(200).json({ ok: true })
     },
   },

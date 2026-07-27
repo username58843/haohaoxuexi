@@ -27,7 +27,8 @@ export default createApiHandler({
         { $set: { verifyToken: token, verifyExpires: expires, updatedAt: new Date() } }
       )
 
-      await sendVerifyEmail({ to: user.email, name: user.name, token })
+      const lang = user.settings?.language || 'en'
+      await sendVerifyEmail({ to: user.email, name: user.name, token, lang })
       res.status(200).json({ ok: true })
     },
   },

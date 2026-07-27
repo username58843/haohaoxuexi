@@ -37,7 +37,8 @@ export default createApiHandler({
         { _id: user._id },
         { $set: { verifyToken, verifyExpires } }
       )
-      sendVerifyEmail({ to: user.email, name: user.name, token: verifyToken }).catch(() => {})
+      const lang = body.lang || user.settings?.language || 'en'
+      sendVerifyEmail({ to: user.email, name: user.name, token: verifyToken, lang }).catch(() => {})
 
       const token = signToken(user)
       res.setHeader('Set-Cookie', buildAuthCookie(token))
