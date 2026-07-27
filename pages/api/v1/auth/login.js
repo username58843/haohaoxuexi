@@ -5,9 +5,11 @@ import {
   signToken,
   buildAuthCookie,
   rateLimit,
+  getClientIp,
 } from '~/lib/server/api'
 import { objectBody, str, email } from '~/lib/server/validate'
 import { findUserByEmail, findUserById, verifyPassword, publicUser } from '~/lib/server/users'
+import { verifyTurnstile } from '~/lib/server/captcha'
 
 const invalidCredentials = () =>
   new ApiError(401, 'invalid_credentials', 'Invalid email or password')
@@ -19,6 +21,8 @@ export default createApiHandler({
       const body = objectBody(req.body)
       const emailValue = email(body.email)
       const password = str(body.password, { field: 'password', min: 1, max: 200, trim: false })
+
+      await verifyTurnstile(body.captchaToken, getClientIp(req))
 
       // Second bucket per email (ARCHITECTURE §4: 8/15min per IP AND per email).
       await rateLimit('login-email', emailValue, { max: 8, windowMs: 900000 })

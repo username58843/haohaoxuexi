@@ -1,6 +1,7 @@
-import { createApiHandler, errors, signToken, buildAuthCookie } from '~/lib/server/api'
+import { createApiHandler, errors, signToken, buildAuthCookie, getClientIp } from '~/lib/server/api'
 import { objectBody, str, email } from '~/lib/server/validate'
 import { findUserByEmail, createUser, publicUser } from '~/lib/server/users'
+import { verifyTurnstile } from '~/lib/server/captcha'
 
 export default createApiHandler({
   POST: {
@@ -10,6 +11,8 @@ export default createApiHandler({
       const emailValue = email(body.email)
       const password = str(body.password, { field: 'password', min: 8, max: 200, trim: false })
       const name = str(body.name, { field: 'name', min: 2, max: 40 })
+
+      await verifyTurnstile(body.captchaToken, getClientIp(req))
 
       const existing = await findUserByEmail(emailValue)
       if (existing) throw errors.conflict('email_taken', 'Email is already registered')
