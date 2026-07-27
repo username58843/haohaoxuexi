@@ -18,7 +18,7 @@ import {
   IconLogout,
 } from '~/components/account/icons'
 
-const APP_VERSION = 'v2.0.0'
+const APP_VERSION = 'v1.0.0'
 
 /** /more — account hub: identity, navigation rows, feedback, logout. */
 export default function MorePage() {
