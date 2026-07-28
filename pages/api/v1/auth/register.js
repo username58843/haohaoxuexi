@@ -13,6 +13,7 @@ export default createApiHandler({
       const emailValue = email(body.email)
       const password = str(body.password, { field: 'password', min: 8, max: 200, trim: false })
       const name = str(body.name, { field: 'name', min: 2, max: 40 })
+      const lang = body.lang || 'en'
 
       await verifyTurnstile(body.captchaToken, getClientIp(req))
 
@@ -21,7 +22,7 @@ export default createApiHandler({
 
       let user
       try {
-        user = await createUser({ email: emailValue, password, name })
+        user = await createUser({ email: emailValue, password, name, settings: { language: lang } })
       } catch (err) {
         if (err?.code === 'DUPLICATE_EMAIL') {
           throw errors.conflict('email_taken', 'Email is already registered')
