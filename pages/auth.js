@@ -55,7 +55,7 @@ function IconAlert() {
 export default function AuthPage() {
   const router = useRouter()
   const { user, loading, login, register, banInfo, setUser, setBanInfo } = useAuth()
-  const { t, settings } = useSettings()
+  const { t, language } = useSettings()
 
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
@@ -162,7 +162,7 @@ export default function AuthPage() {
     const result =
       mode === 'login'
         ? await login(email.trim(), password, captchaToken)
-        : await register(email.trim(), password, name.trim(), captchaToken, settings.language)
+        : await register(email.trim(), password, name.trim(), captchaToken, language)
 
     if (result.success) {
       if (mode === 'register') {
