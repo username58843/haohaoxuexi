@@ -19,10 +19,12 @@
         'retry-interval': 3000,
         'refresh-expired': 'auto',
         callback: function(token) {
-          window.location.href = 'captchatoken://' + encodeURIComponent(token);
+          try { window.flutter_inappwebview.callHandler('CaptchaToken', token); }
+          catch(e) { window.CaptchaToken && window.CaptchaToken.postMessage(token); }
         },
         'expired-callback': function() {
-          window.location.href = 'captchaexpired://';
+          try { window.flutter_inappwebview.callHandler('CaptchaExpired', ''); }
+          catch(e) { window.CaptchaExpired && window.CaptchaExpired.postMessage(''); }
         }
       });
     } catch(e) { console.error('Turnstile error:', e); }

@@ -5,12 +5,11 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 ///
 /// Loads the Turnstile widget from `haohaoxuexi.tech/captcha.html`
 /// (served over HTTPS) so the page has a real origin instead of `null`,
-/// which avoids CSP / iframe restrictions that break Turnstile's
-/// challenge platform on Android WebView.
+/// which avoids CSP / iframe restrictions on Android WebView.
 ///
-/// Communicates from JavaScript via custom URL scheme
-/// (`captchatoken://…` / `captchaexpired://`) intercepted by
-/// [shouldOverrideUrlLoading].
+/// Communicates via [addJavaScriptHandler] /
+/// `window.flutter_inappwebview.callHandler()` — this works now
+/// because the page is loaded over HTTPS with a proper origin.
 class CaptchaWidget extends StatefulWidget {
   const CaptchaWidget({
     super.key,
@@ -52,28 +51,26 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
               '(KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
           mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
           thirdPartyCookiesEnabled: true,
-          javaScriptCanOpenWindowsAutomatically: false,
         ),
         initialUrlRequest: URLRequest(url: WebUri(_captchaUrl)),
-        shouldOverrideUrlLoading: (controller, navAction) async {
-          final url = navAction.request.url.toString();
-
-          if (url.startsWith('captchatoken://')) {
-            final token = Uri.decodeComponent(url.substring(16));
-            if (!_tokenSent && mounted) {
+        onWebViewCreated: (controller) {
+          controller.addJavaScriptHandler(
+            handlerName: 'CaptchaToken',
+            callback: (args) {
+              if (_tokenSent || !mounted) return;
               _tokenSent = true;
-              widget.onToken(token);
-            }
-            return NavigationActionPolicy.CANCEL;
-          }
+              final token = args.isNotEmpty ? args[0].toString() : '';
+              if (token.isNotEmpty) widget.onToken(token);
+            },
+          );
 
-          if (url.startsWith('captchaexpired://')) {
-            _tokenSent = false;
-            if (mounted) widget.onExpired?.call();
-            return NavigationActionPolicy.CANCEL;
-          }
-
-          return NavigationActionPolicy.ALLOW;
+          controller.addJavaScriptHandler(
+            handlerName: 'CaptchaExpired',
+            callback: (_) {
+              _tokenSent = false;
+              if (mounted) widget.onExpired?.call();
+            },
+          );
         },
       ),
     );
