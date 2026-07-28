@@ -3,9 +3,14 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 /// Cloudflare Turnstile captcha widget.
 ///
-/// Minimal implementation — Turnstile handles its own retry/expiration.
-/// [onToken] fires with the verified token.
-/// [onExpired] fires when the token expires (parent should clear token state).
+/// Loads the Turnstile widget from `haohaoxuexi.tech/captcha.html`
+/// (served over HTTPS) so the page has a real origin instead of `null`,
+/// which avoids CSP / iframe restrictions that break Turnstile's
+/// challenge platform on Android WebView.
+///
+/// Communicates from JavaScript via custom URL scheme
+/// (`captchatoken://…` / `captchaexpired://`) intercepted by
+/// [shouldOverrideUrlLoading].
 class CaptchaWidget extends StatefulWidget {
   const CaptchaWidget({
     super.key,
@@ -21,15 +26,14 @@ class CaptchaWidget extends StatefulWidget {
 }
 
 class _CaptchaWidgetState extends State<CaptchaWidget> {
-  InAppWebViewController? _webViewController;
   bool _tokenSent = false;
 
-  static const _siteKey = '0x4AAAAAAD_HQtdS_M_AM8T2';
+  static const _captchaUrl = 'https://haohaoxuexi.tech/captcha.html';
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80,
+      height: 90,
       child: InAppWebView(
         initialSettings: InAppWebViewSettings(
           javaScriptEnabled: true,
@@ -48,89 +52,30 @@ class _CaptchaWidgetState extends State<CaptchaWidget> {
               '(KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
           mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
           thirdPartyCookiesEnabled: true,
+          javaScriptCanOpenWindowsAutomatically: false,
         ),
-        initialUrlRequest: URLRequest(
-          url: WebUri(
-            'data:text/html;charset=utf-8,${Uri.encodeComponent(_html())}',
-          ),
-        ),
-        onWebViewCreated: (controller) {
-          _webViewController = controller;
+        initialUrlRequest: URLRequest(url: WebUri(_captchaUrl)),
+        shouldOverrideUrlLoading: (controller, navAction) async {
+          final url = navAction.request.url.toString();
 
-          controller.addJavaScriptHandler(
-            handlerName: 'CaptchaToken',
-            callback: (args) {
-              if (_tokenSent || !mounted) return;
+          if (url.startsWith('captchatoken://')) {
+            final token = Uri.decodeComponent(url.substring(16));
+            if (!_tokenSent && mounted) {
               _tokenSent = true;
-              widget.onToken(args.first.toString());
-            },
-          );
+              widget.onToken(token);
+            }
+            return NavigationActionPolicy.CANCEL;
+          }
 
-          controller.addJavaScriptHandler(
-            handlerName: 'CaptchaExpired',
-            callback: (_) {
-              _tokenSent = false;
-              if (mounted) widget.onExpired?.call();
-            },
-          );
+          if (url.startsWith('captchaexpired://')) {
+            _tokenSent = false;
+            if (mounted) widget.onExpired?.call();
+            return NavigationActionPolicy.CANCEL;
+          }
+
+          return NavigationActionPolicy.ALLOW;
         },
       ),
     );
   }
-
-  String _html() => '''
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%;background:transparent;overflow:hidden}
-  body{display:flex;justify-content:center;align-items:center}
-</style>
-</head>
-<body>
-<div id="cf-turnstile"></div>
-<script>
-  window.addEventListener('message', function(e) {
-    try {
-      var d = e.data;
-      if (d && d.source === 'turnstile') {
-        if (d.type === 'token') {
-          window.CaptchaToken.postMessage(d.token);
-        } else if (d.type === 'expired') {
-          window.CaptchaExpired.postMessage('');
-        }
-      }
-    } catch(ex) {}
-  });
-
-  function onReady() {
-    if (typeof turnstile === 'undefined') return;
-    turnstile.render('#cf-turnstile', {
-      sitekey: '$_siteKey',
-      action: 'mobile-app',
-      theme: 'auto',
-      retry: 'auto',
-      'retry-interval': 3000,
-      'refresh-expired': 'auto',
-      callback: function(token) {
-        window.CaptchaToken.postMessage(token);
-      },
-      'expired-callback': function() {
-        window.CaptchaExpired.postMessage('');
-      }
-    });
-  }
-
-  if (document.readyState === 'complete') {
-    onReady();
-  } else {
-    window.addEventListener('load', onReady);
-  }
-</script>
-</body>
-</html>
-''';
 }

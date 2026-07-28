@@ -172,13 +172,13 @@ const Map<String, Map<String, String>> _overrides = {
     'profile.delete.done': 'Аккаунт удалён',
     'about.title': 'О приложении',
     'about.blurb':
-        'HaoHao XueXi — бесплатный тренажёр китайской лексики: изучайте слова HSK 1–6, собирайте их в колоды и запоминайте с помощью интервальных карточек и викторин.',
+        'haohaoxuexi.tech — тренажёр китайских слов: изучайте слова HSK 1–6, собирайте их в словари и запоминайте с помощью интервальных карточек.',
     'about.motto.meaning':
-        '«Хорошо учись — и будешь расти с каждым днём». Классическая поговорка, давшая название приложению.',
+        '«Хорошо учись — и будешь расти с каждым днём».',
     'about.links': 'Ссылки',
     'about.privacy': 'Политика конфиденциальности',
     'about.terms': 'Условия использования',
-    'about.contact': 'Контакт',
+    'about.project': 'О проекте',
     'error.wrongPassword': 'Неверный пароль',
     'error.rateLimited': 'Слишком много запросов. Попробуйте позже.',
     // Browse (HSK) & word sheet
@@ -440,13 +440,13 @@ const Map<String, Map<String, String>> _overrides = {
     'profile.delete.done': 'Hasap pozuldy',
     'about.title': 'Programma barada',
     'about.blurb':
-        'HaoHao XueXi — hytaý sözlerini öwrenmek üçin mugt programma: HSK 1–6 sözlerini gözden geçiriň, toplumlara ýygnaň we aralykly gaýtalama kartlary hem-de wiktorinalar bilen ýat tutuň.',
+        'haohaoxuexi.tech — hytaý sözlerini öwrenmek üçin programma: HSK 1–6 sözlerini gözden geçiriň, toplumlara ýygnaň we aralykly gaýtalama kartlary bilen ýat tutuň.',
     'about.motto.meaning':
-        '«Gowy oka — günsaýyn öserseň». Programma adyny beren meşhur nakyl.',
+        '«Gowy oka — günsaýyn öserseň».',
     'about.links': 'Salgylar',
     'about.privacy': 'Gizlinlik syýasaty',
     'about.terms': 'Ulanyş şertleri',
-    'about.contact': 'Habarlaşmak',
+    'about.project': 'Proýjet barada',
     'error.wrongPassword': 'Açar söz nädogry',
     'error.rateLimited': 'Aşa köp synanyşyk. Soňrak synanyşyň.',
     // Browse (HSK) & word sheet
@@ -702,12 +702,12 @@ const Map<String, Map<String, String>> _overrides = {
     'profile.delete.done': '账户已删除',
     'about.title': '关于',
     'about.blurb':
-        '好好学习汉语是一款免费的中文词汇学习应用：浏览 HSK 1–6 词汇，收集到卡组，并通过间隔重复卡片和测验来记忆。',
-    'about.motto.meaning': '“好好学习，天天向上”——应用因这句经典谚语而得名。',
+        'haohaoxuexi.tech — 中文词汇学习应用：浏览 HSK 1–6 词汇，收集到词库，并通过间隔重复卡片来记忆。',
+    'about.motto.meaning': '“好好学习，天天向上”。',
     'about.links': '链接',
     'about.privacy': '隐私政策',
     'about.terms': '服务条款',
-    'about.contact': '联系我们',
+    'about.project': '关于项目',
     'error.wrongPassword': '密码错误',
     'error.rateLimited': '请求过于频繁，请稍后再试。',
     // Browse (HSK) & word sheet

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;height:100%;background:transparent;overflow:hidden}
+  body{display:flex;justify-content:center;align-items:center}
+</style>
+<script>
+  window._turnstileReady = function() {
+    try {
+      turnstile.render('#cf-turnstile', {
+        sitekey: '0x4AAAAAAD_HQtdS_M_AM8T2',
+        action: 'mobile-app',
+        theme: 'auto',
+        retry: 'auto',
+        'retry-interval': 3000,
+        'refresh-expired': 'auto',
+        callback: function(token) {
+          window.location.href = 'captchatoken://' + encodeURIComponent(token);
+        },
+        'expired-callback': function() {
+          window.location.href = 'captchaexpired://';
+        }
+      });
+    } catch(e) { console.error('Turnstile error:', e); }
+  };
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=_turnstileReady" async defer></script>
+</head>
+<body>
+<div id="cf-turnstile"></div>
+</body>
+</html>

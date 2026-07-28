@@ -13,7 +13,7 @@ const String _appVersion =
     String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
 const String _privacyUrl = 'https://haohaoxuexi.tech/privacy';
 const String _termsUrl = 'https://haohaoxuexi.tech/terms';
-const String _contactEmail = 'mail.tm.lb@gmail.com';
+const String _aboutUrl = 'https://haohaoxuexi.tech/about';
 
 /// About: serif hero, version, blurb, motto meaning and selectable links.
 class AboutScreen extends ConsumerWidget {
@@ -124,8 +124,8 @@ class AboutScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 _LinkItem(
-                  label: tr(context, 'about.contact', 'Contact'),
-                  value: _contactEmail,
+                  label: tr(context, 'about.project', 'About project'),
+                  value: _aboutUrl,
                 ),
               ],
             ),
