@@ -56,7 +56,6 @@ export default function AuthPage() {
   const router = useRouter()
   const { user, loading, login, register, banInfo, setUser, setBanInfo } = useAuth()
   const { t, settings } = useSettings()
-  const { t } = useSettings()
 
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
