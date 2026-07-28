@@ -206,6 +206,14 @@ class SettingsNotifier extends Notifier<AppSettings> {
     });
   }
 
+  void resetToDeviceLanguage() {
+    final detected = _detectDeviceLanguage();
+    if (state.language == detected) return;
+    I18n.setLanguage(detected);
+    state = state.copyWith(language: detected);
+    _prefs.setString(_kLanguage, detected);
+  }
+
   /// Fire-and-forget push of changed values to the server when authed.
   void _mirror(Map<String, dynamic> patch) {
     final authed = ref.read(authProvider).value != null;
@@ -372,6 +380,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     }
     await api.clearToken();
     state = const AsyncData(null);
+    ref.read(settingsProvider.notifier).resetToDeviceLanguage();
   }
 
   /// Permanently deletes the account (Play Store requirement).
