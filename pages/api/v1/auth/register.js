@@ -2,7 +2,7 @@ import { createApiHandler, errors, getClientIp } from '~/lib/server/api'
 import { objectBody, str, email } from '~/lib/server/validate'
 import { findUserByEmail, createUser } from '~/lib/server/users'
 import { verifyTurnstile } from '~/lib/server/captcha'
-import { sendVerifyEmail, generateVerificationCode } from '~/lib/server/email'
+import { generateVerificationCode } from '~/lib/server/email'
 import { getCollection } from '~/lib/server/db'
 
 export default createApiHandler({
@@ -36,13 +36,6 @@ export default createApiHandler({
         { _id: user._id },
         { $set: { verifyCode: code, verifyExpires } }
       )
-
-      const lang = body.lang || user.settings?.language || 'en'
-      try {
-        await sendVerifyEmail({ to: user.email, name: user.name, code, lang })
-      } catch (e) {
-        console.error('sendVerifyEmail failed:', e)
-      }
 
       res.status(201).json({ ok: true, email: user.email })
     },
