@@ -1,8 +1,8 @@
-import { createApiHandler, errors, signToken, buildAuthCookie, getClientIp } from '~/lib/server/api'
+import { createApiHandler, errors, getClientIp } from '~/lib/server/api'
 import { objectBody, str, email } from '~/lib/server/validate'
-import { findUserByEmail, createUser, publicUser } from '~/lib/server/users'
+import { findUserByEmail, createUser } from '~/lib/server/users'
 import { verifyTurnstile } from '~/lib/server/captcha'
-import { sendVerifyEmail, generateToken } from '~/lib/server/email'
+import { sendVerifyEmail, generateVerificationCode } from '~/lib/server/email'
 import { getCollection } from '~/lib/server/db'
 
 export default createApiHandler({
@@ -29,20 +29,18 @@ export default createApiHandler({
         throw err
       }
 
-      // Generate and store verify token, then send email (best-effort).
-      const verifyToken = generateToken()
+      const code = generateVerificationCode()
       const verifyExpires = new Date(Date.now() + 24 * 60 * 60 * 1000)
       const users = await getCollection('users')
       await users.updateOne(
         { _id: user._id },
-        { $set: { verifyToken, verifyExpires } }
+        { $set: { verifyCode: code, verifyExpires } }
       )
-      const lang = body.lang || user.settings?.language || 'en'
-      sendVerifyEmail({ to: user.email, name: user.name, token: verifyToken, lang }).catch(() => {})
 
-      const token = signToken(user)
-      res.setHeader('Set-Cookie', buildAuthCookie(token))
-      res.status(201).json({ user: publicUser(user), token })
+      const lang = body.lang || user.settings?.language || 'en'
+      sendVerifyEmail({ to: user.email, name: user.name, code, lang }).catch(() => {})
+
+      res.status(201).json({ ok: true, email: user.email })
     },
   },
 })

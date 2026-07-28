@@ -307,11 +307,24 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
   }
 
   Future<void> register(String name, String email, String password, {String captchaToken = ''}) async {
-    await _authenticate(
-      '/auth/register',
-      {'name': name.trim(), 'email': email.trim(), 'password': password, 'captchaToken': captchaToken},
-      freshAccount: true,
-    );
+    final api = ref.read(apiProvider);
+    await api.post('/auth/register',
+        body: {'name': name.trim(), 'email': email.trim(), 'password': password, 'captchaToken': captchaToken});
+    // Email verification required — user is NOT logged in.
+  }
+
+  Future<void> verifyEmail(String email, String code) async {
+    final api = ref.read(apiProvider);
+    final data = await api.post('/auth/verify-email',
+        body: {'email': email.trim(), 'code': code.trim()});
+    final token = data['token']?.toString();
+    if (token != null && token.isNotEmpty) {
+      await api.saveToken(token);
+    }
+    final user =
+        UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
+    ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
+    state = AsyncData(user);
   }
 
   Future<void> _authenticate(
@@ -385,13 +398,13 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
         body: {'token': token, 'password': password});
   }
 
-  /// Requests a verification email to be sent to the current user.
-  Future<void> sendVerification() async {
+  /// Requests a verification email to be sent.
+  Future<void> sendVerification({String? email}) async {
     final api = ref.read(apiProvider);
-    final user = state.value;
-    if (user == null) return;
+    email ??= state.value?.email;
+    if (email == null) return;
     await api.post('/auth/send-verification',
-        body: {'email': user.email});
+        body: {'email': email});
   }
 
   /// Re-fetches the profile (e.g. after a name change).

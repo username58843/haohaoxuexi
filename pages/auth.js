@@ -8,6 +8,7 @@ import { Button, Card, Field, Segmented, PageLoader } from '~/components/ui'
 import Turnstile from '~/components/Turnstile'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
+import { api, apiError, setBearerToken } from '~/lib/api-client'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -53,7 +54,7 @@ function IconAlert() {
 
 export default function AuthPage() {
   const router = useRouter()
-  const { user, loading, login, register, banInfo } = useAuth()
+  const { user, loading, login, register, banInfo, setUser, setBanInfo } = useAuth()
   const { t } = useSettings()
 
   const [mode, setMode] = useState('login')
@@ -69,6 +70,9 @@ export default function AuthPage() {
   const [captchaToken, setCaptchaToken] = useState(null)
   const [registered, setRegistered] = useState(false)
   const [registeredEmail, setRegisteredEmail] = useState('')
+  const [verifyCode, setVerifyCode] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verifyError, setVerifyError] = useState(null)
 
   const nextTarget =
     router.query.next && String(router.query.next).startsWith('/')
@@ -129,6 +133,11 @@ export default function AuthPage() {
     setErrors({})
     setFormError(null)
     setBanNotice(null)
+    setRegistered(false)
+    setRegisteredEmail('')
+    setVerifyCode('')
+    setVerifyError(null)
+    setCaptchaToken(null)
   }
 
   async function onSubmit(e) {
@@ -160,6 +169,12 @@ export default function AuthPage() {
     }
 
     setSubmitting(false)
+    if (result.code === 'email_not_verified') {
+      setRegisteredEmail(email.trim())
+      setRegistered(true)
+      setVerifyError(result.error)
+      return
+    }
     switch (result.code) {
       case 'banned':
         setBanNotice({ banReason: result.banReason || null })
@@ -186,6 +201,36 @@ export default function AuthPage() {
           result.error || t('authErrGeneric', 'Something went wrong — please try again')
         )
     }
+  }
+
+  async function handleVerifyCode(e) {
+    e.preventDefault()
+    if (verifying || verifyCode.length !== 6) return
+    setVerifying(true)
+    setVerifyError(null)
+    try {
+      const code = verifyCode.trim()
+      const { data } = await api.post('/auth/verify-email', { email: registeredEmail, code })
+      if (data.token) setBearerToken(data.token)
+      setUser(data.user)
+      setBanInfo(null)
+      router.replace(nextTarget)
+    } catch (err) {
+      const e = apiError(err)
+      setVerifyError(e.message || 'Verification failed')
+    } finally {
+      setVerifying(false)
+    }
+  }
+
+  async function handleResendCode() {
+    try {
+      await fetch('/api/v1/auth/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: registeredEmail }),
+      })
+    } catch {}
   }
 
   const pageTitle =
@@ -233,31 +278,82 @@ export default function AuthPage() {
           {registered ? (
             <div style={{ textAlign: 'center', padding: '16px 0' }}>
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>
-                {t('authCheckEmail', 'Check your email')}
+                {t('authVerifyTitle', 'Check your email')}
               </p>
-              <p style={{ margin: '0 0 24px', color: '#666', fontSize: 14 }}>
-                {t('authVerifySent', 'We sent a verification link to')} <strong>{registeredEmail}</strong>
+              <p style={{ margin: '0 0 4px', color: '#666', fontSize: 14 }}>
+                {t('authVerifySent', 'We sent a verification code to')} <strong>{registeredEmail}</strong>
               </p>
-              <p style={{ margin: '0 0 16px', color: '#999', fontSize: 13 }}>
-                {t('authVerifySpam', "Didn't receive it? Check your spam folder or")}
+              <p style={{ margin: '0 0 20px', color: '#999', fontSize: 13 }}>
+                {t('authVerifySpam', "Didn't receive it? Check your spam folder")}
               </p>
-              <button
-                type="button"
-                onClick={async () => {
-                  try {
-                    await fetch('/api/v1/auth/send-verification', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ email: registeredEmail }),
-                    })
-                  } catch {}
-                }}
-                style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}
-              >
-                {t('authResend', 'resend verification email')}
-              </button>
-              <div style={{ marginTop: 24 }}>
-                <Link href="/auth" style={{ fontSize: 14, color: '#10b981' }}>
+              <form onSubmit={handleVerifyCode} style={{ maxWidth: 280, margin: '0 auto' }}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={verifyCode}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, '').slice(0, 6)
+                    setVerifyCode(v)
+                    setVerifyError(null)
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '14px 16px',
+                    fontSize: 28,
+                    fontWeight: 700,
+                    fontFamily: 'monospace',
+                    letterSpacing: 8,
+                    textAlign: 'center',
+                    border: verifyError ? '2px solid #ef4444' : '2px solid #10b981',
+                    borderRadius: 10,
+                    outline: 'none',
+                    background: '#f0fdf4',
+                    color: '#059669',
+                    boxSizing: 'border-box',
+                  }}
+                  autoFocus
+                  disabled={verifying}
+                />
+                {verifyError && (
+                  <p style={{ margin: '8px 0 0', color: '#ef4444', fontSize: 13 }}>
+                    {verifyError}
+                  </p>
+                )}
+                <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={handleResendCode}
+                    style={{
+                      flex: 1,
+                      padding: '10px 0',
+                      background: 'none',
+                      border: '1px solid #10b981',
+                      borderRadius: 8,
+                      color: '#10b981',
+                      fontSize: 13,
+                      cursor: 'pointer',
+                    }}
+                    disabled={verifying}
+                  >
+                    {t('authResend', 'Resend')}
+                  </button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    block
+                    loading={verifying}
+                    disabled={verifyCode.length !== 6}
+                    style={{ flex: 2 }}
+                  >
+                    {t('authVerifySubmit', 'Confirm')}
+                  </Button>
+                </div>
+              </form>
+              <div style={{ marginTop: 20 }}>
+                <Link href="/auth" style={{ fontSize: 14, color: '#10b981' }} onClick={() => { setRegistered(false); setRegisteredEmail(''); }}>
                   {t('authBackToLogin', 'Back to sign in')}
                 </Link>
               </div>

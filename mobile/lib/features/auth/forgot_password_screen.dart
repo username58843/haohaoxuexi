@@ -24,6 +24,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   bool _loading = false;
   String? _error;
   String _captchaToken = '';
+  int _captchaAttempt = 0;
+
+  void _resetCaptcha() {
+    _captchaToken = '';
+    _captchaAttempt++;
+  }
 
   @override
   void dispose() {
@@ -45,12 +51,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       );
       if (mounted) setState(() => _sent = true);
     } on ApiException catch (e) {
+      _resetCaptcha();
       if (mounted) {
         setState(() => _error = e.message.isNotEmpty
             ? e.message
             : tr(context, 'common.error', 'Something went wrong'));
       }
     } catch (_) {
+      _resetCaptcha();
       if (mounted) {
         setState(() =>
             _error = tr(context, 'error.network', 'Network error'));
@@ -141,6 +149,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             ),
                             const SizedBox(height: 12),
                             CaptchaWidget(
+                              key: ValueKey(_captchaAttempt),
                               onToken: (t) => _captchaToken = t,
                               onExpired: () =>
                                   setState(() => _captchaToken = ''),

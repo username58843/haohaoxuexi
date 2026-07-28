@@ -96,6 +96,7 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.rateLimited': 'Слишком много попыток. Попробуйте позже.',
     'auth.err.banned': 'Аккаунт заблокирован.',
     'auth.err.captcha': 'Ошибка капчи. Попробуйте ещё раз.',
+    'auth.err.emailNotVerified': 'Сначала подтвердите email.',
     'auth.legal':
         'Продолжая, вы принимаете {terms} и {privacy}:',
     'auth.legal.terms': 'условия использования',
@@ -113,8 +114,9 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.reset.noMatch': 'Пароли не совпадают',
     'auth.reset.invalid': 'Ссылка недействительна. Запросите новую.',
     'auth.verify.title': 'Проверьте почту',
-    'auth.verify.sent': 'Мы отправили ссылку для подтверждения на',
+    'auth.verify.sent': 'Мы отправили код подтверждения на',
     'auth.verify.resend': 'Отправить повторно',
+    'auth.verify.submit': 'Подтвердить',
     'auth.verify.done': 'Почта подтверждена!',
     'auth.verify.required': 'Подтвердите email для полного доступа',
     // Account feature (settings / profile / about)
@@ -363,6 +365,7 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.rateLimited': 'Synanyşyk gaty köp. Soňrak synanyşyň.',
     'auth.err.banned': 'Hasap petiklenen.',
     'auth.err.captcha': 'Kapça saýlanmasy ýalňyşly. Täzeden synanyň.',
+    'auth.err.emailNotVerified': 'Ilki email-i tassyklaň.',
     'auth.legal':
         'Dowam etmek bilen {terms} we {privacy} kabul edýärsiňiz:',
     'auth.legal.terms': 'ulanyş şertlerini',
@@ -380,8 +383,9 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.reset.noMatch': 'Açar sözler towup kesmeýär',
     'auth.reset.invalid': 'Baglanyşyk ýäraga ýaramaýar. Täzesini soranyň.',
     'auth.verify.title': 'Poçtanyňyzy barlaň',
-    'auth.verify.sent': 'Tassyklama baglanyşygy ugradyldy:',
+    'auth.verify.sent': 'Tassyklama kody iberdik:',
     'auth.verify.resend': 'Ýene ibermek',
+    'auth.verify.submit': 'Tassyklaň',
     'auth.verify.done': 'Poçta tassyklady!',
     'auth.verify.required': 'Doly ulanmak üçin email-i tassyklaň',
     // Account feature (settings / profile / about)
@@ -628,6 +632,7 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.err.rateLimited': '尝试次数过多，请稍后再试。',
     'auth.err.banned': '账号已被封禁。',
     'auth.err.captcha': '验证码错误，请重试。',
+    'auth.err.emailNotVerified': '请先验证邮箱。',
     'auth.legal': '继续即表示你同意{terms}和{privacy}：',
     'auth.legal.terms': '服务条款',
     'auth.legal.privacy': '隐私政策',
@@ -644,8 +649,9 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.reset.noMatch': '两次输入的密码不一致',
     'auth.reset.invalid': '链接无效。请申请新的链接。',
     'auth.verify.title': '请检查邮箱',
-    'auth.verify.sent': '我们已发送验证链接至',
+    'auth.verify.sent': '我们已发送验证码至',
     'auth.verify.resend': '重新发送',
+    'auth.verify.submit': '确认',
     'auth.verify.done': '邮箱已验证！',
     'auth.verify.required': '请验证邮箱以使用全部功能',
     // Account feature (settings / profile / about)

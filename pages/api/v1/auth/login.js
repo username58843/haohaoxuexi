@@ -24,19 +24,19 @@ export default createApiHandler({
 
       await verifyTurnstile(body.captchaToken, getClientIp(req))
 
-      // Second bucket per email (ARCHITECTURE §4: 8/15min per IP AND per email).
       await rateLimit('login-email', emailValue, { max: 8, windowMs: 900000 })
 
       const found = await findUserByEmail(emailValue)
-      // Identical error for unknown email and wrong password — no enumeration.
       if (!found) throw invalidCredentials()
       const ok = await verifyPassword(password, found.password)
       if (!ok) throw invalidCredentials()
 
       if (found.isBanned) throw errors.banned(found.banReason)
 
-      // Re-fetch by id to trigger the lazy legacy migration; sign the MIGRATED
-      // doc so the token's tv matches the (possibly just-set) tokenVersion.
+      if (!found.emailVerified) {
+        throw new ApiError(403, 'email_not_verified', 'Please verify your email first')
+      }
+
       const user = (await findUserById(found._id)) || found
 
       const token = signToken(user)

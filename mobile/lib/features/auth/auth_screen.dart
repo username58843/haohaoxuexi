@@ -34,6 +34,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool _submitted = false;
   String _captchaToken = '';
   bool _registered = false;
+  int _captchaAttempt = 0;
+  String _verifyCode = '';
+  bool _verifying = false;
+  String? _verifyError;
 
   /// Mapped, human-readable error for the banner; null = no error.
   String? _errorText;
@@ -42,6 +46,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool _isBanned = false;
 
   static final RegExp _emailRe = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+
+  void _resetCaptcha() {
+    setState(() {
+      _captchaToken = '';
+      _captchaAttempt++;
+    });
+  }
 
   @override
   void dispose() {
@@ -59,6 +70,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       _isBanned = false;
       _submitted = false;
       _registered = false;
+      _captchaToken = '';
+      _captchaAttempt++;
+      _verifyCode = '';
+      _verifying = false;
+      _verifyError = null;
     });
   }
 
@@ -91,19 +107,50 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       } else {
         setState(() => _registered = true);
       }
+      _resetCaptcha();
     } on ApiException catch (e) {
       if (!mounted) return;
       setState(() {
         _isBanned = e.code == 'banned';
         _errorText = _describe(e);
       });
+      // If login fails because email isn't verified, show the verify screen.
+      if (e.code == 'email_not_verified') {
+        setState(() {
+          _registered = true;
+          _verifyError = e.message;
+        });
+      }
+      _resetCaptcha();
     } catch (_) {
       // Unexpected failure (malformed response...) — show a generic error.
       if (!mounted) return;
       setState(
           () => _errorText = tr(context, 'common.error', 'Something went wrong'));
+      _resetCaptcha();
     } finally {
       if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  Future<void> _handleVerifyCode() async {
+    setState(() => _verifyError = null);
+    if (_verifyCode.length != 6) return;
+    setState(() => _verifying = true);
+    try {
+      await ref.read(authProvider.notifier).verifyEmail(
+            _emailController.text,
+            _verifyCode,
+          );
+      if (mounted) context.go('/');
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _verifyError = e.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _verifyError = tr(context, 'common.error', 'Something went wrong'));
+      }
+    } finally {
+      if (mounted) setState(() => _verifying = false);
     }
   }
 
@@ -127,6 +174,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       case 'captcha_failed':
         return tr(context, 'auth.err.captcha',
             'Captcha verification failed. Please try again.');
+      case 'email_not_verified':
+        return tr(context, 'auth.err.emailNotVerified',
+            'Please verify your email first.');
       case 'network':
         return tr(context, 'error.network',
             'Network error. Check your connection.');
@@ -214,15 +264,24 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                               const SizedBox(height: 14),
                             ],
                             if (_registered) ...[
-                              _VerifyBanner(
+                              _VerifyCodeInput(
                                 email: _emailController.text,
+                                code: _verifyCode,
+                                onChanged: (v) => setState(() {
+                                  _verifyCode = v;
+                                  _verifyError = null;
+                                }),
+                                error: _verifyError,
                                 onResend: () async {
                                   try {
                                     await ref
                                         .read(authProvider.notifier)
-                                        .sendVerification();
+                                        .sendVerification(
+                                            email: _emailController.text);
                                   } catch (_) {}
                                 },
+                                onVerify: _handleVerifyCode,
+                                verifying: _verifying,
                               ),
                               const SizedBox(height: 14),
                             ],
@@ -309,7 +368,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                             ],
                             const SizedBox(height: 16),
                             CaptchaWidget(
-                              key: ValueKey(_isLogin),
+                              key: ValueKey('${_isLogin}_$_captchaAttempt'),
                               onToken: (t) => _captchaToken = t,
                               onExpired: () => setState(() => _captchaToken = ''),
                             ),
@@ -344,6 +403,152 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   }
 }
 
+/// Verificaton code input shown after registration.
+class _VerifyCodeInput extends StatelessWidget {
+  const _VerifyCodeInput({
+    required this.email,
+    required this.code,
+    required this.onChanged,
+    required this.onResend,
+    required this.onVerify,
+    this.error,
+    this.verifying = false,
+  });
+
+  final String email;
+  final String code;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onResend;
+  final VoidCallback onVerify;
+  final String? error;
+  final bool verifying;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = accentOf(context);
+    final canSubmit = code.length == 6 && !verifying;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: accent.withValues(alpha: 0.30)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.mark_email_unread_outlined, size: 18, color: accent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  tr(context, 'auth.verify.title', 'Check your email'),
+                  style: GoogleFonts.manrope(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w700,
+                    color: accent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '${tr(context, 'auth.verify.sent', 'We sent a verification code to')} $email',
+            style: GoogleFonts.manrope(
+                fontSize: 13, height: 1.4, color: text2Of(context)),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            onChanged: onChanged,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            maxLength: 6,
+            enabled: !verifying,
+            onSubmitted: (_) {
+              if (canSubmit) onVerify();
+            },
+            style: GoogleFonts.manrope(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 8,
+              color: const Color(0xFF059669),
+            ),
+            decoration: InputDecoration(
+              counterText: '',
+              hintText: '000000',
+              hintStyle: GoogleFonts.manrope(
+                  fontSize: 28,
+                  letterSpacing: 8,
+                  color: const Color(0xFF10b981).withValues(alpha: 0.4)),
+              filled: true,
+              fillColor: const Color(0xFFf0fdf4),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: error != null
+                      ? const Color(0xFFef4444)
+                      : const Color(0xFF10b981),
+                  width: 2,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(
+                    color: Color(0xFF10b981), width: 2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(
+                    color: Color(0xFF10b981), width: 2),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (error != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              error!,
+              style: GoogleFonts.manrope(
+                  fontSize: 13, color: const Color(0xFFef4444)),
+            ),
+          ],
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: verifying ? null : onResend,
+                  child: Text(
+                    tr(context, 'auth.verify.resend', 'Resend'),
+                    style: GoogleFonts.manrope(
+                        fontSize: 13,
+                        color: accent,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 120,
+                height: 42,
+                child: PillButton(
+                  label: tr(context, 'auth.verify.submit', 'Confirm'),
+                  size: PillSize.sm,
+                  expanded: true,
+                  loading: verifying,
+                  onPressed: canSubmit ? onVerify : null,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
 /// Pill segmented control with an accent active block (design: Segmented).
 class _SegmentedModeSwitch extends StatelessWidget {
   const _SegmentedModeSwitch({
