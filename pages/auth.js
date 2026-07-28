@@ -101,6 +101,13 @@ export default function AuthPage() {
     }
   }, [router.isReady, router.query.verified])
 
+  // Auto-send verification email when the verify screen appears.
+  useEffect(() => {
+    if (registered && registeredEmail) {
+      handleResendCode()
+    }
+  }, [registered, registeredEmail])
+
   const clearFieldError = useCallback((field) => {
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
   }, [])

@@ -107,6 +107,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         context.go('/');
       } else {
         setState(() => _registered = true);
+        WidgetsBinding.instance.addPostFrameCallback((_) => _sendVerifyEmail());
       }
       _resetCaptcha();
     } on ApiException catch (e) {
@@ -121,6 +122,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           _registered = true;
           _verifyError = e.message;
         });
+        WidgetsBinding.instance.addPostFrameCallback((_) => _sendVerifyEmail());
       }
       _resetCaptcha();
     } catch (_) {
@@ -132,6 +134,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
+  }
+
+  Future<void> _sendVerifyEmail() async {
+    try {
+      await ref
+          .read(authProvider.notifier)
+          .sendVerification(email: _emailController.text);
+    } catch (_) {}
   }
 
   Future<void> _handleVerifyCode() async {
