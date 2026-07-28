@@ -38,7 +38,11 @@ export default createApiHandler({
       )
 
       const lang = body.lang || user.settings?.language || 'en'
-      sendVerifyEmail({ to: user.email, name: user.name, code, lang }).catch(() => {})
+      try {
+        await sendVerifyEmail({ to: user.email, name: user.name, code, lang })
+      } catch (e) {
+        console.error('sendVerifyEmail failed:', e)
+      }
 
       res.status(201).json({ ok: true, email: user.email })
     },

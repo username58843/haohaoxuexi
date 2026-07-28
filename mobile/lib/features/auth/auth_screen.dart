@@ -99,6 +99,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           _emailController.text,
           _passwordController.text,
           captchaToken: _captchaToken,
+          lang: I18n.language,
         );
       }
       if (!mounted) return;
@@ -473,7 +474,9 @@ class _VerifyCodeInput extends StatelessWidget {
               fontSize: 28,
               fontWeight: FontWeight.w700,
               letterSpacing: 8,
-              color: const Color(0xFF059669),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFFe0e0e0)
+                  : const Color(0xFF059669),
             ),
             decoration: InputDecoration(
               counterText: '',
@@ -481,27 +484,39 @@ class _VerifyCodeInput extends StatelessWidget {
               hintStyle: GoogleFonts.manrope(
                   fontSize: 28,
                   letterSpacing: 8,
-                  color: const Color(0xFF10b981).withValues(alpha: 0.4)),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white.withValues(alpha: 0.2)
+                      : const Color(0xFF10b981).withValues(alpha: 0.4)),
               filled: true,
-              fillColor: const Color(0xFFf0fdf4),
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF1e1e1e)
+                  : const Color(0xFFf0fdf4),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
                   color: error != null
                       ? const Color(0xFFef4444)
-                      : const Color(0xFF10b981),
+                      : Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF10b981)
+                          : const Color(0xFF10b981),
                   width: 2,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                    color: Color(0xFF10b981), width: 2),
+                borderSide: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withValues(alpha: 0.2)
+                        : const Color(0xFF10b981),
+                    width: 2),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                    color: Color(0xFF10b981), width: 2),
+                borderSide: BorderSide(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFF10b981)
+                        : const Color(0xFF10b981),
+                    width: 2),
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

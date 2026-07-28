@@ -306,10 +306,10 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     );
   }
 
-  Future<void> register(String name, String email, String password, {String captchaToken = ''}) async {
+  Future<void> register(String name, String email, String password, {String captchaToken = '', String lang = 'en'}) async {
     final api = ref.read(apiProvider);
     await api.post('/auth/register',
-        body: {'name': name.trim(), 'email': email.trim(), 'password': password, 'captchaToken': captchaToken});
+        body: {'name': name.trim(), 'email': email.trim(), 'password': password, 'captchaToken': captchaToken, 'lang': lang});
     // Email verification required — user is NOT logged in.
   }
 

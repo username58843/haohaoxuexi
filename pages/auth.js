@@ -55,6 +55,7 @@ function IconAlert() {
 export default function AuthPage() {
   const router = useRouter()
   const { user, loading, login, register, banInfo, setUser, setBanInfo } = useAuth()
+  const { t, settings } = useSettings()
   const { t } = useSettings()
 
   const [mode, setMode] = useState('login')
@@ -155,7 +156,7 @@ export default function AuthPage() {
     const result =
       mode === 'login'
         ? await login(email.trim(), password, captchaToken)
-        : await register(email.trim(), password, name.trim(), captchaToken)
+        : await register(email.trim(), password, name.trim(), captchaToken, settings.language)
 
     if (result.success) {
       if (mode === 'register') {
@@ -307,11 +308,11 @@ export default function AuthPage() {
                     fontFamily: 'monospace',
                     letterSpacing: 8,
                     textAlign: 'center',
-                    border: verifyError ? '2px solid #ef4444' : '2px solid #10b981',
+                    border: verifyError ? '2px solid var(--danger)' : '2px solid var(--accent)',
                     borderRadius: 10,
                     outline: 'none',
-                    background: '#f0fdf4',
-                    color: '#059669',
+                    background: 'var(--surface-2)',
+                    color: 'var(--text)',
                     boxSizing: 'border-box',
                   }}
                   autoFocus
