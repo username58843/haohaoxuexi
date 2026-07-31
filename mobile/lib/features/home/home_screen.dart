@@ -287,6 +287,10 @@ class HomeScreen extends ConsumerWidget {
     final result = await showModalBottomSheet<List<String>>(
       context: context,
       isScrollControlled: true,
+      // Root navigator: the Home tab lives inside the HomeShell body
+      // (extendBody: true), so a sheet on the nearest navigator would be
+      // painted behind the floating dock, hiding the bottom button.
+      useRootNavigator: true,
       builder: (sheetContext) {
         return SafeArea(
           child: StatefulBuilder(

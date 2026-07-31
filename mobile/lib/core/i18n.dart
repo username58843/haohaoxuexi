@@ -194,6 +194,8 @@ const Map<String, Map<String, String>> _overrides = {
     'word.russian': 'Русский',
     'word.traditional': 'Традиционное',
     'word.addToDeck': 'Добавить в колоду',
+    'word.listen': 'Озвучить',
+    'word.strokes': 'Порядок черт',
     // HSK word map
     'wmap.title': 'Карта слов',
     'wmap.mastery': 'Освоение',
@@ -464,6 +466,8 @@ const Map<String, Map<String, String>> _overrides = {
     'word.russian': 'Rusça',
     'word.traditional': 'Adaty görnüş',
     'word.addToDeck': 'Topluma goş',
+    'word.listen': 'Diňle',
+    'word.strokes': 'Çyzgy tertibi',
     // HSK word map
     'wmap.title': 'Söz kartasy',
     'wmap.mastery': 'Özleşdirme',
@@ -727,6 +731,8 @@ const Map<String, Map<String, String>> _overrides = {
     'word.russian': '俄语',
     'word.traditional': '繁体',
     'word.addToDeck': '加入卡组',
+    'word.listen': '播放发音',
+    'word.strokes': '笔画顺序',
     // HSK word map
     'wmap.title': '词汇地图',
     'wmap.mastery': '掌握度',

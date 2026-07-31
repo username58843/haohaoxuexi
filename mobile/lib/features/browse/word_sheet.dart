@@ -6,13 +6,15 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/models.dart';
+import '../../core/speech.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../decks/decks_screen.dart';
+import 'stroke_order.dart';
 
 /// Word detail bottom sheet: big hanzi, pinyin, traditional (when it differs),
-/// HSK badge, definitions, EN/RU translation blocks and a caller-provided
-/// actions row.
+/// HSK badge, listen (TTS) + stroke-order buttons, definitions, EN/RU
+/// translation blocks and a caller-provided actions row.
 Future<void> showWordSheet(
   BuildContext context,
   WidgetRef ref,
@@ -23,15 +25,31 @@ Future<void> showWordSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Open on the ROOT navigator: inside the HomeShell tabs the nearest
+    // navigator lives in the Scaffold body (extendBody: true), so a sheet
+    // opened there is painted BEHIND the floating dock and its bottom
+    // actions ("Add to deck") end up hidden under the nav buttons.
+    useRootNavigator: true,
     builder: (context) => _WordSheet(word: word, actions: actions),
   );
 }
 
-class _WordSheet extends StatelessWidget {
+class _WordSheet extends StatefulWidget {
   const _WordSheet({required this.word, required this.actions});
 
   final Word word;
   final List<Widget> actions;
+
+  @override
+  State<_WordSheet> createState() => _WordSheetState();
+}
+
+class _WordSheetState extends State<_WordSheet> {
+  static final RegExp _han = RegExp(r'\p{Script=Han}', unicode: true);
+
+  bool _showStrokes = false;
+
+  Word get word => widget.word;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +58,11 @@ class _WordSheet extends StatelessWidget {
         word.traditional.isNotEmpty && word.traditional != word.simplified;
     final showEn = word.en.isNotEmpty && !listEquals(word.en, word.definitions);
     final showRu = word.ru.isNotEmpty && !listEquals(word.ru, word.definitions);
+    // Same as the web sheet: stroke-order tiles for the Han characters only.
+    final hanzi = [
+      for (final ch in word.simplified.characters)
+        if (_han.hasMatch(ch)) ch,
+    ];
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -99,6 +122,39 @@ class _WordSheet extends StatelessWidget {
                 ],
               ),
             ],
+            // Listen (TTS) + stroke-order toggle — same actions row as the
+            // web word sheet (components/WordSheet.js).
+            const SizedBox(height: 16),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                PillButton(
+                  label: tr(context, 'word.listen', 'Listen'),
+                  icon: Icons.volume_up_rounded,
+                  size: PillSize.sm,
+                  variant: PillVariant.soft,
+                  onPressed: () {
+                    Speech.speakChinese(word.simplified);
+                  },
+                ),
+                if (hanzi.isNotEmpty)
+                  PillButton(
+                    label: tr(context, 'word.strokes', 'Stroke order'),
+                    icon: Icons.gesture,
+                    size: PillSize.sm,
+                    variant:
+                        _showStrokes ? PillVariant.primary : PillVariant.soft,
+                    onPressed: () =>
+                        setState(() => _showStrokes = !_showStrokes),
+                  ),
+              ],
+            ),
+            if (_showStrokes && hanzi.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              StrokeOrderPanel(characters: hanzi),
+            ],
             if (word.definitions.isNotEmpty)
               ..._block(context, tr(context, 'word.definitions', 'Definitions'),
                   word.definitions),
@@ -108,13 +164,13 @@ class _WordSheet extends StatelessWidget {
             if (showRu)
               ..._block(
                   context, tr(context, 'word.russian', 'Russian'), word.ru),
-            if (actions.isNotEmpty) ...[
+            if (widget.actions.isNotEmpty) ...[
               const SizedBox(height: 22),
               Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 10,
                 runSpacing: 10,
-                children: actions,
+                children: widget.actions,
               ),
             ],
           ],
@@ -285,6 +341,9 @@ Future<void> showAddToDeckSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Root navigator, like showWordSheet: keeps the sheet above the
+    // floating dock inside the HomeShell tabs.
+    useRootNavigator: true,
     builder: (context) => _AddToDeckSheet(word: word),
   );
 }

@@ -42,5 +42,10 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- flutter_tts: make the platform text-to-speech engine visible to
+             the app on Android 11+ (package visibility filtering). -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE"/>
+        </intent>
     </queries>
 </manifest>
