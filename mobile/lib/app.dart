@@ -19,6 +19,7 @@ import 'features/browse/map_screen.dart';
 import 'features/decks/deck_detail_screen.dart';
 import 'features/decks/decks_screen.dart';
 import 'features/home/home_screen.dart';
+import 'features/learn/learn_screen.dart';
 import 'features/study/study_screen.dart';
 
 /// Routes that are reachable without authentication.
@@ -122,6 +123,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const HomeScreen(),
           ),
           GoRoute(
+            path: '/learn',
+            builder: (context, state) => const LearnScreen(),
+          ),
+          GoRoute(
             path: '/hsk',
             builder: (context, state) => const HskScreen(),
           ),
@@ -161,18 +166,25 @@ class HaoHaoApp extends ConsumerWidget {
   }
 }
 
-/// Bottom-navigation shell wrapping the four main tabs.
+/// Bottom-navigation shell wrapping the five main tabs.
 class HomeShell extends ConsumerWidget {
   const HomeShell({super.key, required this.child});
 
   final Widget child;
 
-  static const List<String> _tabPaths = ['/', '/hsk', '/decks', '/settings'];
+  static const List<String> _tabPaths = [
+    '/',
+    '/learn',
+    '/hsk',
+    '/decks',
+    '/settings',
+  ];
 
   int _indexOf(String location) {
-    if (location.startsWith('/hsk')) return 1;
-    if (location.startsWith('/decks')) return 2;
-    if (location.startsWith('/settings')) return 3;
+    if (location.startsWith('/learn')) return 1;
+    if (location.startsWith('/hsk')) return 2;
+    if (location.startsWith('/decks')) return 3;
+    if (location.startsWith('/settings')) return 4;
     return 0;
   }
 
@@ -194,9 +206,14 @@ class HomeShell extends ConsumerWidget {
         },
         destinations: [
           DockDestination(
+            icon: Icons.home_outlined,
+            selectedIcon: Icons.home,
+            label: tr(context, 'nav.home', 'Home'),
+          ),
+          DockDestination(
             icon: Icons.school_outlined,
             selectedIcon: Icons.school,
-            label: tr(context, 'nav.home', 'Home'),
+            label: tr(context, 'nav.learn', 'Learn'),
           ),
           DockDestination(
             icon: Icons.grid_view_outlined,
