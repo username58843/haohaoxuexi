@@ -26,6 +26,7 @@ import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../decks/decks_screen.dart';
 import '../home/home_screen.dart';
+import '../study/study_logic.dart';
 
 /// SharedPreferences key remembering the last-started session config.
 const String _kLearnConfigPref = 'learnConfig';
@@ -53,6 +54,7 @@ class _LearnConfig {
     this.reviewLimit = 20,
     this.quizSources = const [],
     this.quizCount = 20,
+    this.quizModes = const ['cp', 'ct'],
   });
 
   /// 'review' | 'quiz'
@@ -64,10 +66,17 @@ class _LearnConfig {
   final List<String> quizSources;
   final int quizCount;
 
+  /// Question modes (subset of [kAllQmodes]), like the web `quiz.qmodes`.
+  final List<String> quizModes;
+
   Map<String, dynamic> toJson() => {
         'mode': mode,
         'review': {'packs': reviewPacks, 'limit': reviewLimit},
-        'quiz': {'sources': quizSources, 'count': quizCount},
+        'quiz': {
+          'sources': quizSources,
+          'count': quizCount,
+          'qmodes': quizModes,
+        },
       };
 
   static _LearnConfig? fromJson(Object? raw) {
@@ -83,6 +92,7 @@ class _LearnConfig {
           _allowed(review is Map ? review['limit'] : null, _reviewLimits, 20),
       quizSources: _ids(quiz is Map ? quiz['sources'] : null),
       quizCount: _allowed(quiz is Map ? quiz['count'] : null, _quizCounts, 20),
+      quizModes: _qmodes(quiz is Map ? quiz['qmodes'] : null),
     );
   }
 
@@ -95,6 +105,16 @@ class _LearnConfig {
 
   static int _allowed(Object? v, List<int> allowed, int def) =>
       v is num && allowed.contains(v.toInt()) ? v.toInt() : def;
+
+  /// Known question modes from a stored config; the web default (`cp`+`ct`)
+  /// when nothing valid was saved.
+  static List<String> _qmodes(Object? v) {
+    final modes = [
+      for (final m in _ids(v))
+        if (kAllQmodes.contains(m)) m,
+    ];
+    return modes.isEmpty ? const ['cp', 'ct'] : modes;
+  }
 }
 
 class LearnScreen extends ConsumerStatefulWidget {
@@ -112,6 +132,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   int _reviewLimit = 20;
   final Set<String> _quizSources = {};
   int _quizCount = 20;
+  final Set<String> _quizModes = {'cp', 'ct'};
 
   _LearnConfig? _saved;
 
@@ -138,6 +159,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     _reviewLimit = cfg.reviewLimit;
     _quizSources.addAll(cfg.quizSources);
     _quizCount = cfg.quizCount;
+    _quizModes
+      ..clear()
+      ..addAll(cfg.quizModes);
   }
 
   // -------------------------------------------------------------------------
@@ -161,12 +185,15 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     ]);
   }
 
-  String _studyUri(String mode, List<String> sources, int count) => Uri(
+  String _studyUri(String mode, List<String> sources, int count,
+          {List<String> qmodes = const []}) =>
+      Uri(
         path: '/study',
         queryParameters: {
           'mode': mode,
           if (sources.isNotEmpty) 'sources': sources.join(','),
           'count': '$count',
+          if (qmodes.isNotEmpty) 'qmodes': qmodes.join(','),
         },
       ).toString();
 
@@ -183,6 +210,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       reviewLimit: _reviewLimit,
       quizSources: quizSel,
       quizCount: _quizCount,
+      quizModes: _quizModes.toList(),
     );
     ref
         .read(sharedPreferencesProvider)
@@ -194,7 +222,8 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final cfg = _saved;
     if (cfg == null) return;
     _startSession(cfg.mode == 'quiz'
-        ? _studyUri('quiz', cfg.quizSources, cfg.quizCount)
+        ? _studyUri('quiz', cfg.quizSources, cfg.quizCount,
+            qmodes: cfg.quizModes)
         : _studyUri('review', cfg.reviewPacks, cfg.reviewLimit));
   }
 
@@ -299,7 +328,8 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
     final saved = _saved;
     final continueReady = saved != null &&
-        (saved.mode == 'review' || saved.quizSources.isNotEmpty);
+        (saved.mode == 'review' ||
+            (saved.quizSources.isNotEmpty && saved.quizModes.isNotEmpty));
 
     final textbookIds = {for (final p in textbookPacks) p.id};
     final activeSel = _tab == 'review' ? _reviewPacks : _quizSources;
@@ -490,7 +520,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     List<String> reviewSel,
     List<String> quizSel,
   ) {
-    final canStart = quizSel.isNotEmpty;
+    final canStart = quizSel.isNotEmpty && _quizModes.isNotEmpty;
     return [
       if (decks.isNotEmpty) ...[
         SectionLabel(tr(context, 'decks.title', 'My decks')),
@@ -522,6 +552,27 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             ),
         ],
       ),
+      const SizedBox(height: 18),
+      SectionLabel(tr(context, 'learn.questionModes', 'Question types')),
+      const SizedBox(height: 10),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final m in kAllQmodes)
+            FilterChip(
+              label: QmodeLabel(m),
+              selected: _quizModes.contains(m),
+              onSelected: (v) => setState(() {
+                if (v) {
+                  _quizModes.add(m);
+                } else {
+                  _quizModes.remove(m);
+                }
+              }),
+            ),
+        ],
+      ),
       const SizedBox(height: 22),
       PillButton(
         label:
@@ -531,14 +582,16 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
         onPressed: canStart
             ? () {
                 _persist('quiz', reviewSel, quizSel);
-                _startSession(_studyUri('quiz', quizSel, _quizCount));
+                _startSession(_studyUri('quiz', quizSel, _quizCount,
+                    qmodes: _quizModes.toList()));
               }
             : null,
       ),
       if (!canStart) ...[
         const SizedBox(height: 10),
         Text(
-          tr(context, 'learn.quizHint', 'Pick at least one source.'),
+          tr(context, 'learn.quizHint',
+              'Pick at least one source and one question type.'),
           textAlign: TextAlign.center,
           style: GoogleFonts.manrope(fontSize: 12.5, color: text2Of(context)),
         ),

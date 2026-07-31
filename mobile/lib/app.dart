@@ -20,6 +20,7 @@ import 'features/decks/deck_detail_screen.dart';
 import 'features/decks/decks_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/learn/learn_screen.dart';
+import 'features/study/study_logic.dart';
 import 'features/study/study_screen.dart';
 
 /// Routes that are reachable without authentication.
@@ -90,10 +91,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               .map((s) => s.trim())
               .where((s) => s.isNotEmpty)
               .toList();
+          // Question modes: filtered to the known ids, defaulting to the
+          // web's 字→Pinyin + 字→Meaning pair (like /learn/session).
+          final qmodes = (params['qmodes'] ?? '')
+              .split(',')
+              .map((s) => s.trim())
+              .where(kAllQmodes.contains)
+              .toList();
           return StudyScreen(
             mode: params['mode'] ?? 'review',
             sources: sources,
             count: int.tryParse(params['count'] ?? '') ?? 20,
+            qmodes: qmodes.isEmpty ? const ['cp', 'ct'] : qmodes,
           );
         },
       ),

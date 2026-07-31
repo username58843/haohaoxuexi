@@ -37,6 +37,7 @@ class StudyScreen extends ConsumerStatefulWidget {
     required this.mode,
     this.sources = const [],
     this.count = 20,
+    this.qmodes = const ['cp', 'ct'],
   });
 
   /// 'review' | 'quiz'
@@ -45,6 +46,10 @@ class StudyScreen extends ConsumerStatefulWidget {
   /// Selected sources: pack ids (e.g. `hsk1`, textbook ids) and/or `deck:<id>`.
   final List<String> sources;
   final int count;
+
+  /// Quiz question modes (subset of [kAllQmodes]); defaults to the web's
+  /// 字→Pinyin + 字→Meaning pair.
+  final List<String> qmodes;
 
   @override
   ConsumerState<StudyScreen> createState() => _StudyScreenState();
@@ -114,7 +119,8 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     try {
       if (_isQuiz) {
         final pool = await _loadPool();
-        final questions = buildQuiz(pool, widget.count, ref.read(languageProvider));
+        final questions = buildQuiz(
+            pool, widget.qmodes, widget.count, ref.read(languageProvider));
         if (!mounted) return;
         setState(() {
           _questions = questions;
@@ -276,9 +282,13 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     _postReview(q.word.id, correct ? 2 : 0, snapshot: q.word);
     setState(() => _selected = option);
     _advanceTimer?.cancel();
-    _advanceTimer = Timer(Duration(milliseconds: correct ? 750 : 1500), () {
-      if (mounted) _next();
-    });
+    if (correct) {
+      // Correct answers flash green and auto-advance; wrong answers reveal
+      // the right option and wait for the Next button (like the web session).
+      _advanceTimer = Timer(const Duration(milliseconds: 650), () {
+        if (mounted) _next();
+      });
+    }
   }
 
   void _next() {
@@ -619,35 +629,71 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
   Widget _quizView(BuildContext context) {
     final q = _questions[_index];
-    final size = q.word.simplified.length <= 2
-        ? 76.0
-        : q.word.simplified.length <= 4
-            ? 56.0
-            : 40.0;
+    final wrong = _selected != null && _selected != q.correctIndex;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       child: Column(
         children: [
           Center(
-            child: SectionLabel(
-              q.direction == QuizDirection.pinyin
-                  ? tr(context, 'study.choosePinyin', 'Choose the pinyin')
-                  : tr(context, 'study.chooseMeaning', 'Choose the meaning'),
+            child: QmodeLabel(
+              q.qmode,
+              style: monoStyle(context),
+              hanziSize: 13,
+              uppercase: true,
             ),
           ),
-          Expanded(
-            child: Center(
-              child: HanziText(q.word.simplified,
-                  size: size, textAlign: TextAlign.center),
-            ),
-          ),
+          Expanded(child: Center(child: _quizPrompt(context, q))),
           for (var i = 0; i < q.options.length; i++) ...[
             _optionButton(context, q, i),
             if (i < q.options.length - 1) const SizedBox(height: 10),
           ],
+          if (wrong) ...[
+            const SizedBox(height: 14),
+            PillButton(
+              label: tr(context, 'study.next', 'Next'),
+              size: PillSize.lg,
+              expanded: true,
+              onPressed: _next,
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  /// Prompt side of the question, styled per field like the web
+  /// `.sess-quiz__prompt` variants: big serif hanzi, accent pinyin,
+  /// plain meaning text.
+  Widget _quizPrompt(BuildContext context, QuizQuestion q) {
+    switch (q.promptType) {
+      case QuizField.hanzi:
+        final size = q.prompt.length <= 2
+            ? 76.0
+            : q.prompt.length <= 4
+                ? 56.0
+                : 40.0;
+        return HanziText(q.prompt, size: size, textAlign: TextAlign.center);
+      case QuizField.pinyin:
+        return Text(
+          q.prompt,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.manrope(
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
+            color: accentOf(context),
+          ),
+        );
+      case QuizField.meaning:
+        return Text(
+          q.prompt,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.manrope(
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+            height: 1.35,
+          ),
+        );
+    }
   }
 
   Widget _optionButton(BuildContext context, QuizQuestion q, int i) {
@@ -657,18 +703,31 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
     Color background = surfaceOf(context);
     Color border = hairlineOf(context);
+    Color numColor = text3Of(context);
     double opacity = 1;
     if (answered) {
       if (isCorrect) {
         background = okColor.withValues(alpha: 0.16);
         border = okColor.withValues(alpha: 0.6);
+        numColor = okColor;
       } else if (isChosen) {
         background = dangerColor.withValues(alpha: 0.14);
         border = dangerColor.withValues(alpha: 0.6);
+        numColor = dangerColor;
       } else {
         opacity = 0.45;
       }
     }
+
+    // Answer text styled per field, like the web `.sess-option--hanzi` /
+    // `--pinyin` variants: serif hanzi, larger pinyin, plain meaning.
+    final answerStyle = switch (q.answerType) {
+      QuizField.hanzi => hanziStyle(context, size: 22),
+      QuizField.pinyin =>
+        GoogleFonts.manrope(fontSize: 16.5, fontWeight: FontWeight.w600),
+      QuizField.meaning =>
+        GoogleFonts.manrope(fontSize: 14.5, fontWeight: FontWeight.w600),
+    };
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 150),
@@ -686,15 +745,28 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: surface2Of(context),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: hairlineOf(context)),
+                  ),
+                  child: Text(
+                    '${i + 1}',
+                    style: monoStyle(context,
+                        size: 11.5, letterSpacing: 0, color: numColor),
+                  ),
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     q.options[i],
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.manrope(
-                      fontSize: q.direction == QuizDirection.pinyin ? 16.5 : 14.5,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: answerStyle,
                   ),
                 ),
                 if (answered && isCorrect)

@@ -1,11 +1,16 @@
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+
 import '../../core/i18n.dart';
 import '../../core/models.dart';
+import '../../core/theme.dart';
 
-/// Pure session logic for the study screen:
+/// Session logic for the study screen, mirroring the web
+/// `components/learn/session-utils.js`:
 /// - client-side SM-2 interval previews (ARCHITECTURE.md §7) for grade buttons
-/// - multiple-choice quiz building (4 options, mixed directions).
+/// - multiple-choice quiz building over the four question modes
+///   (字→Pinyin, Pinyin→字, 字→Meaning, Meaning→字) + the [QmodeLabel] widget.
 
 /// Predicts the next interval (in days) for [card] if graded with [grade]
 /// (0 Again · 1 Hard · 2 Good · 3 Easy). Mirrors the server SM-2 variant —
@@ -52,28 +57,53 @@ String formatInterval(double days) {
   return '${(days / 365).round()}${tr(null, 'time.y', 'y')}';
 }
 
-/// Quiz question direction: characters → pinyin, or characters → meaning.
-enum QuizDirection { pinyin, meaning }
+// -----------------------------------------------------------------------------
+// Question modes (web `ALL_QMODES` / `QMODE_DEFS`)
+// -----------------------------------------------------------------------------
+
+/// The word field a question mode shows or asks for.
+enum QuizField { hanzi, pinyin, meaning }
+
+/// Question-mode ids, identical to the web:
+/// `cp` 字→Pinyin · `pc` Pinyin→字 · `ct` 字→Meaning · `tc` Meaning→字.
+const List<String> kAllQmodes = ['cp', 'pc', 'ct', 'tc'];
+
+/// prompt/answer field per question mode (web `QMODE_DEFS`).
+const Map<String, ({QuizField prompt, QuizField answer})> kQmodeDefs = {
+  'cp': (prompt: QuizField.hanzi, answer: QuizField.pinyin),
+  'pc': (prompt: QuizField.pinyin, answer: QuizField.hanzi),
+  'ct': (prompt: QuizField.hanzi, answer: QuizField.meaning),
+  'tc': (prompt: QuizField.meaning, answer: QuizField.hanzi),
+};
 
 class QuizQuestion {
   const QuizQuestion({
     required this.word,
-    required this.direction,
+    required this.qmode,
+    required this.prompt,
     required this.options,
     required this.correctIndex,
   });
 
   final Word word;
-  final QuizDirection direction;
 
-  /// 2–4 answer strings, already shuffled.
+  /// One of [kAllQmodes].
+  final String qmode;
+
+  /// Display text of the prompt side (hanzi, pinyin or meaning).
+  final String prompt;
+
+  /// 1–4 answer strings, already shuffled.
   final List<String> options;
   final int correctIndex;
 
+  QuizField get promptType => kQmodeDefs[qmode]!.prompt;
+  QuizField get answerType => kQmodeDefs[qmode]!.answer;
   String get answer => options[correctIndex];
 }
 
-/// Best display meaning for [word] in the given UI [language].
+/// Best display meaning for [word] in the given UI [language]
+/// (web `meaningLine`: RU preferred for the RU UI).
 String quizMeaning(Word word, String language) {
   if (language == 'ru' && word.ru.isNotEmpty) return word.ru.first;
   if (word.definitions.isNotEmpty) return word.definitions.first;
@@ -82,60 +112,144 @@ String quizMeaning(Word word, String language) {
   return '';
 }
 
-String _answerText(Word word, QuizDirection direction, String language) =>
-    direction == QuizDirection.pinyin ? word.pinyin : quizMeaning(word, language);
+/// Display text of a word [field] (web `fieldText`).
+String _fieldText(Word word, QuizField field, String language) =>
+    switch (field) {
+      QuizField.hanzi => word.simplified,
+      QuizField.pinyin => word.pinyin,
+      QuizField.meaning => quizMeaning(word, language),
+    };
 
-/// Builds up to [count] MCQ questions out of [pool]. Directions are mixed
-/// (chars→pinyin and chars→meaning); distractors come from the same pool.
+/// Which of the requested modes this word can actually be asked in
+/// (web `modesForWord`: both the prompt and the answer side must be non-empty).
+List<String> _modesForWord(Word word, List<String> modes, String language) => [
+      for (final m in modes)
+        if (_fieldText(word, kQmodeDefs[m]!.prompt, language).isNotEmpty &&
+            _fieldText(word, kQmodeDefs[m]!.answer, language).isNotEmpty)
+          m,
+    ];
+
+String _norm(String s) => s.trim().toLowerCase();
+
+/// Builds the whole quiz upfront (web `buildQuizQuestions`). Each question
+/// gets a random eligible mode out of [qmodes], the correct answer plus up to
+/// 3 distractors with unique word ids AND unique display texts — fewer than
+/// 4 options is accepted when the pool is small. `count <= 0` means "the
+/// whole pool" (deck Study buttons pass count=0).
 List<QuizQuestion> buildQuiz(
   List<Word> pool,
+  List<String> qmodes,
   int count,
   String language, {
   math.Random? random,
 }) {
   final rng = random ?? math.Random();
+  final modes = [
+    for (final m in qmodes)
+      if (kQmodeDefs.containsKey(m)) m,
+  ];
+  if (modes.isEmpty) return const [];
+
   // Dedupe by canonical id, drop unusable entries.
   final seen = <String>{};
   final words = [
     for (final w in pool)
-      if (w.simplified.isNotEmpty && w.pinyin.isNotEmpty && seen.add(w.id)) w,
+      if (w.simplified.isNotEmpty && seen.add(w.id)) w,
   ];
-  words.shuffle(rng);
 
-  // count <= 0 means "the whole pool" (deck Study buttons pass count=0).
-  final target = count > 0 ? count : words.length;
+  // Only words that can be asked in at least one of the selected modes.
+  final eligible = [
+    for (final w in words)
+      if (_modesForWord(w, modes, language).isNotEmpty) w,
+  ]..shuffle(rng);
+  final picked = count > 0 ? eligible.take(count) : eligible;
 
   final questions = <QuizQuestion>[];
-  for (final word in words) {
-    if (questions.length >= target) break;
-    final hasMeaning = quizMeaning(word, language).isNotEmpty;
-    final direction = hasMeaning && rng.nextBool()
-        ? QuizDirection.meaning
-        : QuizDirection.pinyin;
-    final correct = _answerText(word, direction, language);
-    if (correct.isEmpty) continue;
+  for (final word in picked) {
+    final wordModes = _modesForWord(word, modes, language);
+    final qmode = wordModes[rng.nextInt(wordModes.length)];
+    final def = kQmodeDefs[qmode]!;
+    final correct = _fieldText(word, def.answer, language);
+    final promptNorm = _norm(_fieldText(word, def.prompt, language));
+    final usedTexts = {_norm(correct)};
+    final usedIds = {word.id};
+    final options = [correct];
 
-    final distractors = <String>{};
     final candidates = [...words]..shuffle(rng);
-    for (final other in candidates) {
-      if (distractors.length >= 3) break;
-      if (other.id == word.id) continue;
-      // A homograph shares the displayed hanzi prompt (还 hái/huán) — its
-      // pinyin/meaning would be a second valid answer, not a distractor.
-      if (other.simplified == word.simplified) continue;
-      final text = _answerText(other, direction, language);
-      if (text.isEmpty || text == correct) continue;
-      distractors.add(text);
+    for (final cand in candidates) {
+      if (options.length >= 4) break;
+      if (usedIds.contains(cand.id)) continue;
+      // Skip candidates that share the prompt (e.g. 他/她 both "tā", or the
+      // 还 hái/huán homograph) — they'd be a second valid answer, not a
+      // distractor.
+      if (_norm(_fieldText(cand, def.prompt, language)) == promptNorm) {
+        continue;
+      }
+      final text = _fieldText(cand, def.answer, language);
+      if (text.isEmpty || usedTexts.contains(_norm(text))) continue;
+      usedIds.add(cand.id);
+      usedTexts.add(_norm(text));
+      options.add(text);
     }
-    if (distractors.isEmpty) continue; // can't make a meaningful question
 
-    final options = [correct, ...distractors]..shuffle(rng);
+    options.shuffle(rng);
     questions.add(QuizQuestion(
       word: word,
-      direction: direction,
+      qmode: qmode,
+      prompt: _fieldText(word, def.prompt, language),
       options: options,
       correctIndex: options.indexOf(correct),
     ));
   }
   return questions;
+}
+
+/// Human label for a question mode, e.g. 字 → Pinyin (web `QmodeLabel`):
+/// the 字 glyph is rendered in the hanzi serif, the Pinyin/Meaning side is a
+/// localized `learn.pinyin` / `learn.meaning` string.
+class QmodeLabel extends StatelessWidget {
+  const QmodeLabel(
+    this.mode, {
+    super.key,
+    this.style,
+    this.hanziSize = 14,
+    this.uppercase = false,
+  });
+
+  /// One of [kAllQmodes].
+  final String mode;
+
+  /// Base style for the non-hanzi parts (inherited when null, e.g. in chips).
+  final TextStyle? style;
+  final double hanziSize;
+
+  /// Uppercases the Pinyin/Meaning words — for eyebrow contexts, matching the
+  /// web `.eyebrow` text-transform.
+  final bool uppercase;
+
+  @override
+  Widget build(BuildContext context) {
+    String label(String key, String enDefault) {
+      final s = tr(context, key, enDefault);
+      return uppercase ? s.toUpperCase() : s;
+    }
+
+    final pinyin = label('learn.pinyin', 'Pinyin');
+    final meaning = label('learn.meaning', 'Meaning');
+    final hanzi = TextSpan(
+      text: '字',
+      style: hanziStyle(context, size: hanziSize, color: style?.color),
+    );
+    final parts = switch (mode) {
+      'cp' => [hanzi, TextSpan(text: ' → $pinyin')],
+      'pc' => [TextSpan(text: '$pinyin → '), hanzi],
+      'ct' => [hanzi, TextSpan(text: ' → $meaning')],
+      _ => [TextSpan(text: '$meaning → '), hanzi],
+    };
+    return Text.rich(
+      TextSpan(style: style, children: parts),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
 }
