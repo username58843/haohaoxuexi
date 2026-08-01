@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/providers.dart';
+import '../../core/reminders.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 
@@ -112,59 +113,126 @@ class SettingsScreen extends ConsumerWidget {
           SectionLabel(tr(context, 'settings.study', 'Study')),
           const SizedBox(height: 10),
           InkCard(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        tr(context, 'settings.dailyGoal', 'Daily goal'),
-                        style: GoogleFonts.manrope(
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w600,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(context, 'settings.dailyGoal', 'Daily goal'),
+                            style: GoogleFonts.manrope(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            tr(context, 'settings.dailyGoal.hint',
+                                'Reviews per day'),
+                            style: GoogleFonts.manrope(
+                              fontSize: 12.5,
+                              color: text2Of(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _StepButton(
+                      icon: Icons.remove,
+                      onTap: settings.dailyGoal > 5
+                          ? () => notifier.setDailyGoal(
+                              (settings.dailyGoal - 5).clamp(5, 500))
+                          : null,
+                    ),
+                    SizedBox(
+                      width: 52,
+                      child: Text(
+                        '${settings.dailyGoal}',
+                        textAlign: TextAlign.center,
+                        style: monoStyle(
+                          context,
+                          size: 16,
+                          weight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface,
+                          letterSpacing: 0,
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        tr(context, 'settings.dailyGoal.hint', 'Reviews per day'),
-                        style: GoogleFonts.manrope(
-                          fontSize: 12.5,
-                          color: text2Of(context),
+                    ),
+                    _StepButton(
+                      icon: Icons.add,
+                      onTap: settings.dailyGoal < 500
+                          ? () => notifier.setDailyGoal(
+                              (settings.dailyGoal + 5).clamp(5, 500))
+                          : null,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const Divider(),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tr(context, 'settings.reminder', 'Daily reminder'),
+                            style: GoogleFonts.manrope(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            tr(context, 'settings.reminder.hint',
+                                'A nudge to review your due cards'),
+                            style: GoogleFonts.manrope(
+                              fontSize: 12.5,
+                              color: text2Of(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Switch(
+                      value: settings.reminderEnabled,
+                      onChanged: (enabled) =>
+                          _setReminderEnabled(context, ref, enabled),
+                    ),
+                  ],
+                ),
+                if (settings.reminderEnabled) ...[
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          tr(context, 'settings.reminder.time',
+                              'Reminder time'),
+                          style: GoogleFonts.manrope(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                         ),
+                      ),
+                      PillButton(
+                        label: _formatMinutes(settings.reminderMinutes),
+                        size: PillSize.sm,
+                        variant: PillVariant.soft,
+                        icon: Icons.schedule_rounded,
+                        onPressed: () => _pickReminderTime(context, ref),
                       ),
                     ],
                   ),
-                ),
-                _StepButton(
-                  icon: Icons.remove,
-                  onTap: settings.dailyGoal > 5
-                      ? () => notifier
-                          .setDailyGoal((settings.dailyGoal - 5).clamp(5, 500))
-                      : null,
-                ),
-                SizedBox(
-                  width: 52,
-                  child: Text(
-                    '${settings.dailyGoal}',
-                    textAlign: TextAlign.center,
-                    style: monoStyle(
-                      context,
-                      size: 16,
-                      weight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
-                _StepButton(
-                  icon: Icons.add,
-                  onTap: settings.dailyGoal < 500
-                      ? () => notifier
-                          .setDailyGoal((settings.dailyGoal + 5).clamp(5, 500))
-                      : null,
-                ),
+                ],
               ],
             ),
           ),
@@ -221,6 +289,44 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// 24h "HH:MM" — locale-neutral (the app has no Material locale delegates,
+  /// so TimeOfDay.format would always render the en_US AM/PM style).
+  static String _formatMinutes(int minutes) {
+    final h = (minutes ~/ 60).toString().padLeft(2, '0');
+    final m = (minutes % 60).toString().padLeft(2, '0');
+    return '$h:$m';
+  }
+
+  Future<void> _setReminderEnabled(
+      BuildContext context, WidgetRef ref, bool enabled) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final deniedMsg = tr(context, 'settings.reminder.denied',
+        'Notifications are disabled — allow them in system settings.');
+    ref.read(settingsProvider.notifier).setReminderEnabled(enabled);
+    if (!enabled) return;
+    // Android 13+ runtime permission. The reminder stays armed either way —
+    // it starts showing as soon as the user grants notifications.
+    final granted = await Reminders.requestPermission();
+    if (!granted) {
+      messenger.showSnackBar(SnackBar(content: Text(deniedMsg)));
+    }
+  }
+
+  Future<void> _pickReminderTime(BuildContext context, WidgetRef ref) async {
+    final settings = ref.read(settingsProvider);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(
+        hour: settings.reminderMinutes ~/ 60,
+        minute: settings.reminderMinutes % 60,
+      ),
+    );
+    if (picked == null || !context.mounted) return;
+    ref
+        .read(settingsProvider.notifier)
+        .setReminderTime(picked.hour * 60 + picked.minute);
   }
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {

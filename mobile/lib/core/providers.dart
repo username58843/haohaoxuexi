@@ -11,6 +11,7 @@ import 'api.dart';
 import 'firebase_bootstrap.dart';
 import 'i18n.dart';
 import 'models.dart';
+import 'reminders.dart';
 import 'theme.dart';
 
 /// Overridden with the real instance in main() before runApp.
@@ -33,6 +34,8 @@ class AppSettings {
     this.language = 'en',
     this.dailyGoal = 20,
     this.onboardingDone = false,
+    this.reminderEnabled = false,
+    this.reminderMinutes = 20 * 60,
   });
 
   final ThemeMode themeMode;
@@ -45,12 +48,19 @@ class AppSettings {
   final int dailyGoal;
   final bool onboardingDone;
 
+  /// Daily review reminder — device-local (never mirrored to the server):
+  /// opt-in flag + time as minutes after local midnight (0..1439).
+  final bool reminderEnabled;
+  final int reminderMinutes;
+
   AppSettings copyWith({
     ThemeMode? themeMode,
     String? accent,
     String? language,
     int? dailyGoal,
     bool? onboardingDone,
+    bool? reminderEnabled,
+    int? reminderMinutes,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -58,6 +68,8 @@ class AppSettings {
       language: language ?? this.language,
       dailyGoal: dailyGoal ?? this.dailyGoal,
       onboardingDone: onboardingDone ?? this.onboardingDone,
+      reminderEnabled: reminderEnabled ?? this.reminderEnabled,
+      reminderMinutes: reminderMinutes ?? this.reminderMinutes,
     );
   }
 }
@@ -68,6 +80,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
   static const _kLanguage = 'language';
   static const _kDailyGoal = 'dailyGoal';
   static const _kOnboardingDone = 'onboardingDone';
+  static const _kReminderEnabled = 'reminderEnabled';
+  static const _kReminderMinutes = 'reminderMinutes';
 
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
@@ -95,8 +109,17 @@ class SettingsNotifier extends Notifier<AppSettings> {
       language: language,
       dailyGoal: p.getInt(_kDailyGoal) ?? 20,
       onboardingDone: p.getBool(_kOnboardingDone) ?? false,
+      reminderEnabled: p.getBool(_kReminderEnabled) ?? false,
+      reminderMinutes: p.getInt(_kReminderMinutes) ?? 20 * 60,
     );
     I18n.setLanguage(settings.language);
+    // Re-arm the daily reminder on every launch: inexact alarms don't
+    // survive force-stop/reinstall reliably, and re-arming also refreshes
+    // the notification text after a language change.
+    if (settings.reminderEnabled) {
+      unawaited(Reminders.scheduleDaily(
+          settings.reminderMinutes ~/ 60, settings.reminderMinutes % 60));
+    }
     return settings;
   }
 
@@ -159,6 +182,30 @@ class SettingsNotifier extends Notifier<AppSettings> {
   void setOnboardingDone() {
     state = state.copyWith(onboardingDone: true);
     _prefs.setBool(_kOnboardingDone, true);
+  }
+
+  // Reminder settings are device-local by design: intentionally NOT mirrored
+  // to PUT /user/settings and NOT read in applyServerSettings — notification
+  // preferences belong to the device, not the account.
+
+  void setReminderEnabled(bool enabled) {
+    state = state.copyWith(reminderEnabled: enabled);
+    _prefs.setBool(_kReminderEnabled, enabled);
+    if (enabled) {
+      unawaited(Reminders.scheduleDaily(
+          state.reminderMinutes ~/ 60, state.reminderMinutes % 60));
+    } else {
+      unawaited(Reminders.cancel());
+    }
+  }
+
+  void setReminderTime(int minutesOfDay) {
+    final clamped = minutesOfDay.clamp(0, 24 * 60 - 1);
+    state = state.copyWith(reminderMinutes: clamped);
+    _prefs.setInt(_kReminderMinutes, clamped);
+    if (state.reminderEnabled) {
+      unawaited(Reminders.scheduleDaily(clamped ~/ 60, clamped % 60));
+    }
   }
 
   /// Pull server settings into local state (called once on login / me).
