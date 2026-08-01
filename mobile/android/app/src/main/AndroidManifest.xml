@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Android 13+ runtime permission for FCM push notifications; requested
+         in-app via FirebaseMessaging.requestPermission() (firebase_bootstrap). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
         android:label="好好学习: Chinese Language"
         android:name="${applicationName}"

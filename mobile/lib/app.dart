@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 import 'core/dock.dart';
+import 'core/firebase_bootstrap.dart';
 import 'core/i18n.dart';
 import 'core/providers.dart';
 import 'core/theme.dart';
@@ -40,6 +43,11 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     refreshListenable: refresh,
+    // Automatic screen_view events when Firebase is configured.
+    observers: [
+      if (FirebaseBootstrap.analytics case final analytics?)
+        FirebaseAnalyticsObserver(analytics: analytics),
+    ],
     redirect: (context, state) {
       final location = state.matchedLocation;
       if (location == '/splash') return null; // splash drives its own exit
