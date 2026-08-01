@@ -114,17 +114,21 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
       _resetCaptcha();
     } on ApiException catch (e) {
       if (!mounted) return;
-      setState(() {
-        _isBanned = e.code == 'banned';
-        _errorText = _describe(e);
-      });
-      // If login fails because email isn't verified, show the verify screen.
       if (e.code == 'email_not_verified') {
+        // Not a failure: switch straight to the verify panel (it explains
+        // itself and a fresh code is auto-sent) instead of stacking an error
+        // banner on top of it.
         setState(() {
           _registered = true;
-          _verifyError = e.message;
+          _errorText = null;
+          _isBanned = false;
         });
         WidgetsBinding.instance.addPostFrameCallback((_) => _sendVerifyEmail());
+      } else {
+        setState(() {
+          _isBanned = e.code == 'banned';
+          _errorText = _describe(e);
+        });
       }
       _resetCaptcha();
     } catch (_) {
