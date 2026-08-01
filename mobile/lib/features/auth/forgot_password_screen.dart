@@ -143,8 +143,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (_) => _submit(),
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
+                              decoration: InputDecoration(
+                                labelText: tr(context, 'auth.email', 'Email'),
                               ),
                             ),
                             const SizedBox(height: 12),
