@@ -484,9 +484,7 @@ class _VerifyCodeInput extends StatelessWidget {
               fontSize: 28,
               fontWeight: FontWeight.w700,
               letterSpacing: 8,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFFe0e0e0)
-                  : const Color(0xFF059669),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             decoration: InputDecoration(
               counterText: '',
@@ -494,39 +492,28 @@ class _VerifyCodeInput extends StatelessWidget {
               hintStyle: GoogleFonts.manrope(
                   fontSize: 28,
                   letterSpacing: 8,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withValues(alpha: 0.2)
-                      : const Color(0xFF10b981).withValues(alpha: 0.4)),
+                  color: text3Of(context).withValues(alpha: 0.5)),
               filled: true,
-              fillColor: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFF1e1e1e)
-                  : const Color(0xFFf0fdf4),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: error != null
-                      ? const Color(0xFFef4444)
-                      : Theme.of(context).brightness == Brightness.dark
-                          ? const Color(0xFF10b981)
-                          : const Color(0xFF10b981),
-                  width: 2,
-                ),
-              ),
+              fillColor: surface2Of(context),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withValues(alpha: 0.2)
-                        : const Color(0xFF10b981),
-                    width: 2),
+                  color: error != null
+                      ? dangerColor
+                      : accent.withValues(alpha: 0.45),
+                  width: 2,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? const Color(0xFF10b981)
-                        : const Color(0xFF10b981),
-                    width: 2),
+                  color: error != null ? dangerColor : accent,
+                  width: 2,
+                ),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: hairline2Of(context), width: 2),
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -537,8 +524,7 @@ class _VerifyCodeInput extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               error!,
-              style: GoogleFonts.manrope(
-                  fontSize: 13, color: const Color(0xFFef4444)),
+              style: GoogleFonts.manrope(fontSize: 13, color: dangerColor),
             ),
           ],
           const SizedBox(height: 10),
