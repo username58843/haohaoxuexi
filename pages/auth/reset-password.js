@@ -3,9 +3,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import AppShell from '~/components/AppShell'
-import { Card, Field, Button } from '~/components/ui'
+import { Card, Field, Button, Spinner } from '~/components/ui'
 import { useSettings } from '~/lib/contexts/SettingsContext'
-import { api } from '~/lib/api-client'
+import { api, apiError } from '~/lib/api-client'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
@@ -16,6 +16,7 @@ export default function ResetPasswordPage() {
   const [done, setDone] = useState(false)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [invalidToken, setInvalidToken] = useState(false)
 
   function validate() {
     if (password.length < 8) return t('authErrPasswordShort', 'Password must be at least 8 characters')
@@ -34,7 +35,18 @@ export default function ResetPasswordPage() {
       await api.post('/auth/reset-password', { token, password })
       setDone(true)
     } catch (err) {
-      setError(err?.response?.data?.error?.message || t('authResetInvalid', 'Invalid or expired link'))
+      const e2 = apiError(err)
+      if (e2.code === 'invalid_token') {
+        // Expired/used link — swap to the "request a new one" view instead of
+        // leaving a form the user can only fail with.
+        setInvalidToken(true)
+      } else if (e2.code === 'rate_limited') {
+        setError(t('authErrTooMany', 'Too many attempts — try again later'))
+      } else if (e2.code === 'validation') {
+        setError(t('authErrPasswordShort', 'Password must be at least 8 characters'))
+      } else {
+        setError(t('authErrGeneric', 'Something went wrong — please try again'))
+      }
     } finally {
       setLoading(false)
     }
@@ -72,7 +84,13 @@ export default function ResetPasswordPage() {
                 <Button variant="primary" block>{t('authSubmitLogin', 'Sign in')}</Button>
               </Link>
             </div>
-          ) : !token ? (
+          ) : !router.isReady ? (
+            // router.query is empty during hydration — showing the invalid-link
+            // view here would flash at every user with a perfectly good link.
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+              <Spinner />
+            </div>
+          ) : !token || invalidToken ? (
             <div style={{ textAlign: 'center' }}>
               <p style={{ color: 'var(--danger)', margin: '0 0 24px', lineHeight: 1.5 }}>
                 {t('authResetInvalid', 'Invalid reset link. Please request a new one.')}
