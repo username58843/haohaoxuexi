@@ -252,6 +252,14 @@ const Map<String, Map<String, String>> _overrides = {
     'home.hskLevels': 'Уровни HSK',
     'home.textbooks': 'Учебники',
     'home.start': 'Начать',
+    'home.difficultWords': 'Сложные слова',
+    // Difficult words (GET /srs/difficult leech list)
+    'difficult.title': 'Сложные слова',
+    'difficult.hint':
+        'Эти слова ускользают раз за разом. Нажмите на слово, чтобы открыть его и добавить в колоду для тренировки.',
+    'difficult.emptyTitle': 'Сложных слов нет',
+    'difficult.emptyText':
+        'Слова, которые вы часто забываете на повторениях, появятся здесь.',
     // Learn tab (session builder)
     'learn.title': 'Учить',
     'learn.eyebrow': 'Занятия',
@@ -549,6 +557,14 @@ const Map<String, Map<String, String>> _overrides = {
     'home.hskLevels': 'HSK derejeleri',
     'home.textbooks': 'Okuw kitaplary',
     'home.start': 'Başla',
+    'home.difficultWords': 'Kyn sözler',
+    // Difficult words (GET /srs/difficult leech list)
+    'difficult.title': 'Kyn sözler',
+    'difficult.hint':
+        'Bu sözler size kyn düşýär. Söze basyň — ony açyp, türgenleşik üçin topluma goşuň.',
+    'difficult.emptyTitle': 'Kyn söz ýok',
+    'difficult.emptyText':
+        'Gaýtalamalarda ýygy-ýygydan ýatdan çykarýan sözleriňiz şu ýerde görüner.',
     // Learn tab (session builder)
     'learn.title': 'Öwren',
     'learn.eyebrow': 'Okuw',
@@ -839,6 +855,12 @@ const Map<String, Map<String, String>> _overrides = {
     'home.hskLevels': 'HSK 等级',
     'home.textbooks': '教材',
     'home.start': '开始',
+    'home.difficultWords': '难记的词',
+    // Difficult words (GET /srs/difficult leech list)
+    'difficult.title': '难记的词',
+    'difficult.hint': '这些词你总是记不住。点开单词，把它加入卡组多加练习。',
+    'difficult.emptyTitle': '暂无难记的词',
+    'difficult.emptyText': '复习中经常忘记的单词会出现在这里。',
     // Learn tab (session builder)
     'learn.title': '学习',
     'learn.eyebrow': '学习',

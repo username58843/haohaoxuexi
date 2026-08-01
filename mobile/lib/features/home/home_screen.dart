@@ -160,6 +160,12 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 12),
+                _QuickLink(
+                  icon: Icons.replay_rounded,
+                  label: tr(context, 'home.difficultWords', 'Difficult words'),
+                  onTap: () => context.push('/difficult'),
+                ),
               ],
             ),
           ),

@@ -23,6 +23,7 @@ import 'features/decks/deck_detail_screen.dart';
 import 'features/decks/decks_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/learn/learn_screen.dart';
+import 'features/stats/difficult_screen.dart';
 import 'features/study/study_logic.dart';
 import 'features/study/study_screen.dart';
 
@@ -130,6 +131,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/about',
         builder: (context, state) => const AboutScreen(),
+      ),
+      GoRoute(
+        path: '/difficult',
+        builder: (context, state) => const DifficultScreen(),
       ),
       // Main tabs inside the bottom-nav shell.
       ShellRoute(
