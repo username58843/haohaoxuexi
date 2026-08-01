@@ -25,15 +25,23 @@ personal decks, streaks and per-level progress. Free, no ads.
   browser TTS
 - **Personal decks** — create, edit, JSON/CSV import/export
 - **Progress** — daily goal, streaks, 14-day activity, per-level mastery bars
+- **Stats** — six-month review heatmap and a difficult-words (leech) list,
+  on web (`/stats`) and Android
+- **Accounts** — email verification by 6-digit code, password reset,
+  Cloudflare Turnstile captcha
+- **Review reminders** — opt-in daily notification on Android (local, inexact
+  alarms — no special permissions)
 - **Admin console** — metrics dashboard, user management (ban/premium/roles) with
-  audit log, feedback inbox
+  audit log, feedback inbox, content overrides
 - **4 UI languages** (en/ru/tk/zh) · dark/light themes · 8 accent colors · PWA
 
 ## Quick start (web)
 
 ```bash
 npm install
-cp .env.example .env.local     # fill MONGODB_URI + JWT_SECRET
+cp .env.example .env.local     # fill MONGODB_URI + JWT_SECRET; RESEND_API_KEY
+                               # is needed for sign-up email verification,
+                               # TURNSTILE_SECRET is optional (empty = no captcha)
 npm run dev                    # http://localhost:3000
 ```
 
@@ -71,7 +79,9 @@ the full `/api/v1` endpoint table, auth (JWT HS256 + tokenVersion revocation,
 httpOnly cookie for web / Bearer for mobile), the SRS algorithm, and the
 security invariants. The visual language lives in [`docs/DESIGN.md`](docs/DESIGN.md).
 
-Environment variables: `MONGODB_URI`, `JWT_SECRET`, `APP_URL` (see `.env.example`).
+Environment variables: `MONGODB_URI`, `JWT_SECRET`, `APP_URL`,
+`TURNSTILE_SECRET` (captcha, optional), `RESEND_API_KEY` + `RESEND_FROM`
+(verification/reset emails) — see `.env.example`.
 
 ## License
 

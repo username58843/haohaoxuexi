@@ -1,80 +1,123 @@
 # HANDOFF — состояние проекта и как продолжить
 
 > Этот файл — точка входа для продолжения работы (новая сессия / другой аккаунт).
-> Дата: 2026-07-27. Всё описанное закоммичено в git этого репозитория.
+> Дата: 2026-08-02. Всё описанное запушено в `main` этого репозитория.
 
 ## Что это за проект
 
 好好学习 (HaoHao XueXi) — платформа изучения китайской лексики HSK 1–6:
-- **Веб + REST API**: Next.js 16 (Pages Router, JS), MongoDB — корень репозитория, деплой на Vercel
-- **Android**: Flutter-приложение в `mobile/` (Riverpod 3, dio, go_router), готово к Play Store
-- Контракты: `docs/ARCHITECTURE.md` (API, модель данных, SRS, безопасность), `docs/DESIGN.md` (дизайн-система)
+- **Веб + REST API**: Next.js 16 (Pages Router, JS), MongoDB — корень репозитория.
+  **Пуш в `main` автоматически деплоится на Vercel (haohaoxuexi.tech)** — main
+  должен оставаться зелёным после каждого коммита.
+- **Android**: Flutter-приложение в `mobile/` (Riverpod 3, dio, go_router 16,
+  flutter_secure_storage) — общий бэкенд через `/api/v1`.
+- Контракты и справка: `docs/ARCHITECTURE.md` (API, модель данных, SRS,
+  безопасность — синхронизирован с кодом 2026-08-02), `docs/DESIGN.md`
+  (дизайн-система), `docs/FIREBASE_SETUP.md` (опциональный Firebase),
+  `docs/RELEASE_CHECKLIST.md` (выпуск в Play).
 
-## Статус: ~95% готово
+## Статус
 
-### Сделано и проверено
-- Полный аудит старого кода (безопасность: удалён бэкдор-админ, инъекции, токен из query, открытые прокси; всё исправлено архитектурно)
-- Ядро: `lib/server/*` (db с индексами, api-middleware c auth/rate-limit/валидацией, users c ленивой миграцией legacy-документов, words со стабильными ID `слово·пиньинь`, SRS SM-2), `lib/words-shared.js`, `lib/i18n` (en инлайн + ru/tk/zh на 463 ключа)
-- API `/api/v1/*` — все эндпоинты из ARCHITECTURE.md §4, включая decks (добавлены отдельно — при первом разбиении их пропустили)
-- Веб полностью переделан: лендинг, дашборд (streak/цель/активность), learn (SRS-ревью + квизы), HSK-браузер (строковый порядок черт, TTS, «знаю»), колоды (импорт/экспорт JSON+CSV), профиль/настройки (тёмная/светлая темы, 8 акцентов, 4 языка), админка (метрики/юзеры/фидбек/аудит), /privacy /terms /about
-- Flutter-приложение: все экраны, `flutter analyze` чистый, **release APK собирается (51.9MB)**
-- Тесты: jest 32/32; **смоук-тест API 58/58** (`node scripts/smoke.mjs` — in-memory MongoDB, реальный next start); eslint 0 ошибок; `npm run build` зелёный
-- Документы для Play: `docs/store/PLAY_STORE_LISTING.md` (описания en/ru), `docs/store/DATA_SAFETY.md` (точные ответы формы), `docs/RELEASE_CHECKLIST.md`
+Функционал закрыт на обеих платформах; код прошёл адверсариальное ревью
+(34 агента, все подтверждённые находки исправлены) и полные UX-аудиты веба и
+мобилки. Осталось только то, что требует ключей/устройства (см. «Осталось»).
 
-### НЕ доделано (следующие шаги, по приоритету)
+### База (перестройка v2)
 
-1. ✅ СДЕЛАНО: адверсариальное ревью (34 агента) прошло, все 15 подтверждённых
-   находок исправлены (SRS-дедупликация очереди и паков, mobile count=0 quiz,
-   hsk в снапшотах, коллизии дистракторов-омографов, retry+предупреждение при
-   несохранённых ответах, atomic-миграция legacy-юзеров, ensureIndexes без
-   залипания + E11000→409, PII-очистка audit_logs при удалении аккаунта,
-   rate-limit по userId + сброс протухших бакетов, hanzi-writer вендорен
-   same-origin, CSV-алиасы заголовков, Dart trim-паритет wordId, CORS для
-   APP_URL + OPTIONS). Смоук 58/58, jest 38/38, eslint 0, flutter analyze 0.
-2. **Прогон Flutter-приложения на устройстве/эмуляторе** — компилируется
-   (release APK), но ни разу не запускалось вживую; проверить онбординг →
-   логин → ревью → колоды.
-3. Скриншоты и feature graphic для Play (чек-лист в PLAY_STORE_LISTING.md).
-4. Деплой: Vercel + MongoDB Atlas + env (`MONGODB_URI`, `JWT_SECRET`, `APP_URL`),
-   затем пересобрать AAB с реальным URL:
-   `flutter build appbundle --release --dart-define=API_BASE_URL=https://<домен>`
-5. Keystore для подписи (одноразово, инструкция: `mobile/android/key.properties.example`).
+- Полный аудит старого кода: удалён бэкдор-админ, NoSQL-инъекции, токен из
+  query, открытые прокси — всё исправлено архитектурно.
+- Ядро `lib/server/*` (db с индексами, api-middleware с auth/rate-limit/
+  валидацией, ленивая миграция legacy-юзеров, words со стабильными id
+  `слово·пиньинь`, SRS SM-2), `lib/words-shared.js`, `lib/i18n` (en инлайн +
+  ru/tk/zh), все страницы веба, все экраны Flutter, админка, store-документы.
+- Тесты: jest-юниты + смоук-тест API (`node scripts/smoke.mjs`, in-memory
+  MongoDB, реальный `next start`), eslint чистый.
+
+### Дальнейшие сессии (детали в `git log --oneline -80`)
+
+- **Auth и безопасность**: email-верификация 6-значным кодом (регистрация не
+  выдаёт сессию до верификации; логин отдаёт 403 `email_not_verified`),
+  forgot/reset-password, Turnstile-капча (регистрация/логин/forgot; выключена,
+  если `TURNSTILE_SECRET` пуст), resend-код с кулдауном 60с, bcrypt cost 12,
+  единые серверные валидаторы (`lib/server/validate.js`), маппинг ошибок auth
+  на обеих платформах.
+- **Веб**: страница `/stats` — heatmap активности за 6 месяцев (GitHub-стиль)
+  + 4 StatCard + список сложных слов с бейджем ×lapses; карточка-ссылка на
+  дашборде; Turnstile-виджет переписан (forwardRef, `reset()` после
+  неудачного сабмита — siteverify-токены одноразовые).
+- **API**: `GET /api/v1/srs/difficult` — leech-список из сохранённых lapses
+  (`lib/server/srs.js#getDifficult`).
+- **Mobile**: вкладка Learn (конструктор сессий + типы вопросов как на вебе);
+  опциональный Firebase-бутстрап (без `google-services.json` всё no-op —
+  `lib/core/firebase_bootstrap.dart`); analytics-события `session_complete`
+  / `streak` / `deck_created` + `setUserId` во всех auth-переходах; экран
+  «Сложные слова» (`/difficult`, вход с Home); ежедневные напоминания о ревью
+  (`lib/core/reminders.dart`: flutter_local_notifications, inexact-алармы без
+  exact-alarm пермишена, opt-in тумблер + время в настройках; настройки
+  device-local — не зеркалятся на сервер).
+- **Доки**: ARCHITECTURE.md синхронизирован с кодом (все роуты, включая
+  auth-верификацию, `/srs/difficult`, `/content`, `/health`; экраны и
+  пермишены мобилки).
+
+## Осталось (релизные шаги — нужны ключи/устройство, не код)
+
+1. `cd mobile && flutter pub get` — **pubspec.lock намеренно не обновлялся**
+   при добавлении зависимостей (firebase_*, flutter_local_notifications,
+   timezone, flutter_timezone); обновить lock, прогнать `flutter analyze`
+   и сборку.
+2. Прогон приложения на устройстве/эмуляторе: онбординг → регистрация →
+   верификация → ревью → колоды → сложные слова → напоминание.
+3. Ключи: `android/app/google-services.json` (опционально, Firebase) и
+   keystore (`mobile/android/key.properties.example`).
+4. Скриншоты и feature graphic для Play (`docs/store/PLAY_STORE_LISTING.md`).
+5. AAB: `flutter build appbundle --release
+   --dart-define=API_BASE_URL=https://haohaoxuexi.tech`
+   (дефолт в `core/api.dart` уже указывает на прод).
 
 ## Как продолжить в новой сессии
 
-Открыть Claude Code в папке `C:\Users\admin\Documents\GitHub\HaoHao XueXi\xuehanyuapp-main`
-и дать промпт вида:
+> Прочитай docs/HANDOFF.md и docs/ARCHITECTURE.md, посмотри
+> `git log --oneline -80`. Работай итеративно: один логический коммит — один
+> пуш в main; веб и Android должны собираться после каждого коммита.
 
-> Прочитай docs/HANDOFF.md и docs/ARCHITECTURE.md, посмотри git log.
-> Продолжи с раздела «НЕ доделано»: пункт 1 — прогони адверсариальное ревью
-> и исправь подтверждённые находки, затем пункт 2.
-
-## Проверочные команды (всё должно быть зелёным)
+## Проверочные команды
 
 ```bash
-npm run build        # прод-сборка
-npm test             # 32 юнит-теста
-npm run lint         # 0 ошибок
-node scripts/smoke.mjs   # 58 проверок API (нужен собранный build)
-cd mobile && flutter analyze && flutter build apk --release
+npm run build            # прод-сборка (web)
+npm test                 # юнит-тесты
+npx eslint pages components lib
+node scripts/smoke.mjs   # смоук API (нужен собранный build)
+cd mobile && flutter pub get && flutter analyze && flutter build apk --release
 ```
 
-## Важные грабли этого окружения
+## Env (веб)
 
-- **Gradle-прокси**: `~/.gradle/gradle.properties` содержит systemProp-прокси.
-  Если Gradle падает по сети — обновить адрес на текущий из `$HTTP_PROXY`
-  (сейчас 192.168.97.159:8080; старый мёртвый был 192.168.163.249).
-- Смоук-тест на Windows: если падает с 500/timeout — на порту 3123 завис зомби
-  `next start` от прошлого запуска: `netstat -ano | findstr :3123` → `taskkill /F /T /PID <pid>`.
-- Первая установка `mongodb-memory-server` качает бинарник mongod (~500MB, долго).
-- `next lint` в Next 16 удалён — линт через `npx eslint` (flat config `eslint.config.mjs`).
-- Riverpod 3: `valueOrNull` больше нет — использовать `.value`.
+`MONGODB_URI`, `JWT_SECRET`, `APP_URL`, `TURNSTILE_SECRET` (капча; пустой =
+капча выключена), `RESEND_API_KEY` + `RESEND_FROM` (письма верификации и
+сброса пароля) — см. `.env.example`.
 
-## Git-история (важные точки)
+## Грабли
 
-- `9087210` — baseline (оригинальное приложение до перестройки; старые ru/tk/zh
-  переводы можно смотреть через `git show 9087210:lib/contexts/SettingsContext.js`)
-- `0c5e67e` — ядро v2 (server libs, дизайн-система, UI-kit)
-- `16bcc06` — все API-роуты + все страницы
-- `2de0e15` — i18n, линт, тесты, Flutter, документы
-- `69bdad5` — decks-роуты + смоук 58/58
+- Riverpod 3: `valueOrNull` больше нет — используй `.value`. Flutter:
+  `.withValues(alpha:)` вместо `withOpacity`.
+- i18n веб: en — инлайн-дефолт `t('key', 'Default')`; ru/tk/zh — flat-ключи в
+  `lib/i18n/locales/*` (внутри секции по алфавиту). Новые строки — во все три
+  локали одним коммитом с использованием.
+- i18n mobile: `mobile/lib/core/i18n.dart` — en инлайн в `tr(...)`, ru/tk/zh
+  в `_overrides` (по блоку на язык, добавлять во все три).
+- Дизайн-токены веба: сырые цвета только в `styles/_tokens.scss`; UI-kit —
+  `components/ui/*`; глобальные `.word-row*` (класс определения —
+  `word-row__def`).
+- Turnstile siteverify-токены одноразовые: любая форма с капчей держит
+  `captchaRef` и зовёт `reset()` после неудачного сабмита (образцы:
+  `pages/auth.js`, `pages/auth/forgot-password.js`).
+- Напоминания mobile: `reminderEnabled` / `reminderMinutes` в `AppSettings` —
+  device-local, НЕ зеркалить в `PUT /user/settings` и не трогать в
+  `applyServerSettings`.
+- `next lint` в Next 16 удалён — линт через `npx eslint` (flat config
+  `eslint.config.mjs`).
+- Первая установка `mongodb-memory-server` качает бинарник mongod (~500MB).
+- Осознанные решения, которые НЕ надо «чинить»: кнопка Review в `learn.js`
+  показывает полный dueCount; `/stats` не подсвечивает таб в AppShell;
+  третья dash-quick карточка одна во втором ряду; строки `deckFull` с «2000»
+  = `DECK_WORD_CAP`.
