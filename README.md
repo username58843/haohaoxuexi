@@ -50,6 +50,8 @@ flutter run --dart-define=API_BASE_URL=https://your-deployment.example
 ```
 
 Release build & Play submission: see `docs/RELEASE_CHECKLIST.md`.
+Firebase (Analytics + Crashlytics + push): see `docs/FIREBASE_SETUP.md` —
+the app builds and runs fine without it.
 
 ## Testing
 
