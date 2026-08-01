@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api.dart';
+import 'firebase_bootstrap.dart';
 import 'i18n.dart';
 import 'models.dart';
 import 'theme.dart';
@@ -290,18 +291,25 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     // 401-from-interceptor hook: token already cleared, reset auth state.
     api.onUnauthorized = () {
       state = const AsyncData(null);
+      FirebaseBootstrap.setUserId(null);
     };
     final token = await api.readToken();
-    if (token == null || token.isEmpty) return null;
+    if (token == null || token.isEmpty) {
+      FirebaseBootstrap.setUserId(null);
+      return null;
+    }
     try {
       final data = await api.get('/auth/me');
       final user =
           UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
       ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
+      // Segment analytics/crash reports per account (no-op without Firebase).
+      FirebaseBootstrap.setUserId(user.id);
       return user;
     } on ApiException catch (e) {
       if (e.isNetwork) rethrow; // keep the token, surface the error
       await api.clearToken();
+      FirebaseBootstrap.setUserId(null);
       return null;
     }
   }
@@ -341,6 +349,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     // requires a token, tokens are only issued after verification), so
     // nothing meaningful can be lost here.
     state = AsyncData(user);
+    FirebaseBootstrap.setUserId(user.id);
     ref.read(settingsProvider.notifier).pushLocalSettings();
   }
 
@@ -362,6 +371,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
       // settings instead.)
       ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
       state = AsyncData(user);
+      FirebaseBootstrap.setUserId(user.id);
     } on ApiException {
       state = previous.hasValue ? AsyncData(previous.value) : const AsyncData(null);
       rethrow;
@@ -377,6 +387,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     }
     await api.clearToken();
     state = const AsyncData(null);
+    FirebaseBootstrap.setUserId(null);
     ref.read(settingsProvider.notifier).resetToDeviceLanguage();
   }
 
@@ -387,6 +398,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     await api.delete('/account', body: {'password': password});
     await api.clearToken();
     state = const AsyncData(null);
+    FirebaseBootstrap.setUserId(null);
   }
 
   /// Sends a password-reset email. Always returns successfully to prevent
@@ -419,6 +431,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     final token = await api.readToken();
     if (token == null || token.isEmpty) {
       state = const AsyncData(null);
+      FirebaseBootstrap.setUserId(null);
       return;
     }
     try {
@@ -430,6 +443,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
       if (e.isNetwork) return; // keep current state while offline
       await api.clearToken();
       state = const AsyncData(null);
+      FirebaseBootstrap.setUserId(null);
     }
   }
 }
