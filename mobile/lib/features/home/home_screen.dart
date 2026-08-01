@@ -192,7 +192,11 @@ class HomeScreen extends ConsumerWidget {
             color: accentSoftOf(context),
             borderColor: accent.withValues(alpha: 0.35),
             padding: const EdgeInsets.all(18),
-            onTap: () => _startStudy(context, ref, '/study?mode=review'),
+            // Label and session size must match: the queue API caps at 100
+            // per request, so ask for the real due count up to that cap
+            // (mirrors the web dashboard "Review N due cards" fix).
+            onTap: () => _startStudy(context, ref,
+                '/study?mode=review&count=${math.min(s.dueCount, 100)}'),
             child: Row(
               children: [
                 Expanded(
@@ -201,7 +205,7 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Text(
                         _trN(context, 'home.reviewCards',
-                            'Review {n} cards', s.dueCount),
+                            'Review {n} cards', math.min(s.dueCount, 100)),
                         style: GoogleFonts.manrope(
                           fontSize: 17,
                           fontWeight: FontWeight.w800,
