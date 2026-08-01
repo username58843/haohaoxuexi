@@ -41,6 +41,9 @@ Database from `MONGODB_URI`. All collections indexed by `lib/server/db.js`
   isPremium: bool, premiumExpiresAt: Date|null,
   isBanned: bool, banReason: string|null, bannedAt: Date|null,
   tokenVersion: int,        // bump to revoke all JWTs (ban, password change)
+  emailVerified: bool,      // login requires true (403 email_not_verified)
+  verifyCode: string|null, verifyExpires: Date|null,  // 6-digit email code
+  resetToken: string|null, resetExpires: Date|null,   // password-reset link
   settings: { themeColor, language, dailyGoal, alwaysShowPinyin,
               alwaysShowTranslation, theme: 'dark'|'light'|'system' },
   lastSeen: Date, createdAt: Date, updatedAt: Date,
@@ -134,9 +137,13 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 
 | Route | Methods | Auth | Notes |
 |---|---|---|---|
-| `/api/v1/auth/register` | POST | – | `{email, password≥8, name 2..40}`; RL 5/15min/IP; generic `email_taken` error; returns `{user, token}` + cookie |
-| `/api/v1/auth/login` | POST | – | `{email, password}`; RL 8/15min per IP and per email; generic `invalid_credentials`; banned → 403 `{error, banReason}` |
+| `/api/v1/auth/register` | POST | – | `{email, password≥8, name 2..40, captchaToken, lang?}`; Turnstile; RL 5/15min/IP; generic `email_taken`; sends a 6-digit verify code and returns `{ok, email}` — NO session until verify-email |
+| `/api/v1/auth/login` | POST | – | `{email, password, captchaToken}`; Turnstile; RL 8/15min per IP and per email; generic `invalid_credentials`; unverified → 403 `email_not_verified`; banned → 403 `{error, banReason}` |
 | `/api/v1/auth/logout` | POST | – | clears cookie |
+| `/api/v1/auth/verify-email` | POST | – | `{email, code(6 digits)}`; RL 10/hour/email; success → `{user, token}` + cookie (the account's first session) |
+| `/api/v1/auth/send-verification` | POST | – | `{email}`; RL 3/hour/email; always `{ok}` (no enumeration) |
+| `/api/v1/auth/forgot-password` | POST | – | `{email, captchaToken}`; Turnstile; RL 3/hour/email; always `{ok}` (no enumeration); reset link valid 1h |
+| `/api/v1/auth/reset-password` | POST | – | `{token, password≥8}`; RL 10/hour/IP; bad/expired token → 400 `invalid_token` |
 | `/api/v1/auth/me` | GET | ✓ | `{user}` (public shape, §6); triggers legacy migration |
 | `/api/v1/account` | DELETE | ✓ | `{password}` confirm → deletes user + decks + srs + logs. Play-Store requirement |
 | `/api/v1/user/profile` | PUT | ✓ | `{name 2..40}` |
@@ -150,12 +157,16 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 | `/api/v1/srs/queue` | GET | ✓ | `?limit≤100&packs=hsk1,hsk2` → `{cards:[SrsCard], dueCount, newCount}` — due first, then new from selected packs not yet in srs |
 | `/api/v1/srs/review` | POST | ✓ | `{wordId, grade:0..3, word?, tzOffset}` → `{card}` upserts card, applies SM-2 (§7), bumps review_logs |
 | `/api/v1/srs/summary` | GET | ✓ | `?tzOffset=` → `{dueCount, todayReviews, todayCorrect, streak, bestStreak, goal, byState:{new,learning,review}, byLevel:{1..6:{total,seen,mature}}}` |
-| `/api/v1/stats/activity` | GET | ✓ | `?days=42&tzOffset=` → `{days:[{day, reviews, correct}]}` |
+| `/api/v1/srs/difficult` | GET | ✓ | `?limit=20 (1..100)&minLapses=2 (1..20)` → `{items:[card], total, minLapses}` — leech list, sorted lapses desc, ease asc, updatedAt desc |
+| `/api/v1/stats/activity` | GET | ✓ | `?days=42 (1..365)&tzOffset=` → `{days:[{day, reviews, correct}]}` |
 | `/api/v1/feedback` | POST | opt | `{topic, message, email?}`; RL 5/hour |
+| `/api/v1/content` | GET | – | `?lang=` → `{entries, meta}` — published copy overrides for the docs pages |
+| `/api/v1/health` | GET | – | `{ok, ts}` — uptime probe |
 | `/api/v1/admin/overview` | GET | admin | `{totals:{users,newUsers7d,activeToday,decks,reviews7d}, signupsByDay[14], reviewsByDay[14]}` |
 | `/api/v1/admin/users` | GET | admin | `?q=&page=&limit≤50&filter=banned|premium|admin` — paginated, **public-safe fields only** (no hashes) |
 | `/api/v1/admin/users/[id]` | GET/PUT/DELETE | admin | PUT whitelist `{role?, isPremium?, premiumExpiresAt?, isBanned?, banReason?}`; guards: cannot ban/demote/delete self; cannot demote last admin; ban bumps tokenVersion; all writes → audit_logs |
 | `/api/v1/admin/feedback` | GET/PUT | admin | list + `{id, status}` |
+| `/api/v1/admin/content` | GET/PUT | admin | read all copy overrides / upsert or remove one entry (audited) |
 | `/api/v1/admin/audit` | GET | admin | paginated audit log |
 
 Removed entirely: `/api/search/*` (external proxies), `/api/lexicon` (→ v1/words),
@@ -223,10 +234,12 @@ Goal met: `todayReviews ≥ settings.dailyGoal` (default 20).
 - Shell: authenticated users get app chrome — bottom dock (mobile) / left rail
   (desktop ≥1024px). Tabs: Home `/`, Learn `/learn`, Decks `/decks`,
   HSK `/hsk`, More `/more`. Guests see marketing landing on `/`.
-- Route map: `/` (landing|dashboard), `/auth`, `/learn` (hub) + `/learn/session`,
-  `/hsk` (lexicon browse + word sheet), `/decks` + `/decks/[id]`, `/profile`,
+- Route map: `/` (landing|dashboard), `/auth` (+ `/auth/forgot-password`,
+  `/auth/reset-password`), `/learn` (hub) + `/learn/session`, `/hsk` (lexicon
+  browse + word sheet) + `/hsk/map` (word map), `/decks` + `/decks/[id]`,
+  `/stats` (6-month review heatmap + difficult-words leech list), `/profile`,
   `/settings`, `/more`, `/about`, `/privacy`, `/terms`, `/admin` (+ subpages
-  users/feedback/audit). Per-page `<Head>` titles.
+  users/feedback/audit/content). Per-page `<Head>` titles.
 - i18n: `lib/i18n` — `t('key', 'English default')`; ru/tk/zh in override maps.
   `document.documentElement.lang` synced to UI language.
 - Auth client: cookie is primary; Bearer kept in memory only (NOT localStorage);
@@ -239,18 +252,30 @@ Goal met: `todayReviews ≥ settings.dailyGoal` (default 20).
 
 - Flutter 3.x, Dart 3, Material 3. State: `flutter_riverpod`. HTTP: `dio`.
   Router: `go_router`. Secure token store: `flutter_secure_storage`.
-- Base URL via `--dart-define=API_BASE_URL=...` (default `https://haohaoxuexi.vercel.app`).
-- Screens: Splash → Onboarding (3 slides) → Auth; Home (streak, due, goal ring,
-  quick start); Study (SRS flashcards with 4 grade buttons + MCQ quiz mode);
-  HSK browser (packs bundled as assets for offline browse + API search);
-  Decks (list/detail/create/edit); Profile & Settings (accent color, language,
-  daily goal, delete account, privacy/terms links); About.
+- Base URL via `--dart-define=API_BASE_URL=...` (default `https://haohaoxuexi.tech`).
+- Screens: Splash → Onboarding (3 slides) → Auth (+ email verify code,
+  forgot/reset password); Home (streak, due, goal ring, quick start,
+  difficult-words link); Learn (session builder: packs, size, question modes);
+  Study (SRS flashcards with 4 grade buttons + MCQ quiz modes);
+  HSK browser (packs bundled as assets for offline browse) + word map;
+  Difficult words (`GET /srs/difficult` leech list); Decks
+  (list/detail/create/edit); Profile & Settings (accent color, language,
+  daily goal, opt-in daily review reminder, delete account, privacy/terms
+  links); About.
+- Firebase (Analytics + Crashlytics + FCM) is optional: the Gradle plugins
+  apply only when `android/app/google-services.json` exists and the Dart side
+  no-ops without it (`lib/core/firebase_bootstrap.dart`, docs/FIREBASE_SETUP.md).
+- Daily review reminder: local notification via `flutter_local_notifications`
+  (inexact alarms, no exact-alarm permission), device-local settings — never
+  mirrored to `PUT /user/settings` (`lib/core/reminders.dart`).
 - Design mirrors web tokens (§ DESIGN.md): dark ink canvas, vermilion accent,
   Songti-class serif for hanzi (Noto Serif SC), Manrope-class UI font.
 - Android: `applicationId com.haohaoxuexi.app`, minSdk 23, targetSdk 35,
   versionCode/Name managed in `pubspec.yaml`; release signing via
   `android/key.properties` (gitignored, template provided); ProGuard on;
-  INTERNET permission only; cleartext traffic disabled.
+  permissions: INTERNET, POST_NOTIFICATIONS (FCM + reminder),
+  RECEIVE_BOOT_COMPLETED (re-arm the reminder after reboot); cleartext
+  traffic disabled.
 
 ## 10. Security invariants
 
