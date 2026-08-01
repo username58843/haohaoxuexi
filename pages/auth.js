@@ -4,13 +4,16 @@ import Script from 'next/script'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
-import { Button, Card, Field, Segmented, PageLoader } from '~/components/ui'
+import { Button, Card, Field, Segmented, PageLoader, useToast } from '~/components/ui'
 import Turnstile from '~/components/Turnstile'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api, apiError, setBearerToken } from '~/lib/api-client'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/** Client-side resend pacing; the server additionally rate-limits sends. */
+const RESEND_COOLDOWN_S = 60
 
 function IconEye({ off = false }) {
   return (
@@ -56,6 +59,7 @@ export default function AuthPage() {
   const router = useRouter()
   const { user, loading, login, register, banInfo, setUser, setBanInfo } = useAuth()
   const { t, language } = useSettings()
+  const toast = useToast()
 
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
@@ -72,6 +76,8 @@ export default function AuthPage() {
   const [verifyCode, setVerifyCode] = useState('')
   const [verifying, setVerifying] = useState(false)
   const [verifyError, setVerifyError] = useState(null)
+  const [resending, setResending] = useState(false)
+  const [resendCooldown, setResendCooldown] = useState(0)
 
   const nextTarget =
     router.query.next && String(router.query.next).startsWith('/')
@@ -93,12 +99,19 @@ export default function AuthPage() {
     if (router.isReady && !loading && user) router.replace(nextTarget)
   }, [loading, user, router, nextTarget])
 
-  // Auto-send verification email when the verify screen appears.
+  // Auto-send verification email when the verify screen appears (silent —
+  // the panel itself already says a code is on its way).
   useEffect(() => {
-    if (registered && registeredEmail) {
-      handleResendCode()
-    }
+    if (!registered || !registeredEmail) return
+    api.post('/auth/send-verification', { email: registeredEmail }).catch(() => {})
   }, [registered, registeredEmail])
+
+  // Resend-cooldown countdown (setTimeout chain — dep-correct, no leaks).
+  useEffect(() => {
+    if (resendCooldown <= 0) return undefined
+    const id = setTimeout(() => setResendCooldown((s) => s - 1), 1000)
+    return () => clearTimeout(id)
+  }, [resendCooldown])
 
   const clearFieldError = useCallback((field) => {
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
@@ -223,13 +236,22 @@ export default function AuthPage() {
   }
 
   async function handleResendCode() {
+    if (resending || resendCooldown > 0) return
+    setResending(true)
     try {
-      await fetch('/api/v1/auth/send-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: registeredEmail }),
-      })
-    } catch {}
+      await api.post('/auth/send-verification', { email: registeredEmail })
+      setResendCooldown(RESEND_COOLDOWN_S)
+      toast.success(t('authResendSent', 'Verification code sent'))
+    } catch (err) {
+      const e = apiError(err)
+      toast.error(
+        e.code === 'rate_limited'
+          ? t('authErrRateLimited', 'Too many attempts — wait 15 minutes')
+          : t('authResendFailed', 'Could not send the code. Try again later.')
+      )
+    } finally {
+      setResending(false)
+    }
   }
 
   const pageTitle =
@@ -308,8 +330,16 @@ export default function AuthPage() {
                   </p>
                 )}
                 <div className="auth__verify-actions">
-                  <Button type="button" onClick={handleResendCode} disabled={verifying}>
-                    {t('authResend', 'Resend')}
+                  <Button
+                    type="button"
+                    onClick={handleResendCode}
+                    disabled={verifying || resending || resendCooldown > 0}
+                  >
+                    {resendCooldown > 0
+                      ? `${t('authResend', 'Resend')} (${resendCooldown})`
+                      : resending
+                        ? t('authSending', 'Sending…')
+                        : t('authResend', 'Resend')}
                   </Button>
                   <Button
                     type="submit"
