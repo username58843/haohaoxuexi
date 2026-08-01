@@ -185,6 +185,12 @@ const Map<String, Map<String, String>> _overrides = {
     'about.project': 'О проекте',
     'error.wrongPassword': 'Неверный пароль',
     'error.rateLimited': 'Слишком много запросов. Попробуйте позже.',
+    // Review reminder notification (text resolved at schedule time)
+    'reminder.notif.title': 'Пора повторять',
+    'reminder.notif.body':
+        'Карточки ждут — пара минут, и серия продолжится.',
+    'reminder.channel.name': 'Ежедневные напоминания',
+    'reminder.channel.desc': 'Ежедневное напоминание о повторении',
     // Browse (HSK) & word sheet
     'hsk.search.hint': 'Поиск: иероглиф, пиньинь, перевод…',
     'hsk.level.all': 'Все',
@@ -490,6 +496,12 @@ const Map<String, Map<String, String>> _overrides = {
     'about.project': 'Proýjet barada',
     'error.wrongPassword': 'Açar söz nädogry',
     'error.rateLimited': 'Aşa köp synanyşyk. Soňrak synanyşyň.',
+    // Review reminder notification (text resolved at schedule time)
+    'reminder.notif.title': 'Gaýtalamagyň wagty',
+    'reminder.notif.body':
+        'Kartlaryňyz garaşýar — birnäçe minut yzygiderliligi saklar.',
+    'reminder.channel.name': 'Gündelik ýatlatmalar',
+    'reminder.channel.desc': 'Gündelik gaýtalama ýatlatmasy',
     // Browse (HSK) & word sheet
     'hsk.search.hint': 'Gözleg: iýeroglif, pinýin, terjime…',
     'hsk.level.all': 'Hemmesi',
@@ -788,6 +800,11 @@ const Map<String, Map<String, String>> _overrides = {
     'about.project': '关于项目',
     'error.wrongPassword': '密码错误',
     'error.rateLimited': '请求过于频繁，请稍后再试。',
+    // Review reminder notification (text resolved at schedule time)
+    'reminder.notif.title': '该复习啦',
+    'reminder.notif.body': '卡片在等你——几分钟就能保持连续学习。',
+    'reminder.channel.name': '每日提醒',
+    'reminder.channel.desc': '每日复习提醒',
     // Browse (HSK) & word sheet
     'hsk.search.hint': '搜索汉字、拼音或释义…',
     'hsk.level.all': '全部',

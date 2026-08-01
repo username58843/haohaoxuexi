@@ -38,6 +38,9 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        // flutter_local_notifications uses java.time — backport it via core
+        // library desugaring for devices below API 26.
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -86,4 +89,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Java 8+ API backport required by flutter_local_notifications
+    // (needs 2.1.4+, see the plugin's Android setup notes).
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

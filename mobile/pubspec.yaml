@@ -28,6 +28,11 @@ dependencies:
   firebase_analytics: ^12.4.0
   firebase_crashlytics: ^5.2.0
   firebase_messaging: ^16.4.0
+  # Local notifications — opt-in daily review reminder
+  # (see lib/core/reminders.dart).
+  flutter_local_notifications: ^19.0.0
+  timezone: ^0.10.0
+  flutter_timezone: ^4.1.0
 
 dev_dependencies:
   flutter_test:
