@@ -182,9 +182,10 @@ export default function AuthPage() {
 
     setSubmitting(false)
     if (result.code === 'email_not_verified') {
+      // Not a failure: the verify panel explains itself and a fresh code is
+      // auto-sent — don't preload it with the raw server error message.
       setRegisteredEmail(email.trim())
       setRegistered(true)
-      setVerifyError(result.error)
       return
     }
     switch (result.code) {
