@@ -104,6 +104,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
   Future<void> _load() async {
     _advanceTimer?.cancel();
+    // Completed (or abandoned) sync futures from a previous "Study again"
+    // run must not leak into the next session's results barrier.
+    _pending.clear();
     setState(() {
       _phase = _Phase.loading;
       _index = 0;
@@ -258,7 +261,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             reps: card.reps + 1,
             lapses: card.lapses,
           ),
-          sendSnapshot: false,
+          // Keep sending the snapshot for cards that entered the session as
+          // brand-new: if the first POST /srs/review never reached the server
+          // (offline blip), a snapshot-less repeat would 400 with
+          // "word snapshot required". For existing cards the server ignores
+          // the extra snapshot, so this is always safe.
+          sendSnapshot: item.sendSnapshot,
         ),
       );
     }
