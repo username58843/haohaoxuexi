@@ -331,15 +331,19 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     }
     final user =
         UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
-    ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
+    // Verification is the first real sign-in of a FRESH account: the server
+    // still carries DEFAULT_SETTINGS (dark theme, jade, goal 20; only the
+    // language was seeded at register). Adopting them would clobber the
+    // device's pre-auth choices, so seed the account with the local settings
+    // instead (state must be authed first or the mirror is skipped).
+    // Unverified accounts can never customize server settings (settings PUT
+    // requires a token, tokens are only issued after verification), so
+    // nothing meaningful can be lost here.
     state = AsyncData(user);
+    ref.read(settingsProvider.notifier).pushLocalSettings();
   }
 
-  Future<void> _authenticate(
-    String path,
-    Map<String, dynamic> body, {
-    bool freshAccount = false,
-  }) async {
+  Future<void> _authenticate(String path, Map<String, dynamic> body) async {
     final api = ref.read(apiProvider);
     final previous = state;
     state = const AsyncLoading();
@@ -351,20 +355,12 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
       }
       final user =
           UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
-      final settings = ref.read(settingsProvider.notifier);
-      if (freshAccount) {
-        // Registration returns server DEFAULT_SETTINGS (language 'en', dark
-        // theme, ...). Adopting them would clobber the device's detected or
-        // explicitly chosen language/theme, so instead seed the new account
-        // with the current local settings (must happen after state is authed
-        // so the mirror is not skipped).
-        state = AsyncData(user);
-        settings.pushLocalSettings();
-      } else {
-        // Login: server settings win once, for cross-device sync.
-        settings.applyServerSettings(user.settings);
-        state = AsyncData(user);
-      }
+      // Login: server settings win once, for cross-device sync.
+      // (Fresh accounts never reach this path — registration goes through
+      // register() + verifyEmail(), which seeds the account with the local
+      // settings instead.)
+      ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
+      state = AsyncData(user);
     } on ApiException {
       state = previous.hasValue ? AsyncData(previous.value) : const AsyncData(null);
       rethrow;
