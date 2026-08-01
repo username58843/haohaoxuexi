@@ -65,7 +65,6 @@ export default function AuthPage() {
   const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState(null)
   const [banNotice, setBanNotice] = useState(null)
-  const [verifiedNotice, setVerifiedNotice] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(null)
   const [registered, setRegistered] = useState(false)
@@ -93,13 +92,6 @@ export default function AuthPage() {
   useEffect(() => {
     if (router.isReady && !loading && user) router.replace(nextTarget)
   }, [loading, user, router, nextTarget])
-
-  // Show verified notice after email confirmation redirect.
-  useEffect(() => {
-    if (router.isReady && router.query.verified === '1') {
-      setVerifiedNotice(true)
-    }
-  }, [router.isReady, router.query.verified])
 
   // Auto-send verification email when the verify screen appears.
   useEffect(() => {
@@ -380,12 +372,6 @@ export default function AuthPage() {
                     'Your account has been suspended. Contact support if you believe this is a mistake.'
                   )}
               </p>
-            </div>
-          )}
-
-          {verifiedNotice && (
-            <div style={{ background: '#10b9811a', border: '1px solid #10b98140', borderRadius: 8, padding: '12px 16px', marginBottom: 16, color: '#10b981', fontSize: 14 }}>
-              {t('authVerifiedSuccess', 'Email confirmed! You can now sign in.')}
             </div>
           )}
 
