@@ -287,9 +287,11 @@ export default function Dashboard() {
                   <Button
                     variant="primary"
                     size="lg"
-                    href="/learn/session?mode=review&limit=20"
+                    // The queue API caps a single session at 100 cards — keep
+                    // the button label honest about what one click starts.
+                    href={`/learn/session?mode=review&limit=${Math.min(summary.dueCount, 100)}`}
                   >
-                    {fill(t('dashReviewBtn', 'Review {n} due cards'), summary.dueCount)}
+                    {fill(t('dashReviewBtn', 'Review {n} due cards'), Math.min(summary.dueCount, 100))}
                   </Button>
                 ) : (
                   <Button variant="primary" size="lg" href="/learn">
