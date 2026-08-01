@@ -123,6 +123,9 @@ function WordRow({ word, onOpen, action }) {
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={(e) => {
+        // Keydown bubbles up from the nested add/remove <button>; without this
+        // guard, Enter on that button would also open the word sheet.
+        if (e.target !== e.currentTarget) return
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
           onOpen()
