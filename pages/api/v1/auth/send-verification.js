@@ -1,19 +1,18 @@
-import { createApiHandler, ApiError, rateLimit, getClientIp } from '~/lib/server/api'
+import { createApiHandler, rateLimit } from '~/lib/server/api'
 import { findUserByEmail } from '~/lib/server/users'
 import { sendVerifyEmail, generateVerificationCode } from '~/lib/server/email'
 import { getCollection } from '~/lib/server/db'
+import { objectBody, email as emailField } from '~/lib/server/validate'
 
 export default createApiHandler({
   POST: {
     handler: async (req, res) => {
-      const { email } = req.body || {}
-      if (!email || typeof email !== 'string') {
-        throw new ApiError(400, 'validation', 'Email is required')
-      }
+      const body = objectBody(req.body)
+      const email = emailField(body.email)
 
-      await rateLimit('send-verification', email.toLowerCase().trim(), { max: 3, windowMs: 3600000 })
+      await rateLimit('send-verification', email, { max: 3, windowMs: 3600000 })
 
-      const user = await findUserByEmail(email.toLowerCase().trim())
+      const user = await findUserByEmail(email)
       if (!user || user.emailVerified) {
         return res.status(200).json({ ok: true })
       }

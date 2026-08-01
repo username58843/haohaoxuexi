@@ -1,21 +1,21 @@
-import { createApiHandler, ApiError, rateLimit, getClientIp } from '~/lib/server/api'
+import { createApiHandler, rateLimit, getClientIp } from '~/lib/server/api'
 import { findUserByEmail } from '~/lib/server/users'
 import { sendResetEmail, generateToken } from '~/lib/server/email'
 import { getCollection } from '~/lib/server/db'
 import { verifyTurnstile } from '~/lib/server/captcha'
+import { objectBody, email as emailField, optStr } from '~/lib/server/validate'
 
 export default createApiHandler({
   POST: {
     handler: async (req, res) => {
-      const { email, captchaToken } = req.body || {}
-      if (!email || typeof email !== 'string') {
-        throw new ApiError(400, 'validation', 'Email is required')
-      }
+      const body = objectBody(req.body)
+      const email = emailField(body.email)
+      const captchaToken = optStr(body.captchaToken, { field: 'captchaToken', max: 4096 })
 
       await verifyTurnstile(captchaToken, getClientIp(req))
-      await rateLimit('forgot-password', email.toLowerCase().trim(), { max: 3, windowMs: 3600000 })
+      await rateLimit('forgot-password', email, { max: 3, windowMs: 3600000 })
 
-      const user = await findUserByEmail(email.toLowerCase().trim())
+      const user = await findUserByEmail(email)
       // Always return success to prevent email enumeration.
       if (!user) {
         return res.status(200).json({ ok: true })

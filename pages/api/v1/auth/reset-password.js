@@ -1,17 +1,18 @@
-import { createApiHandler, ApiError } from '~/lib/server/api'
+import { createApiHandler, ApiError, rateLimit, getClientIp } from '~/lib/server/api'
 import { getCollection } from '~/lib/server/db'
 import { hashPassword } from '~/lib/server/users'
+import { objectBody, str } from '~/lib/server/validate'
 
 export default createApiHandler({
   POST: {
     handler: async (req, res) => {
-      const { token, password } = req.body || {}
-      if (!token || typeof token !== 'string') {
-        throw new ApiError(400, 'validation', 'Token is required')
-      }
-      if (!password || typeof password !== 'string' || password.length < 8) {
-        throw new ApiError(400, 'validation', 'Password must be at least 8 characters')
-      }
+      const body = objectBody(req.body)
+      const token = str(body.token, { field: 'token', min: 1, max: 256 })
+      const password = str(body.password, { field: 'password', min: 8, max: 200, trim: false })
+
+      // Defense in depth: tokens are unguessable, but redemption should not
+      // be a free brute-force oracle either.
+      await rateLimit('reset-password', getClientIp(req), { max: 10, windowMs: 3600000 })
 
       const users = await getCollection('users')
       const user = await users.findOne({
