@@ -8,6 +8,22 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Firebase (Analytics + Crashlytics + Cloud Messaging).
+// google-services.json is developer-supplied and NOT committed — drop it into
+// android/app/ (see docs/FIREBASE_SETUP.md). The plugins are applied only when
+// the file exists so `flutter build` keeps working without Firebase configured;
+// in that case the Dart side degrades to a no-op (see lib/core/firebase_bootstrap.dart).
+val hasGoogleServices = file("google-services.json").exists()
+if (hasGoogleServices) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+} else {
+    logger.lifecycle(
+        "google-services.json not found in android/app — building WITHOUT Firebase. " +
+        "See docs/FIREBASE_SETUP.md to enable Analytics/Crashlytics/FCM."
+    )
+}
+
 // Release signing: create android/key.properties from android/key.properties.example.
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")

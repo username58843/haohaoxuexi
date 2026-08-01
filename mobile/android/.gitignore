@@ -12,3 +12,7 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# Firebase config is developer-supplied (docs/FIREBASE_SETUP.md); the build
+# applies the Google Services plugin only when this file is present.
+app/google-services.json
