@@ -148,7 +148,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
   }
 
   void setDailyGoal(int goal) {
-    final clamped = goal.clamp(1, 500);
+    // Server contract: PUT /user/settings validates dailyGoal as 5..500.
+    final clamped = goal.clamp(5, 500);
     state = state.copyWith(dailyGoal: clamped);
     _prefs.setInt(_kDailyGoal, clamped);
     _mirror({'dailyGoal': clamped});
@@ -185,7 +186,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
     }
 
     final goal = server['dailyGoal'];
-    if (goal is num && goal >= 1 && goal <= 500) {
+    if (goal is num && goal >= 5 && goal <= 500) {
       next = next.copyWith(dailyGoal: goal.toInt());
       _prefs.setInt(_kDailyGoal, goal.toInt());
     }
