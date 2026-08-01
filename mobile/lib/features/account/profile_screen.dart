@@ -364,6 +364,10 @@ String _apiErrorText(BuildContext context, ApiException e) {
       return tr(
           context, 'error.rateLimited', 'Too many requests. Try again later.');
     case 'invalid_credentials':
+    // DELETE /account rejects a wrong password with 403 `forbidden`
+    // (PUT /user/password uses `invalid_credentials`) — same user-facing
+    // meaning on this screen, so both get the localized message.
+    case 'forbidden':
       return tr(context, 'error.wrongPassword', 'Incorrect password');
     case 'unauthorized':
       return tr(context, 'error.unauthorized', 'Session expired. Sign in again.');
