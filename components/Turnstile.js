@@ -1,60 +1,100 @@
-import { useEffect, useRef, useCallback, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''
 
-export default function Turnstile({ onVerify, onExpire }) {
-  const ref = useRef(null)
+/**
+ * Cloudflare Turnstile widget (explicit render).
+ *
+ * Lifecycle: the widget is rendered exactly once per mount. The latest
+ * onVerify/onExpire callbacks flow through refs, so inline arrow props do NOT
+ * re-trigger the mount effect (the old effect re-ran on every parent render;
+ * its cleanup removed the widget without clearing `widgetId`, after which the
+ * early-return guard prevented it from ever rendering again).
+ *
+ * Siteverify tokens are single-use: after ANY failed submit the token in the
+ * caller's state is already spent. Callers should hold a ref to this component
+ * and call `reset()` on failure — the stale token is dropped via onExpire and
+ * the widget re-runs the challenge to mint a fresh one.
+ */
+const Turnstile = forwardRef(function Turnstile({ onVerify, onExpire }, ref) {
+  const containerRef = useRef(null)
   const widgetId = useRef(null)
-  const [missing, setMissing] = useState(!SITE_KEY)
 
-  const renderWidget = useCallback(() => {
-    if (!ref.current || !window.turnstile) return
-    if (widgetId.current != null) return
+  const onVerifyRef = useRef(onVerify)
+  const onExpireRef = useRef(onExpire)
+  useEffect(() => {
+    onVerifyRef.current = onVerify
+    onExpireRef.current = onExpire
+  })
 
-    widgetId.current = window.turnstile.render(ref.current, {
-      sitekey: SITE_KEY,
-      action: 'turnstile-spin-v2',
-      theme: 'auto',
-      callback: (token) => onVerify?.(token),
-      'expired-callback': () => onExpire?.(),
-      'error-callback': () => onExpire?.(),
-      'timeout-callback': () => onExpire?.(),
-    })
-  }, [onVerify, onExpire])
+  useImperativeHandle(ref, () => ({
+    /** Drop the (spent) token and re-run the challenge for a fresh one. */
+    reset() {
+      onExpireRef.current?.()
+      if (widgetId.current != null && typeof window !== 'undefined' && window.turnstile) {
+        try {
+          window.turnstile.reset(widgetId.current)
+        } catch {
+          /* widget already disposed */
+        }
+      }
+    },
+  }))
 
   useEffect(() => {
-    if (!SITE_KEY) return
+    if (!SITE_KEY) return undefined
+    let disposed = false
+    let timer = null
 
-    // If the Turnstile script is already loaded, render immediately.
-    if (window.turnstile) {
-      renderWidget()
-      return
+    const renderWidget = () => {
+      if (disposed || widgetId.current != null) return
+      if (!containerRef.current || !window.turnstile) return
+      widgetId.current = window.turnstile.render(containerRef.current, {
+        sitekey: SITE_KEY,
+        action: 'turnstile-spin-v2',
+        theme: 'auto',
+        callback: (token) => onVerifyRef.current?.(token),
+        'expired-callback': () => onExpireRef.current?.(),
+        'error-callback': () => onExpireRef.current?.(),
+        'timeout-callback': () => onExpireRef.current?.(),
+      })
     }
 
-    // Otherwise wait for the script to finish loading.
-    const onScriptLoad = () => renderWidget()
-    window.addEventListener('turnstile-ready', onScriptLoad, { once: true })
-
-    // Also poll as a fallback in case the event never fires.
-    const timer = setInterval(() => {
-      if (window.turnstile) {
-        clearInterval(timer)
-        renderWidget()
-      }
-    }, 200)
+    if (window.turnstile) {
+      // Script already loaded (e.g. client-side navigation between auth pages).
+      renderWidget()
+    } else {
+      // Wait for the <Script> onLoad event, with a poll as a race fallback.
+      window.addEventListener('turnstile-ready', renderWidget, { once: true })
+      timer = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(timer)
+          timer = null
+          renderWidget()
+        }
+      }, 200)
+    }
 
     return () => {
-      window.removeEventListener('turnstile-ready', onScriptLoad)
-      clearInterval(timer)
-      if (widgetId.current != null) window.turnstile?.remove(widgetId.current)
+      disposed = true
+      window.removeEventListener('turnstile-ready', renderWidget)
+      if (timer) clearInterval(timer)
+      if (widgetId.current != null) {
+        try {
+          window.turnstile?.remove(widgetId.current)
+        } catch {
+          /* already gone */
+        }
+        widgetId.current = null
+      }
     }
-  }, [renderWidget])
+  }, [])
 
-  if (missing) return null
+  if (!SITE_KEY) return null
 
   return (
     <div className="turnstile-wrap">
-      <div ref={ref} />
+      <div ref={containerRef} />
       <style jsx>{`
         .turnstile-wrap {
           display: flex;
@@ -64,4 +104,6 @@ export default function Turnstile({ onVerify, onExpire }) {
       `}</style>
     </div>
   )
-}
+})
+
+export default Turnstile
