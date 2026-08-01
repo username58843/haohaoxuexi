@@ -275,87 +275,64 @@ export default function AuthPage() {
           </div>
 
           {registered ? (
-            <div style={{ textAlign: 'center', padding: '16px 0' }}>
-              <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>
-                {t('authVerifyTitle', 'Check your email')}
+            <div className="auth__verify">
+              <p className="auth__verify-title">{t('authVerifyTitle', 'Check your email')}</p>
+              <p className="auth__verify-sent">
+                {t('authVerifySent', 'We sent a verification code to')}{' '}
+                <strong>{registeredEmail}</strong>
               </p>
-              <p style={{ margin: '0 0 4px', color: '#666', fontSize: 14 }}>
-                {t('authVerifySent', 'We sent a verification code to')} <strong>{registeredEmail}</strong>
-              </p>
-              <p style={{ margin: '0 0 20px', color: '#999', fontSize: 13 }}>
+              <p className="auth__verify-spam">
                 {t('authVerifySpam', "Didn't receive it? Check your spam folder")}
               </p>
-              <form onSubmit={handleVerifyCode} style={{ maxWidth: 280, margin: '0 auto' }}>
+              <form onSubmit={handleVerifyCode} className="auth__verify-form">
                 <input
                   type="text"
                   inputMode="numeric"
                   pattern="[0-9]*"
                   maxLength={6}
                   placeholder="000000"
+                  aria-label={t('authVerifyCodeAria', 'Verification code')}
+                  className={`auth__code-input${verifyError ? ' is-invalid' : ''}`}
                   value={verifyCode}
                   onChange={(e) => {
                     const v = e.target.value.replace(/\D/g, '').slice(0, 6)
                     setVerifyCode(v)
                     setVerifyError(null)
                   }}
-                  style={{
-                    width: '100%',
-                    padding: '14px 16px',
-                    fontSize: 28,
-                    fontWeight: 700,
-                    fontFamily: 'monospace',
-                    letterSpacing: 8,
-                    textAlign: 'center',
-                    border: verifyError ? '2px solid var(--danger)' : '2px solid var(--accent)',
-                    borderRadius: 10,
-                    outline: 'none',
-                    background: 'var(--surface-2)',
-                    color: 'var(--text)',
-                    boxSizing: 'border-box',
-                  }}
                   autoFocus
                   disabled={verifying}
                 />
                 {verifyError && (
-                  <p style={{ margin: '8px 0 0', color: '#ef4444', fontSize: 13 }}>
+                  <p className="auth__verify-error" role="alert">
                     {verifyError}
                   </p>
                 )}
-                <div style={{ marginTop: 16, display: 'flex', gap: 8 }}>
-                  <button
-                    type="button"
-                    onClick={handleResendCode}
-                    style={{
-                      flex: 1,
-                      padding: '10px 0',
-                      background: 'none',
-                      border: '1px solid #10b981',
-                      borderRadius: 8,
-                      color: '#10b981',
-                      fontSize: 13,
-                      cursor: 'pointer',
-                    }}
-                    disabled={verifying}
-                  >
+                <div className="auth__verify-actions">
+                  <Button type="button" onClick={handleResendCode} disabled={verifying}>
                     {t('authResend', 'Resend')}
-                  </button>
+                  </Button>
                   <Button
                     type="submit"
                     variant="primary"
-                    block
                     loading={verifying}
                     disabled={verifyCode.length !== 6}
-                    style={{ flex: 2 }}
                   >
                     {t('authVerifySubmit', 'Confirm')}
                   </Button>
                 </div>
               </form>
-              <div style={{ marginTop: 20 }}>
-                <Link href="/auth" style={{ fontSize: 14, color: '#10b981' }} onClick={() => { setRegistered(false); setRegisteredEmail(''); }}>
-                  {t('authBackToLogin', 'Back to sign in')}
-                </Link>
-              </div>
+              <button
+                type="button"
+                className="auth__verify-back"
+                onClick={() => {
+                  setRegistered(false)
+                  setRegisteredEmail('')
+                  setVerifyCode('')
+                  setVerifyError(null)
+                }}
+              >
+                {t('authBackToLogin', 'Back to sign in')}
+              </button>
             </div>
           ) : (
           <>
@@ -453,8 +430,8 @@ export default function AuthPage() {
             />
 
             {mode === 'login' && (
-              <div style={{ textAlign: 'right', marginTop: -8, marginBottom: 8 }}>
-                <Link href="/auth/forgot-password" style={{ fontSize: 13, color: '#10b981' }}>
+              <div className="auth__forgot">
+                <Link href="/auth/forgot-password">
                   {t('authForgotPassword', 'Forgot password?')}
                 </Link>
               </div>
