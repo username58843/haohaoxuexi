@@ -121,8 +121,6 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.verify.sending': 'Отправка…',
     'auth.verify.resent': 'Код отправлен',
     'auth.verify.resendFailed': 'Не удалось отправить код. Попробуйте позже.',
-    'auth.verify.done': 'Почта подтверждена!',
-    'auth.verify.required': 'Подтвердите email для полного доступа',
     // Account feature (settings / profile / about)
     'common.save': 'Сохранить',
     'settings.title': 'Настройки',
@@ -419,8 +417,6 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.verify.sending': 'Iberilýär…',
     'auth.verify.resent': 'Kod iberildi',
     'auth.verify.resendFailed': 'Kod iberilmedi. Soňrak synanyşyň.',
-    'auth.verify.done': 'Poçta tassyklady!',
-    'auth.verify.required': 'Doly ulanmak üçin email-i tassyklaň',
     // Account feature (settings / profile / about)
     'common.save': 'Ýatda sakla',
     'settings.title': 'Sazlamalar',
@@ -714,8 +710,6 @@ const Map<String, Map<String, String>> _overrides = {
     'auth.verify.sending': '发送中…',
     'auth.verify.resent': '验证码已发送',
     'auth.verify.resendFailed': '验证码发送失败，请稍后重试。',
-    'auth.verify.done': '邮箱已验证！',
-    'auth.verify.required': '请验证邮箱以使用全部功能',
     // Account feature (settings / profile / about)
     'common.save': '保存',
     'settings.title': '设置',
