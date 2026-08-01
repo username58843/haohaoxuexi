@@ -61,6 +61,26 @@ function IconBook() {
   )
 }
 
+function IconChart() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M5 20V14" />
+      <path d="M12 20V7" />
+      <path d="M19 20V11" />
+    </svg>
+  )
+}
+
 function IconChevron() {
   return (
     <svg
@@ -417,6 +437,22 @@ export default function Dashboard() {
                   </span>
                   <span className="dash-quick__sub">
                     {t('dashQuickDecksSub', 'Your personal collections')}
+                  </span>
+                </span>
+                <span className="dash-quick__arrow">
+                  <IconChevron />
+                </span>
+              </Card>
+              <Card as={Link} href="/stats" interactive className="dash-quick__card">
+                <span className="dash-quick__icon">
+                  <IconChart />
+                </span>
+                <span className="dash-quick__body">
+                  <span className="dash-quick__title">
+                    {t('dashQuickStatsTitle', 'Statistics')}
+                  </span>
+                  <span className="dash-quick__sub">
+                    {t('dashQuickStatsSub', 'Heatmap and difficult words')}
                   </span>
                 </span>
                 <span className="dash-quick__arrow">
