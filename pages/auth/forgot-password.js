@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -6,7 +6,7 @@ import Script from 'next/script'
 import AppShell from '~/components/AppShell'
 import { Card, Field, Button } from '~/components/ui'
 import { useSettings } from '~/lib/contexts/SettingsContext'
-import { api } from '~/lib/api-client'
+import { api, apiError } from '~/lib/api-client'
 import Turnstile from '~/components/Turnstile'
 
 export default function ForgotPasswordPage() {
@@ -17,6 +17,7 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(null)
+  const captchaRef = useRef(null)
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -26,8 +27,19 @@ export default function ForgotPasswordPage() {
     try {
       await api.post('/auth/forgot-password', { email: email.trim(), captchaToken })
       setSent(true)
-    } catch {
-      setError(t('authErrGeneric', 'Something went wrong. Please try again.'))
+    } catch (err) {
+      // The failed attempt spent the single-use captcha token — mint a new one.
+      captchaRef.current?.reset()
+      const e2 = apiError(err)
+      if (e2.code === 'rate_limited') {
+        setError(t('authErrTooMany', 'Too many attempts — try again later'))
+      } else if (e2.code === 'captcha_required' || e2.code === 'captcha_failed') {
+        setError(t('authErrCaptcha', 'Captcha check failed — please try again'))
+      } else if (e2.code === 'validation') {
+        setError(t('authErrEmailFormat', 'Enter a valid email address'))
+      } else {
+        setError(t('authErrGeneric', 'Something went wrong. Please try again.'))
+      }
     } finally {
       setLoading(false)
     }
@@ -90,6 +102,7 @@ export default function ForgotPasswordPage() {
                 />
 
                 <Turnstile
+                  ref={captchaRef}
                   onVerify={setCaptchaToken}
                   onExpire={() => setCaptchaToken(null)}
                 />
