@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -283,14 +285,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                   _verifyError = null;
                                 }),
                                 error: _verifyError,
-                                onResend: () async {
-                                  try {
-                                    await ref
-                                        .read(authProvider.notifier)
-                                        .sendVerification(
-                                            email: _emailController.text);
-                                  } catch (_) {}
-                                },
+                                onResend: () => ref
+                                    .read(authProvider.notifier)
+                                    .sendVerification(
+                                        email: _emailController.text),
                                 onVerify: _handleVerifyCode,
                                 verifying: _verifying,
                               ),
@@ -414,8 +412,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   }
 }
 
-/// Verificaton code input shown after registration.
-class _VerifyCodeInput extends StatelessWidget {
+/// Verification code input shown after registration.
+class _VerifyCodeInput extends StatefulWidget {
   const _VerifyCodeInput({
     required this.email,
     required this.code,
@@ -429,14 +427,81 @@ class _VerifyCodeInput extends StatelessWidget {
   final String email;
   final String code;
   final ValueChanged<String> onChanged;
-  final VoidCallback onResend;
+  final Future<void> Function() onResend;
   final VoidCallback onVerify;
   final String? error;
   final bool verifying;
 
   @override
+  State<_VerifyCodeInput> createState() => _VerifyCodeInputState();
+}
+
+class _VerifyCodeInputState extends State<_VerifyCodeInput> {
+  /// Client-side pacing; the server additionally rate-limits to 10/hour.
+  static const int _resendCooldownSeconds = 60;
+
+  bool _resending = false;
+  int _cooldown = 0;
+  Timer? _cooldownTimer;
+
+  @override
+  void dispose() {
+    _cooldownTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startCooldown() {
+    _cooldownTimer?.cancel();
+    setState(() => _cooldown = _resendCooldownSeconds);
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() => _cooldown = _cooldown > 0 ? _cooldown - 1 : 0);
+      if (_cooldown <= 0) timer.cancel();
+    });
+  }
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _handleResend() async {
+    if (_resending || _cooldown > 0 || widget.verifying) return;
+    setState(() => _resending = true);
+    try {
+      await widget.onResend();
+      if (!mounted) return;
+      _startCooldown();
+      _showSnack(tr(context, 'auth.verify.resent', 'Verification code sent'));
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      _showSnack(e.code == 'rate_limited'
+          ? tr(context, 'auth.err.rateLimited',
+              'Too many attempts. Please wait a bit and try again.')
+          : tr(context, 'auth.verify.resendFailed',
+              'Could not send the code. Try again later.'));
+    } catch (_) {
+      if (!mounted) return;
+      _showSnack(tr(context, 'auth.verify.resendFailed',
+          'Could not send the code. Try again later.'));
+    } finally {
+      if (mounted) setState(() => _resending = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final accent = accentOf(context);
+    final email = widget.email;
+    final code = widget.code;
+    final onChanged = widget.onChanged;
+    final onVerify = widget.onVerify;
+    final error = widget.error;
+    final verifying = widget.verifying;
     final canSubmit = code.length == 6 && !verifying;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
@@ -532,13 +597,28 @@ class _VerifyCodeInput extends StatelessWidget {
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: verifying ? null : onResend,
-                  child: Text(
-                    tr(context, 'auth.verify.resend', 'Resend'),
-                    style: GoogleFonts.manrope(
-                        fontSize: 13,
-                        color: accent,
-                        fontWeight: FontWeight.w600),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: (verifying || _resending || _cooldown > 0)
+                      ? null
+                      : _handleResend,
+                  child: SizedBox(
+                    height: 42,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _cooldown > 0
+                            ? '${tr(context, 'auth.verify.resend', 'Resend')} ($_cooldown)'
+                            : _resending
+                                ? tr(context, 'auth.verify.sending', 'Sending…')
+                                : tr(context, 'auth.verify.resend', 'Resend'),
+                        style: GoogleFonts.manrope(
+                            fontSize: 13,
+                            color: (verifying || _resending || _cooldown > 0)
+                                ? text3Of(context)
+                                : accent,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
                   ),
                 ),
               ),
