@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
+import '../../core/firebase_bootstrap.dart';
 import '../../core/i18n.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
@@ -82,6 +83,8 @@ class DecksNotifier extends AsyncNotifier<List<Deck>> {
       if (words.isNotEmpty) 'words': [for (final w in words) w.toSnapshotJson()],
     });
     final deck = Deck.fromJson(_unwrapDeck(data));
+    // Covers both entry points: the Decks tab and the word-sheet picker.
+    FirebaseBootstrap.logEvent('deck_created', {'words': words.length});
     final current = state.value;
     if (current != null && deck.id.isNotEmpty) {
       state = AsyncData([...current, deck]);

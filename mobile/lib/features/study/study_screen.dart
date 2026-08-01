@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
+import '../../core/firebase_bootstrap.dart';
 import '../../core/i18n.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
@@ -314,6 +315,14 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
   void _finish() {
     _advanceTimer?.cancel();
+    // Session telemetry (no-op without Firebase): first-try accuracy over
+    // unique cards, matching what the results screen shows.
+    final unique = _seenIds.length;
+    FirebaseBootstrap.logEvent('session_complete', {
+      'mode': widget.mode,
+      'answered': _answered,
+      'accuracy': unique == 0 ? 0 : ((_firstTryCorrect / unique) * 100).round(),
+    });
     _resultsSummary = _loadResultsSummary();
     setState(() => _phase = _Phase.done);
   }
@@ -323,7 +332,12 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
       await Future.wait(_pending);
       final api = ref.read(apiProvider);
       final data = await api.get('/srs/summary', query: {'tzOffset': _tzOffset});
-      return SrsSummary.fromJson(data);
+      final summary = SrsSummary.fromJson(data);
+      // Post-session streak — logged here, right after it could have grown.
+      if (summary.streak > 0) {
+        FirebaseBootstrap.logEvent('streak', {'days': summary.streak});
+      }
+      return summary;
     } on ApiException {
       return null;
     }
