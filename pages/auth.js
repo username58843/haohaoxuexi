@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Head from 'next/head'
 import Script from 'next/script'
 import Link from 'next/link'
@@ -71,6 +71,7 @@ export default function AuthPage() {
   const [banNotice, setBanNotice] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(null)
+  const captchaRef = useRef(null)
   const [registered, setRegistered] = useState(false)
   const [registeredEmail, setRegisteredEmail] = useState('')
   const [verifyCode, setVerifyCode] = useState('')
@@ -181,6 +182,9 @@ export default function AuthPage() {
     }
 
     setSubmitting(false)
+    // Siteverify tokens are single-use — the failed attempt spent this one.
+    // Re-run the challenge so the retry carries a fresh token.
+    captchaRef.current?.reset()
     if (result.code === 'email_not_verified') {
       // Not a failure: the verify panel explains itself and a fresh code is
       // auto-sent — don't preload it with the raw server error message.
@@ -202,6 +206,10 @@ export default function AuthPage() {
         break
       case 'rate_limited':
         setFormError(t('authErrRateLimited', 'Too many attempts — wait 15 minutes'))
+        break
+      case 'captcha_required':
+      case 'captcha_failed':
+        setFormError(t('authErrCaptcha', 'Captcha check failed — please try again'))
         break
       case 'network':
       case 'timeout':
@@ -470,6 +478,7 @@ export default function AuthPage() {
 
             <Turnstile
               key={mode}
+              ref={captchaRef}
               onVerify={setCaptchaToken}
               onExpire={() => setCaptchaToken(null)}
             />
