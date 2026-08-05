@@ -5,6 +5,7 @@ import { Button, Card } from '~/components/ui'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import EditableText from '~/components/EditableText'
 import DemoCard from './DemoCard'
+import RotatingTitle from './RotatingTitle'
 
 /**
  * Guest marketing landing. Rendered inside <AppShell> by pages/index.js
@@ -208,10 +209,7 @@ export default function Landing() {
         <EditableText scope="landing" id="heroEyebrow" as="p" className="eyebrow lp-hero__eyebrow">
           {t('lpHeroEyebrow', 'Spaced repetition · HSK 1–6 · Free')}
         </EditableText>
-        <h1 className="lp-hero__title hanzi" lang="zh">
-          好好学习汉语
-          <span className="lp-hero__seal" aria-hidden="true" />
-        </h1>
+        <RotatingTitle />
         <p className="lp-hero__sub u-two-tone">
           <EditableText scope="landing" id="heroSubLead" as="span">
             {t('lpHeroSubLead', 'Learn Chinese words that stay learned.')}
