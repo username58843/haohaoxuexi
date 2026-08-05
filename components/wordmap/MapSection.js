@@ -33,6 +33,7 @@ export default function MapSection({
   wid,
   knownLabel,
   onSelect,
+  onToggleKnown,
   onRetry,
   t,
 }) {
@@ -101,6 +102,7 @@ export default function MapSection({
                   colorBy={colorBy}
                   label={`${w.simplified} · ${w.pinyin}${isKnown ? ` · ${knownLabel}` : ''}`}
                   onSelect={onSelect}
+                  onLongPress={onToggleKnown}
                 />
               )
             })}

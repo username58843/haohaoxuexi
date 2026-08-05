@@ -416,6 +416,13 @@ export default function HskMapPage() {
             t={t}
           />
 
+          <p className="wmap__hint">
+            {t(
+              'wmapHoldHint',
+              'Tip: press and hold a tile to mark the word as known — hold it again to unmark.'
+            )}
+          </p>
+
           {noSearchHits ? (
             <EmptyState
               glyph="无"
@@ -449,6 +456,7 @@ export default function HskMapPage() {
                   wid={wid}
                   knownLabel={knownLabel}
                   onSelect={openWord}
+                  onToggleKnown={toggleKnown}
                   onRetry={() => fetchPack(s.level)}
                   t={t}
                 />
