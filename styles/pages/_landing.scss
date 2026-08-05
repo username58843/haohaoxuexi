@@ -93,24 +93,45 @@
 }
 
 /* ---------- Rotating headline ---------- */
-.lp-hero__phrase {
+/* 好好学习 never animates; only the tail swaps, each time with a different
+   transition picked at random in RotatingTitle.js. */
+.lp-hero__stem {
+  display: inline-block;
+}
+
+.lp-hero__tail {
+  --tail-w: 2em;
+  display: inline-block;
+  width: var(--tail-w);
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  perspective: 900px;
+  transition: width 460ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lp-hero__swap {
   display: inline-block;
   white-space: nowrap;
+  transform-style: preserve-3d;
 }
 
 .lp-hero__char {
   display: inline-block;
-  animation: lpCharIn 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i) * 45ms);
   will-change: transform, opacity, filter;
+  backface-visibility: hidden;
 }
 
-.lp-hero__phrase.is-leaving .lp-hero__char {
-  animation: lpCharOut 400ms cubic-bezier(0.4, 0, 0.7, 0.2) both;
+/* --- 1. rise: blur up from below, left to right --- */
+.lp-hero__swap--rise .lp-hero__char {
+  animation: lpRiseIn 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+.lp-hero__swap--rise.is-leaving .lp-hero__char {
+  animation: lpRiseOut 420ms cubic-bezier(0.4, 0, 0.7, 0.2) both;
   animation-delay: calc(var(--i) * 26ms);
 }
-
-@keyframes lpCharIn {
+@keyframes lpRiseIn {
   from {
     opacity: 0;
     transform: translateY(0.34em) scale(0.9);
@@ -122,8 +143,7 @@
     filter: blur(0);
   }
 }
-
-@keyframes lpCharOut {
+@keyframes lpRiseOut {
   from {
     opacity: 1;
     transform: none;
@@ -133,6 +153,260 @@
     opacity: 0;
     transform: translateY(-0.3em) scale(0.94);
     filter: blur(9px);
+  }
+}
+
+/* --- 2. slide: whole tail glides in from the right --- */
+.lp-hero__swap--slide {
+  animation: lpSlideIn 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-hero__swap--slide.is-leaving {
+  animation: lpSlideOut 380ms cubic-bezier(0.5, 0, 0.75, 0) both;
+}
+@keyframes lpSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(0.7em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lpSlideOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-0.7em);
+  }
+}
+
+/* --- 3. roll: slot-machine flip around the X axis --- */
+.lp-hero__swap--roll .lp-hero__char {
+  animation: lpRollIn 640ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation-delay: calc(var(--i) * 55ms);
+}
+.lp-hero__swap--roll.is-leaving .lp-hero__char {
+  animation: lpRollOut 440ms cubic-bezier(0.5, 0, 0.75, 0) both;
+  animation-delay: calc(var(--i) * 32ms);
+}
+@keyframes lpRollIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em) rotateX(-92deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lpRollOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.45em) rotateX(92deg);
+  }
+}
+
+/* --- 4. type: characters typed one by one, with a caret --- */
+.lp-hero__swap--type {
+  position: relative;
+}
+.lp-hero__swap--type .lp-hero__char {
+  animation: lpTypeIn 1ms steps(1, end) both;
+  animation-delay: calc(var(--i) * 95ms);
+}
+.lp-hero__swap--type::after {
+  content: '';
+  position: absolute;
+  top: 0.16em;
+  bottom: 0.16em;
+  width: 0.06em;
+  margin-left: 0.06em;
+  background: var(--accent);
+  animation: lpCaret 620ms steps(1, end) infinite;
+}
+.lp-hero__swap--type.is-leaving .lp-hero__char {
+  animation: lpTypeOut 300ms ease both;
+  animation-delay: 0ms;
+}
+.lp-hero__swap--type.is-leaving::after {
+  animation: none;
+  opacity: 0;
+}
+@keyframes lpTypeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lpTypeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes lpCaret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* --- 5. pop: springy scale, last character first --- */
+.lp-hero__swap--pop .lp-hero__char {
+  animation: lpPopIn 560ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc((var(--n) - 1 - var(--i)) * 55ms);
+}
+.lp-hero__swap--pop.is-leaving .lp-hero__char {
+  animation: lpPopOut 380ms cubic-bezier(0.4, 0, 1, 1) both;
+  animation-delay: calc((var(--n) - 1 - var(--i)) * 30ms);
+}
+@keyframes lpPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes lpPopOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+/* --- 6. flip: each character turns on the Y axis --- */
+.lp-hero__swap--flip .lp-hero__char {
+  animation: lpFlipIn 600ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation-delay: calc(var(--i) * 60ms);
+}
+.lp-hero__swap--flip.is-leaving .lp-hero__char {
+  animation: lpFlipOut 440ms cubic-bezier(0.55, 0, 0.85, 0.2) both;
+  animation-delay: calc(var(--i) * 34ms);
+}
+@keyframes lpFlipIn {
+  from {
+    opacity: 0;
+    transform: rotateY(96deg) translateX(0.16em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lpFlipOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: rotateY(-96deg) translateX(-0.16em);
+  }
+}
+
+/* --- 7. wipe: ink-brush reveal left to right --- */
+.lp-hero__swap--wipe {
+  animation: lpWipeIn 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-hero__swap--wipe.is-leaving {
+  animation: lpWipeOut 400ms cubic-bezier(0.5, 0, 0.75, 0) both;
+}
+@keyframes lpWipeIn {
+  from {
+    clip-path: inset(-0.25em 100% -0.25em 0);
+    filter: blur(4px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  to {
+    clip-path: inset(-0.25em -0.15em -0.25em 0);
+    filter: blur(0);
+  }
+}
+@keyframes lpWipeOut {
+  from {
+    clip-path: inset(-0.25em -0.15em -0.25em 0);
+  }
+  to {
+    clip-path: inset(-0.25em -0.15em -0.25em 100%);
+  }
+}
+
+/* --- 8. drop: falls in from above with a small bounce --- */
+.lp-hero__swap--drop .lp-hero__char {
+  animation: lpDropIn 620ms cubic-bezier(0.3, 1.5, 0.6, 1) both;
+  animation-delay: calc(var(--i) * 48ms);
+}
+.lp-hero__swap--drop.is-leaving .lp-hero__char {
+  animation: lpDropOut 400ms cubic-bezier(0.5, 0, 1, 1) both;
+  animation-delay: calc((var(--n) - 1 - var(--i)) * 28ms);
+}
+@keyframes lpDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.6em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lpDropOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.55em);
+  }
+}
+
+/* --- reduced motion: plain crossfade, no stagger --- */
+.lp-hero__swap--fade {
+  animation: lpFadeIn 260ms ease both;
+}
+.lp-hero__swap--fade.is-leaving {
+  animation: lpFadeOut 200ms ease both;
+}
+@keyframes lpFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lpFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -150,36 +424,20 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lp-hero__title {
+  .lp-hero__title,
+  .lp-hero__tail {
     transition: none;
   }
 
-  .lp-hero__char {
-    animation: lpCharFadeIn 260ms ease both;
-    animation-delay: 0ms;
+  .lp-hero__swap,
+  .lp-hero__swap .lp-hero__char {
+    animation-duration: 240ms !important;
+    animation-delay: 0ms !important;
+    animation-timing-function: ease !important;
   }
 
-  .lp-hero__phrase.is-leaving .lp-hero__char {
-    animation: lpCharFadeOut 200ms ease both;
-    animation-delay: 0ms;
-  }
-
-  @keyframes lpCharFadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes lpCharFadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
+  .lp-hero__swap--type::after {
+    display: none;
   }
 }
 
