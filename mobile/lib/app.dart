@@ -110,7 +110,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return StudyScreen(
             mode: params['mode'] ?? 'review',
             sources: sources,
-            count: int.tryParse(params['count'] ?? '') ?? 20,
+            // 0 = the whole queue / pool (no session-size picker anymore).
+            count: int.tryParse(params['count'] ?? '') ?? 0,
             qmodes: qmodes.isEmpty ? const ['cp', 'ct'] : qmodes,
           );
         },

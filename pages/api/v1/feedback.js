@@ -1,4 +1,10 @@
-import { createApiHandler, verifyToken, getTokenFromRequest } from '~/lib/server/api'
+import {
+  createApiHandler,
+  verifyToken,
+  getTokenFromRequest,
+  userRateKey,
+  rateLimit,
+} from '~/lib/server/api'
 import { objectBody, oneOf, str, email as validEmail } from '~/lib/server/validate'
 import { findUserById } from '~/lib/server/users'
 import { getCollection } from '~/lib/server/db'
@@ -7,8 +13,18 @@ const TOPICS = ['bug', 'idea', 'content', 'other']
 
 export default createApiHandler({
   POST: {
-    rateLimit: { name: 'feedback', max: 5, windowMs: 60 * 60 * 1000 },
+    // Abuse guard (two Mongo-TTL buckets, cross-instance):
+    //  - 5 per hour per verified user (or per IP when anonymous) — the key is
+    //    derived from the VERIFIED token, so it can't be reset by mangling
+    //    the Authorization header;
+    //  - plus a 20-per-day cap on the same key (slow-drip flood protection).
+    // Message length is validated to ≤ 2000 chars before the insert.
+    rateLimit: { name: 'feedback', max: 5, windowMs: 60 * 60 * 1000, keyFn: userRateKey },
     handler: async (req, res) => {
+      await rateLimit('feedback_day', userRateKey(req), {
+        max: 20,
+        windowMs: 24 * 60 * 60 * 1000,
+      })
       const body = objectBody(req.body)
       const topic = oneOf(body.topic, TOPICS, { field: 'topic' })
       const message = str(body.message, { field: 'message', min: 3, max: 2000 })

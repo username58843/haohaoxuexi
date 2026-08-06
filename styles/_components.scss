@@ -638,6 +638,56 @@ textarea.field__input {
   border-top: 1px solid var(--hairline);
 }
 
+// One simple example sentence (word sheet + flashcards).
+.example-sentence {
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-control);
+}
+
+.example-sentence__zh-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.example-sentence__zh {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.example-sentence__tts {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(var(--accent-rgb), 0.12);
+  }
+}
+
+.example-sentence__py {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.example-sentence__tr {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
 /* ---------- App shell ---------- */
 .app-shell {
   min-height: 100vh;

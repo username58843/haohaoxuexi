@@ -58,6 +58,7 @@ class _WordSheetState extends State<_WordSheet> {
         word.traditional.isNotEmpty && word.traditional != word.simplified;
     final showEn = word.en.isNotEmpty && !listEquals(word.en, word.definitions);
     final showRu = word.ru.isNotEmpty && !listEquals(word.ru, word.definitions);
+    final showTk = word.tk.isNotEmpty && !listEquals(word.tk, word.definitions);
     // Same as the web sheet: stroke-order tiles for the Han characters only.
     final hanzi = [
       for (final ch in word.simplified.characters)
@@ -155,9 +156,18 @@ class _WordSheetState extends State<_WordSheet> {
               const SizedBox(height: 14),
               StrokeOrderPanel(characters: hanzi),
             ],
+            if (word.example != null) ...[
+              const SizedBox(height: 20),
+              SectionLabel(tr(context, 'word.example', 'Example')),
+              const SizedBox(height: 8),
+              ExampleSentenceCard(example: word.example!),
+            ],
             if (word.definitions.isNotEmpty)
               ..._block(context, tr(context, 'word.definitions', 'Definitions'),
                   word.definitions),
+            if (showTk)
+              ..._block(
+                  context, tr(context, 'word.turkmen', 'Turkmen'), word.tk),
             if (showEn)
               ..._block(
                   context, tr(context, 'word.english', 'English'), word.en),

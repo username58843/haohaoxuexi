@@ -9,8 +9,6 @@ import { api, apiError } from '~/lib/api-client'
 import { ALL_QMODES, QmodeLabel } from '~/components/learn/session-utils'
 
 const CONFIG_KEY = 'xue_learn_config_v2'
-const REVIEW_LIMITS = [10, 20, 40]
-const QUIZ_COUNTS = [10, 20, 40, 0]
 
 function readConfig() {
   if (typeof window === 'undefined') return null
@@ -30,12 +28,13 @@ function writeConfig(cfg) {
   }
 }
 
+// Session-size pickers were removed: every session covers the whole queue /
+// pool (server-capped), so the URLs carry no limit/count.
 function reviewUrl(review) {
   const params = new URLSearchParams()
   params.set('mode', 'review')
   const packs = Array.isArray(review?.packs) ? review.packs.filter(Boolean) : []
   if (packs.length) params.set('packs', packs.join(','))
-  params.set('limit', String(REVIEW_LIMITS.includes(review?.limit) ? review.limit : 20))
   return `/learn/session?${params.toString()}`
 }
 
@@ -43,7 +42,6 @@ function quizUrl(quiz) {
   const params = new URLSearchParams()
   params.set('mode', 'quiz')
   params.set('sources', (Array.isArray(quiz?.sources) ? quiz.sources : []).filter(Boolean).join(','))
-  params.set('count', String(QUIZ_COUNTS.includes(quiz?.count) ? quiz.count : 20))
   const modes = (Array.isArray(quiz?.qmodes) ? quiz.qmodes : []).filter((m) =>
     ALL_QMODES.includes(m)
   )
@@ -86,7 +84,7 @@ export default function LearnPage() {
   const { t } = useSettings()
   const router = useRouter()
 
-  const [tab, setTab] = useState('review')
+  const [tab, setTab] = useState('quiz')
   const [loadState, setLoadState] = useState('loading') // loading | error | ready
   const [loadErr, setLoadErr] = useState('')
   const [reloadNonce, setReloadNonce] = useState(0)
@@ -96,9 +94,7 @@ export default function LearnPage() {
   const [showTextbook, setShowTextbook] = useState(false)
 
   const [reviewPacks, setReviewPacks] = useState([])
-  const [reviewLimit, setReviewLimit] = useState(20)
   const [quizSources, setQuizSources] = useState([])
-  const [quizCount, setQuizCount] = useState(20)
   const [quizModes, setQuizModes] = useState(['cp', 'ct'])
   const [savedCfg, setSavedCfg] = useState(null)
 
@@ -120,13 +116,11 @@ export default function LearnPage() {
         if (Array.isArray(cfg.review.packs)) {
           setReviewPacks(cfg.review.packs.filter((p) => typeof p === 'string'))
         }
-        if (REVIEW_LIMITS.includes(cfg.review.limit)) setReviewLimit(cfg.review.limit)
       }
       if (cfg.quiz && typeof cfg.quiz === 'object') {
         if (Array.isArray(cfg.quiz.sources)) {
           setQuizSources(cfg.quiz.sources.filter((s) => typeof s === 'string'))
         }
-        if (QUIZ_COUNTS.includes(cfg.quiz.count)) setQuizCount(cfg.quiz.count)
         const modes = (Array.isArray(cfg.quiz.qmodes) ? cfg.quiz.qmodes : []).filter((m) =>
           ALL_QMODES.includes(m)
         )
@@ -249,8 +243,8 @@ export default function LearnPage() {
   const persist = (mode) => {
     const cfg = {
       mode,
-      review: { packs: reviewPacks, limit: reviewLimit },
-      quiz: { sources: quizSources, count: quizCount, qmodes: quizModes },
+      review: { packs: reviewPacks },
+      quiz: { sources: quizSources, qmodes: quizModes },
       savedAt: Date.now(),
     }
     writeConfig(cfg)
@@ -294,13 +288,10 @@ export default function LearnPage() {
       const src = (r.packs || []).length
         ? names(r.packs)
         : t('learnDueOnly', 'due cards only')
-      return `${t('learnModeReview', 'Review')} · ${src} · ${
-        REVIEW_LIMITS.includes(r.limit) ? r.limit : 20
-      }`
+      return `${t('learnModeReview', 'Review')} · ${src}`
     }
     const z = cfg.quiz || {}
-    const cnt = z.count === 0 ? t('learnAllWords', 'All') : z.count || 20
-    return `${t('learnModeQuiz', 'Quiz')} · ${names(z.sources || [])} · ${cnt}`
+    return `${t('learnModeQuiz', 'Quiz')} · ${names(z.sources || [])}`
   }
 
   const packChip = (p, selected, onToggle) => (
@@ -383,8 +374,8 @@ export default function LearnPage() {
                 value={tab}
                 onChange={setTab}
                 options={[
-                  { value: 'review', label: t('learnModeReview', 'Review') },
                   { value: 'quiz', label: t('learnModeQuiz', 'Quiz') },
+                  { value: 'review', label: t('learnModeReview', 'Review') },
                 ]}
               />
             </div>
@@ -424,14 +415,6 @@ export default function LearnPage() {
                     </div>
                   )}
                 </section>
-
-                <ChipGroup label={t('learnSessionLimit', 'Session limit')}>
-                  {REVIEW_LIMITS.map((n) => (
-                    <Chip key={n} active={reviewLimit === n} onClick={() => setReviewLimit(n)}>
-                      {n}
-                    </Chip>
-                  ))}
-                </ChipGroup>
 
                 <Button
                   className="learn-start"
@@ -492,14 +475,6 @@ export default function LearnPage() {
                   )}
                 </section>
 
-                <ChipGroup label={t('learnQuestionCount', 'Questions')}>
-                  {QUIZ_COUNTS.map((n) => (
-                    <Chip key={n} active={quizCount === n} onClick={() => setQuizCount(n)}>
-                      {n === 0 ? t('learnAllWords', 'All') : n}
-                    </Chip>
-                  ))}
-                </ChipGroup>
-
                 <ChipGroup label={t('learnQuestionModes', 'Question types')}>
                   {ALL_QMODES.map((m) => (
                     <Chip
@@ -520,8 +495,7 @@ export default function LearnPage() {
                   disabled={!canStartQuiz}
                   onClick={startQuiz}
                 >
-                  {t('learnStartQuiz', 'Start quiz')} (
-                  {quizCount === 0 ? t('learnAllWords', 'All') : quizCount})
+                  {t('learnStartQuiz', 'Start quiz')}
                 </Button>
                 {!canStartQuiz && (
                   <p className="learn-hint">

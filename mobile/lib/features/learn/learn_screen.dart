@@ -1,11 +1,11 @@
 /// Learn tab — mobile counterpart of the web `/learn` page: a full session
 /// builder instead of the fixed home-screen shortcuts.
 ///
+/// - **Quiz** (first tab): MCQ built client-side from any mix of personal
+///   decks (`deck:<id>`) and word packs — always over the whole pool.
 /// - **Review**: SRS flashcards via `GET /srs/queue` — due cards always come
 ///   first, new cards are drawn from the selected word packs (HSK levels +
-///   textbook packs), with a session limit of 10/20/40.
-/// - **Quiz**: MCQ built client-side from any mix of personal decks
-///   (`deck:<id>`) and word packs, with 10/20/40/all questions.
+///   textbook packs). The whole queue is studied (server-capped batch).
 ///
 /// The last-started config is persisted (like the web `xue_learn_config_v2`)
 /// and resurfaced as a "Continue last" card.
@@ -31,12 +31,6 @@ import '../study/study_logic.dart';
 /// SharedPreferences key remembering the last-started session config.
 const String _kLearnConfigPref = 'learnConfig';
 
-/// Session-limit choices for review mode (mirrors the web page).
-const List<int> _reviewLimits = [10, 20, 40];
-
-/// Question-count choices for quiz mode; 0 = the whole pool.
-const List<int> _quizCounts = [10, 20, 40, 0];
-
 /// SRS summary for the due counter; invalidated after every session.
 final learnSummaryProvider =
     FutureProvider.autoDispose<SrsSummary>((ref) async {
@@ -51,34 +45,32 @@ class _LearnConfig {
   const _LearnConfig({
     required this.mode,
     this.reviewPacks = const [],
-    this.reviewLimit = 20,
     this.quizSources = const [],
-    this.quizCount = 20,
     this.quizModes = const ['cp', 'ct'],
   });
 
   /// 'review' | 'quiz'
   final String mode;
   final List<String> reviewPacks;
-  final int reviewLimit;
 
   /// Pack ids and/or `deck:<id>`.
   final List<String> quizSources;
-  final int quizCount;
 
   /// Question modes (subset of [kAllQmodes]), like the web `quiz.qmodes`.
   final List<String> quizModes;
 
   Map<String, dynamic> toJson() => {
         'mode': mode,
-        'review': {'packs': reviewPacks, 'limit': reviewLimit},
+        'review': {'packs': reviewPacks},
         'quiz': {
           'sources': quizSources,
-          'count': quizCount,
           'qmodes': quizModes,
         },
       };
 
+  /// Tolerates older stored configs that still carry `limit` / `count`
+  /// fields — those pickers were removed (sessions always run the whole
+  /// queue / pool now), so the values are simply ignored.
   static _LearnConfig? fromJson(Object? raw) {
     if (raw is! Map) return null;
     final mode = raw['mode'];
@@ -88,10 +80,7 @@ class _LearnConfig {
     return _LearnConfig(
       mode: mode as String,
       reviewPacks: _ids(review is Map ? review['packs'] : null),
-      reviewLimit:
-          _allowed(review is Map ? review['limit'] : null, _reviewLimits, 20),
       quizSources: _ids(quiz is Map ? quiz['sources'] : null),
-      quizCount: _allowed(quiz is Map ? quiz['count'] : null, _quizCounts, 20),
       quizModes: _qmodes(quiz is Map ? quiz['qmodes'] : null),
     );
   }
@@ -102,9 +91,6 @@ class _LearnConfig {
             if (e is String && e.isNotEmpty) e,
         ]
       : const [];
-
-  static int _allowed(Object? v, List<int> allowed, int def) =>
-      v is num && allowed.contains(v.toInt()) ? v.toInt() : def;
 
   /// Known question modes from a stored config; the web default (`cp`+`ct`)
   /// when nothing valid was saved.
@@ -125,13 +111,11 @@ class LearnScreen extends ConsumerStatefulWidget {
 }
 
 class _LearnScreenState extends ConsumerState<LearnScreen> {
-  /// 'review' | 'quiz'
-  String _tab = 'review';
+  /// 'review' | 'quiz' — Quiz is the first tab and the default.
+  String _tab = 'quiz';
 
   final Set<String> _reviewPacks = {};
-  int _reviewLimit = 20;
   final Set<String> _quizSources = {};
-  int _quizCount = 20;
   final Set<String> _quizModes = {'cp', 'ct'};
 
   _LearnConfig? _saved;
@@ -156,9 +140,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     _saved = cfg;
     _tab = cfg.mode;
     _reviewPacks.addAll(cfg.reviewPacks);
-    _reviewLimit = cfg.reviewLimit;
     _quizSources.addAll(cfg.quizSources);
-    _quizCount = cfg.quizCount;
     _quizModes
       ..clear()
       ..addAll(cfg.quizModes);
@@ -185,14 +167,14 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     ]);
   }
 
-  String _studyUri(String mode, List<String> sources, int count,
+  /// Sessions always run the whole queue / pool — no count in the URI.
+  String _studyUri(String mode, List<String> sources,
           {List<String> qmodes = const []}) =>
       Uri(
         path: '/study',
         queryParameters: {
           'mode': mode,
           if (sources.isNotEmpty) 'sources': sources.join(','),
-          'count': '$count',
           if (qmodes.isNotEmpty) 'qmodes': qmodes.join(','),
         },
       ).toString();
@@ -207,9 +189,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final cfg = _LearnConfig(
       mode: mode,
       reviewPacks: reviewSel,
-      reviewLimit: _reviewLimit,
       quizSources: quizSel,
-      quizCount: _quizCount,
       quizModes: _quizModes.toList(),
     );
     ref
@@ -222,12 +202,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final cfg = _saved;
     if (cfg == null) return;
     _startSession(cfg.mode == 'quiz'
-        ? _studyUri('quiz', cfg.quizSources, cfg.quizCount,
-            qmodes: cfg.quizModes)
-        : _studyUri('review', cfg.reviewPacks, cfg.reviewLimit));
+        ? _studyUri('quiz', cfg.quizSources, qmodes: cfg.quizModes)
+        : _studyUri('review', cfg.reviewPacks));
   }
 
-  /// "Quiz · HSK 1, My deck · 20" — one-line summary of a saved config.
+  /// "Quiz · HSK 1, My deck" — one-line summary of a saved config.
   String _describe(
       BuildContext context, _LearnConfig cfg, Map<String, String> titles) {
     String names(List<String> ids) {
@@ -242,12 +221,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       final src = cfg.reviewPacks.isEmpty
           ? tr(context, 'learn.dueOnly', 'due cards only')
           : names(cfg.reviewPacks);
-      return '${tr(context, 'study.review', 'Review')} · $src · ${cfg.reviewLimit}';
+      return '${tr(context, 'study.review', 'Review')} · $src';
     }
-    final cnt = cfg.quizCount == 0
-        ? tr(context, 'learn.allWords', 'All')
-        : '${cfg.quizCount}';
-    return '${tr(context, 'study.quiz', 'Quiz')} · ${names(cfg.quizSources)} · $cnt';
+    return '${tr(context, 'study.quiz', 'Quiz')} · ${names(cfg.quizSources)}';
   }
 
   // -------------------------------------------------------------------------
@@ -467,21 +443,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       _packWrap(context, hskPacks, _reviewPacks),
       ..._textbookSection(
           context, textbookPacks, _reviewPacks, textbooksExpanded),
-      const SizedBox(height: 18),
-      SectionLabel(tr(context, 'learn.sessionLimit', 'Session limit')),
-      const SizedBox(height: 10),
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final n in _reviewLimits)
-            ChoiceChip(
-              label: Text('$n'),
-              selected: _reviewLimit == n,
-              onSelected: (_) => setState(() => _reviewLimit = n),
-            ),
-        ],
-      ),
       const SizedBox(height: 22),
       PillButton(
         label:
@@ -491,7 +452,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
         onPressed: canStart
             ? () {
                 _persist('review', reviewSel, quizSel);
-                _startSession(_studyUri('review', reviewSel, _reviewLimit));
+                _startSession(_studyUri('review', reviewSel));
               }
             : null,
       ),
@@ -538,21 +499,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       ..._textbookSection(
           context, textbookPacks, _quizSources, textbooksExpanded),
       const SizedBox(height: 18),
-      SectionLabel(tr(context, 'learn.questionCount', 'Questions')),
-      const SizedBox(height: 10),
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final n in _quizCounts)
-            ChoiceChip(
-              label: Text(n == 0 ? tr(context, 'learn.allWords', 'All') : '$n'),
-              selected: _quizCount == n,
-              onSelected: (_) => setState(() => _quizCount = n),
-            ),
-        ],
-      ),
-      const SizedBox(height: 18),
       SectionLabel(tr(context, 'learn.questionModes', 'Question types')),
       const SizedBox(height: 10),
       Wrap(
@@ -575,15 +521,14 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       ),
       const SizedBox(height: 22),
       PillButton(
-        label:
-            '${tr(context, 'learn.startQuiz', 'Start quiz')} (${_quizCount == 0 ? tr(context, 'learn.allWords', 'All') : _quizCount})',
+        label: tr(context, 'learn.startQuiz', 'Start quiz'),
         size: PillSize.lg,
         expanded: true,
         onPressed: canStart
             ? () {
                 _persist('quiz', reviewSel, quizSel);
-                _startSession(_studyUri('quiz', quizSel, _quizCount,
-                    qmodes: _quizModes.toList()));
+                _startSession(
+                    _studyUri('quiz', quizSel, qmodes: _quizModes.toList()));
               }
             : null,
       ),
@@ -736,8 +681,8 @@ class _ModeTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final options = [
-      ('review', tr(context, 'study.review', 'Review')),
       ('quiz', tr(context, 'study.quiz', 'Quiz')),
+      ('review', tr(context, 'study.review', 'Review')),
     ];
     return Container(
       padding: const EdgeInsets.all(4),

@@ -1,12 +1,14 @@
 import React from 'react'
 import { Button } from '~/components/ui'
+import ExampleSentence from '~/components/ExampleSentence'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { canSpeak, speakChinese } from '~/lib/speech'
 import { previewIntervals } from './session-utils'
 
 /**
  * SRS flashcard: hanzi front (tap/Space to flip), answer back with pinyin,
- * definitions and translations, then the 4-grade bar with interval previews.
+ * definitions, translations and the example sentence, then the 4-grade bar
+ * with interval previews.
  */
 export default function Flashcard({ card, flipped, onFlip, onGrade, posting }) {
   const { t, alwaysShowPinyin } = useSettings()
@@ -15,6 +17,7 @@ export default function Flashcard({ card, flipped, onFlip, onGrade, posting }) {
   const defs = Array.isArray(word.definitions) ? word.definitions : []
   const ru = (word.translations && word.translations.ru) || []
   const en = (word.translations && word.translations.en) || []
+  const tk = (word.translations && word.translations.tk) || []
 
   const grades = [
     { grade: 0, label: t('sessAgain', 'Again'), variant: 'danger' },
@@ -88,9 +91,13 @@ export default function Flashcard({ card, flipped, onFlip, onGrade, posting }) {
                 ))}
               </ul>
             )}
+            {tk.length > 0 && <p className="sess-flash__trans">{tk.join(' · ')}</p>}
             {ru.length > 0 && <p className="sess-flash__trans">{ru.join(' · ')}</p>}
             {en.length > 0 && en.join() !== defs.join() && (
               <p className="sess-flash__trans">{en.join(' · ')}</p>
+            )}
+            {word.example?.zh && (
+              <ExampleSentence example={word.example} className="sess-flash__example" />
             )}
           </div>
         )}

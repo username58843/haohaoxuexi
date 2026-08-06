@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Modal from './ui/Modal'
 import Button from './ui/Button'
+import ExampleSentence from './ExampleSentence'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { speakChinese, canSpeak } from '~/lib/speech'
 
@@ -93,6 +94,7 @@ export default function WordSheet({ word, open, onClose, actions = null }) {
   const characters = Array.from(word.simplified || '').filter((ch) => /\p{Script=Han}/u.test(ch))
   const en = word.translations?.en || []
   const ru = word.translations?.ru || []
+  const tk = word.translations?.tk || []
   const primary = word.definitions || []
 
   return (
@@ -137,11 +139,29 @@ export default function WordSheet({ word, open, onClose, actions = null }) {
           </div>
         )}
 
+        {word.example?.zh && (
+          <div className="word-sheet__block">
+            <span className="eyebrow">{t('wsExample', 'Example')}</span>
+            <ExampleSentence example={word.example} />
+          </div>
+        )}
+
         {primary.length > 0 && (
           <div className="word-sheet__block">
             <span className="eyebrow">{t('wsMeaning', 'Meaning')}</span>
             <ul className="word-sheet__defs">
               {primary.map((d, i) => (
+                <li key={i}>{d}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {tk.length > 0 && (
+          <div className="word-sheet__block">
+            <span className="eyebrow">{t('wsLangTk', 'Turkmen')}</span>
+            <ul className="word-sheet__defs">
+              {tk.map((d, i) => (
                 <li key={i}>{d}</li>
               ))}
             </ul>

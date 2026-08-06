@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
@@ -24,25 +28,160 @@ const Map<int, Color> hskLevelColors = {
 
 const List<int> _levels = [1, 2, 3, 4, 5, 6];
 
-/// Device-local "known words" set (canonical [Word.id]s), persisted in
-/// SharedPreferences under 'known_words_v1' — the word map's mastery store.
+/// Account-synced "known words" set (canonical [Word.id]s) — the word map's
+/// mastery store, shared with the web via `GET/PUT /api/v1/words/known`.
+///
+/// - The local cache ('known_words_v1' in SharedPreferences) applies toggles
+///   instantly and keeps the map usable offline.
+/// - Every toggle is queued as a delta ('known_words_pending_v1') and flushed
+///   (debounced) as `PUT { add, remove }`. Pending deltas survive restarts, so
+///   changes made offline sync on the next launch.
+/// - When a signed-in session is (re)established, the server set is merged in
+///   (union) and local-only ids are pushed up — progress made on this device
+///   before sync existed, or while offline, is never lost.
 class KnownWordsNotifier extends Notifier<Set<String>> {
   static const _storeKey = 'known_words_v1';
+  static const _pendingKey = 'known_words_pending_v1';
+  static const _flushDelay = Duration(milliseconds: 800);
+
+  Timer? _flushTimer;
+  bool _flushing = false;
+  String? _syncedForUser;
+
+  SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
   @override
   Set<String> build() {
-    final prefs = ref.read(sharedPreferencesProvider);
-    return (prefs.getStringList(_storeKey) ?? const []).toSet();
+    ref.onDispose(() => _flushTimer?.cancel());
+    // Merge with the account whenever a signed-in session appears.
+    ref.listen(authProvider, (previous, next) {
+      final user = next.value;
+      if (user != null) {
+        unawaited(_syncWithServer(user.id));
+      } else if (!next.isLoading) {
+        _syncedForUser = null; // logged out — re-merge on the next login
+      }
+    });
+    final current = ref.read(authProvider).value;
+    if (current != null) {
+      // Session was already restored before this provider first built.
+      Future.microtask(() => _syncWithServer(current.id));
+    }
+    return (_prefs.getStringList(_storeKey) ?? const []).toSet();
   }
 
   void toggle(String wordId) {
     if (wordId.isEmpty) return;
     final next = Set<String>.of(state);
-    if (!next.add(wordId)) next.remove(wordId);
+    final turnedOn = next.add(wordId);
+    if (!turnedOn) next.remove(wordId);
+    _setLocal(next);
+    final pending = _readPending();
+    if (turnedOn) {
+      pending.add.add(wordId);
+      pending.remove.remove(wordId);
+    } else {
+      pending.remove.add(wordId);
+      pending.add.remove(wordId);
+    }
+    _writePending(pending);
+    _scheduleFlush();
+  }
+
+  void _setLocal(Set<String> next) {
     state = next;
-    ref
-        .read(sharedPreferencesProvider)
-        .setStringList(_storeKey, next.toList(growable: false));
+    _prefs.setStringList(_storeKey, next.toList(growable: false));
+  }
+
+  ({Set<String> add, Set<String> remove}) _readPending() {
+    final raw = _prefs.getString(_pendingKey);
+    if (raw == null || raw.isEmpty) {
+      return (add: <String>{}, remove: <String>{});
+    }
+    try {
+      final decoded = jsonDecode(raw);
+      Set<String> ids(Object? v) => v is List
+          ? {
+              for (final e in v)
+                if (e is String && e.isNotEmpty) e,
+            }
+          : <String>{};
+      if (decoded is Map) {
+        return (add: ids(decoded['add']), remove: ids(decoded['remove']));
+      }
+    } on FormatException {
+      // corrupt pref — start clean
+    }
+    return (add: <String>{}, remove: <String>{});
+  }
+
+  void _writePending(({Set<String> add, Set<String> remove}) pending) {
+    if (pending.add.isEmpty && pending.remove.isEmpty) {
+      _prefs.remove(_pendingKey);
+    } else {
+      _prefs.setString(
+        _pendingKey,
+        jsonEncode({
+          'add': pending.add.toList(growable: false),
+          'remove': pending.remove.toList(growable: false),
+        }),
+      );
+    }
+  }
+
+  void _scheduleFlush() {
+    _flushTimer?.cancel();
+    _flushTimer = Timer(_flushDelay, () => unawaited(_flush()));
+  }
+
+  Future<void> _flush() async {
+    if (_flushing) return;
+    if (ref.read(authProvider).value == null) return; // guest — keep queued
+    final pending = _readPending();
+    final add = pending.add.toList(growable: false);
+    final remove = pending.remove.toList(growable: false);
+    if (add.isEmpty && remove.isEmpty) return;
+    _flushing = true;
+    try {
+      await ref
+          .read(apiProvider)
+          .put('/words/known', body: {'add': add, 'remove': remove});
+      // Clear exactly what was sent — deltas queued mid-flight stay pending.
+      final after = _readPending();
+      after.add.removeAll(add);
+      after.remove.removeAll(remove);
+      _writePending(after);
+    } on ApiException {
+      // Offline / transient — deltas stay queued for the next flush.
+    } finally {
+      _flushing = false;
+    }
+  }
+
+  Future<void> _syncWithServer(String userId) async {
+    if (_syncedForUser == userId) return;
+    _syncedForUser = userId;
+    try {
+      final data = await ref.read(apiProvider).get('/words/known');
+      final rawIds = data['ids'];
+      final serverIds = rawIds is List
+          ? {
+              for (final e in rawIds)
+                if (e is String && e.isNotEmpty) e,
+            }
+          : <String>{};
+      final pending = _readPending();
+      final local = Set<String>.of(state);
+      final merged = Set<String>.of(local)
+        // A locally-queued removal wins over the (stale) server copy.
+        ..addAll(serverIds.where((id) => !pending.remove.contains(id)));
+      pending.add.addAll(local.difference(serverIds));
+      _writePending(pending);
+      _setLocal(merged);
+      await _flush();
+    } on ApiException {
+      _syncedForUser = null; // transient failure — retry on the next login
+    }
   }
 }
 
@@ -130,6 +269,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       ],
     );
+  }
+
+  /// Long-press on a tile: flip known ⇄ unknown with haptic feedback
+  /// (mirrors the web map's press-and-hold, incl. the on/off distinction).
+  void _toggleKnown(Word word) {
+    final wasKnown = ref.read(knownWordsProvider).contains(word.id);
+    unawaited(wasKnown ? HapticFeedback.lightImpact() : HapticFeedback.mediumImpact());
+    ref.read(knownWordsProvider.notifier).toggle(word.id);
   }
 
   @override
@@ -309,6 +456,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
           ),
         ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+            child: Text(
+              tr(
+                context,
+                'wmap.holdHint',
+                'Tip: press and hold a tile to mark the word as known — '
+                    'hold it again to unmark.',
+              ),
+              style: GoogleFonts.manrope(
+                fontSize: 12,
+                height: 1.35,
+                color: text3Of(context),
+              ),
+            ),
+          ),
+        ),
         for (final s in sections)
           if (s.filtered.isNotEmpty) ...[
             SliverToBoxAdapter(
@@ -334,6 +499,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       tint: hskLevelColors[s.level]!,
                       known: knownIds.contains(word.id),
                       onTap: () => _openWord(word),
+                      // Press-and-hold toggles known ⇄ unknown right on the
+                      // wall — same gesture as the web word map.
+                      onLongPress: () => _toggleKnown(word),
                     );
                   },
                   childCount: s.filtered.length,
@@ -605,12 +773,16 @@ class _MapTile extends StatelessWidget {
     required this.tint,
     required this.known,
     required this.onTap,
+    this.onLongPress,
   });
 
   final Word word;
   final Color tint;
   final bool known;
   final VoidCallback onTap;
+
+  /// Press-and-hold → toggle known (web word-map parity).
+  final VoidCallback? onLongPress;
 
   /// Font size + optional 2-row split by character count so the word always
   /// fits the square tile (the web version clipped long words). The outer
@@ -635,6 +807,7 @@ class _MapTile extends StatelessWidget {
         : text2Of(context);
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: tint.withValues(alpha: known ? 0.26 : 0.08),

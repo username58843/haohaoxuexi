@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'i18n.dart';
+import 'models.dart' show WordExample;
+import 'speech.dart';
 import 'theme.dart';
 
 /// Shared design-system widgets (docs/DESIGN.md §2), Flutter edition.
@@ -328,6 +331,73 @@ class LoadingView extends StatelessWidget {
         width: 32,
         height: 32,
         child: CircularProgressIndicator(strokeWidth: 3),
+      ),
+    );
+  }
+}
+
+
+/// One simple example sentence for a word: hanzi line with a speaker button
+/// (platform TTS), pinyin underneath, then the translation matching the UI
+/// language (tk → ru → en fallback, mirroring the web ExampleSentence).
+class ExampleSentenceCard extends ConsumerWidget {
+  const ExampleSentenceCard({super.key, required this.example});
+
+  final WordExample example;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lang = ref.watch(languageProvider);
+    final translation = example.translationFor(lang);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+      decoration: BoxDecoration(
+        color: surface2Of(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: hairlineOf(context)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HanziText(example.zh, size: 17),
+                if (example.py.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    example.py,
+                    style: GoogleFonts.manrope(
+                      fontSize: 12.5,
+                      color: text2Of(context),
+                    ),
+                  ),
+                ],
+                if (translation.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    translation,
+                    style: GoogleFonts.manrope(
+                      fontSize: 13,
+                      height: 1.35,
+                      color: text2Of(context),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Speech.speakChinese(example.zh);
+            },
+            icon: Icon(Icons.volume_up_rounded, color: accentOf(context)),
+            iconSize: 20,
+            tooltip: tr(context, 'word.exampleListen', 'Listen to the example'),
+            visualDensity: VisualDensity.compact,
+          ),
+        ],
       ),
     );
   }

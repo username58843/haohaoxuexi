@@ -5,7 +5,7 @@ import AppShell from '~/components/AppShell'
 import WordSheet from '~/components/WordSheet'
 import WordRow from '~/components/hsk/WordRow'
 import AddToDeck from '~/components/hsk/AddToDeck'
-import { readKnown, writeKnown, migrateLegacyLevel } from '~/components/hsk/known-store'
+import { useKnownWords, migrateLegacyLevel } from '~/components/hsk/known-store'
 import {
   Button,
   Field,
@@ -91,7 +91,9 @@ export default function HskPage() {
   const [queryInput, setQueryInput] = useState('')
   const [query, setQuery] = useState('') // debounced
   const [hideKnown, setHideKnown] = useState(false)
-  const [known, setKnown] = useState({})
+  // Account-synced known-words store (shared with /hsk/map): localStorage
+  // cache + GET/PUT /words/known deltas, so web and Android stay in step.
+  const { known, toggleKnown: toggleKnownId, addKnownIds } = useKnownWords(user)
   const [packs, setPacks] = useState({}) // { [level]: { status, words, error } }
   const [visible, setVisible] = useState(CHUNK)
   const [search, setSearch] = useState({
@@ -116,11 +118,6 @@ export default function HskPage() {
     if (!loading && !user) router.replace('/auth')
   }, [loading, user, router])
 
-  // Hydrate the known-words map (client only).
-  useEffect(() => {
-    setKnown(readKnown())
-  }, [])
-
   // Debounce the search input (250ms).
   useEffect(() => {
     const id = setTimeout(() => setQuery(queryInput.trim().slice(0, 100)), 250)
@@ -141,23 +138,17 @@ export default function HskPage() {
       const words = Array.isArray(data?.items) ? data.items : []
       setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
 
-      // One-time legacy known-map migration for this level.
+      // One-time legacy known-map migration for this level (also pushed to
+      // the account via the store).
       const migratedIds = migrateLegacyLevel(lvl, words)
-      if (migratedIds && migratedIds.length > 0) {
-        setKnown((prev) => {
-          const next = { ...prev }
-          for (const id of migratedIds) next[id] = true
-          writeKnown(next)
-          return next
-        })
-      }
+      if (migratedIds && migratedIds.length > 0) addKnownIds(migratedIds)
     } catch (err) {
       const e = apiError(err)
       setPacks((prev) => ({ ...prev, [lvl]: { status: 'error', words: [], error: e.message } }))
     } finally {
       inflightRef.current.delete(lvl)
     }
-  }, [])
+  }, [addKnownIds])
 
   // Make sure the pack(s) for the current browse view are (being) loaded.
   useEffect(() => {
@@ -283,17 +274,13 @@ export default function HskPage() {
   }, [loadMore, showMoreArea])
 
   // ----- Actions ----------------------------------------------------------
-  const toggleKnown = useCallback((word) => {
-    const id = wid(word)
-    if (!id) return
-    setKnown((prev) => {
-      const next = { ...prev }
-      if (next[id]) delete next[id]
-      else next[id] = true
-      writeKnown(next)
-      return next
-    })
-  }, [])
+  const toggleKnown = useCallback(
+    (word) => {
+      const id = wid(word)
+      if (id) toggleKnownId(id)
+    },
+    [toggleKnownId]
+  )
 
   const openWord = useCallback((word) => {
     setSheetWord(word)

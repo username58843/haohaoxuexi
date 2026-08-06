@@ -82,6 +82,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
   static const _kOnboardingDone = 'onboardingDone';
   static const _kReminderEnabled = 'reminderEnabled';
   static const _kReminderMinutes = 'reminderMinutes';
+  static const _kThemeMigratedV3 = 'themeMigratedV3';
 
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
@@ -89,6 +90,15 @@ class SettingsNotifier extends Notifier<AppSettings> {
   AppSettings build() {
     final p = _prefs;
     final accentRaw = p.getString(_kAccent);
+
+    // One-time dark→system migration (v3, mirrors the web + server): 'dark'
+    // used to be the server-pushed default nobody chose, so a stored 'dark'
+    // is flipped to 'system' once — the OS theme is then auto-detected on
+    // every launch. Picking dark/light in settings afterwards sticks.
+    if (!(p.getBool(_kThemeMigratedV3) ?? false)) {
+      if (p.getString(_kTheme) == 'dark') p.setString(_kTheme, ThemeMode.system.name);
+      p.setBool(_kThemeMigratedV3, true);
+    }
 
     // Language: honour the user's persisted choice; on a fresh install
     // (nothing stored yet) fall back to the device locale. We persist the

@@ -17,6 +17,54 @@ String makeWordId(String simplified, String pinyin) {
 List<String> _strList(dynamic v) =>
     v is List ? [for (final e in v) e.toString()] : const [];
 
+/// One simple example sentence for a word (`word.example` in the packs):
+/// Chinese sentence + optional pinyin and en/ru/tk translations.
+class WordExample {
+  const WordExample({
+    required this.zh,
+    this.py = '',
+    this.en = '',
+    this.ru = '',
+    this.tk = '',
+  });
+
+  final String zh;
+  final String py;
+  final String en;
+  final String ru;
+  final String tk;
+
+  /// Translation matching the UI [lang], with the same fallback chain as the
+  /// web (tk → ru → en; the zh UI shows no translation line).
+  String translationFor(String lang) {
+    if (lang == 'tk' && tk.isNotEmpty) return tk;
+    if (lang == 'ru' && ru.isNotEmpty) return ru;
+    if (lang == 'zh') return '';
+    return en;
+  }
+
+  static WordExample? fromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final zh = (raw['zh'] ?? '').toString().trim();
+    if (zh.isEmpty) return null;
+    return WordExample(
+      zh: zh,
+      py: (raw['py'] ?? '').toString().trim(),
+      en: (raw['en'] ?? '').toString().trim(),
+      ru: (raw['ru'] ?? '').toString().trim(),
+      tk: (raw['tk'] ?? '').toString().trim(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'zh': zh,
+        if (py.isNotEmpty) 'py': py,
+        if (en.isNotEmpty) 'en': en,
+        if (ru.isNotEmpty) 'ru': ru,
+        if (tk.isNotEmpty) 'tk': tk,
+      };
+}
+
 /// A vocabulary word (full pack entry or deck/SRS snapshot).
 class Word {
   const Word({
@@ -26,6 +74,8 @@ class Word {
     this.definitions = const [],
     this.en = const [],
     this.ru = const [],
+    this.tk = const [],
+    this.example,
     this.hsk,
     this.strokes,
     this.radicals,
@@ -38,9 +88,13 @@ class Word {
   /// Primary gloss lines (language-tagged by pack).
   final List<String> definitions;
 
-  /// Optional translations (`translations.en` / `translations.ru`).
+  /// Optional translations (`translations.en` / `.ru` / `.tk`).
   final List<String> en;
   final List<String> ru;
+  final List<String> tk;
+
+  /// One simple example sentence, when the pack carries it.
+  final WordExample? example;
 
   final int? hsk;
   final int? strokes;
@@ -58,6 +112,8 @@ class Word {
       definitions: _strList(json['definitions']),
       en: translations is Map ? _strList(translations['en']) : const [],
       ru: translations is Map ? _strList(translations['ru']) : const [],
+      tk: translations is Map ? _strList(translations['tk']) : const [],
+      example: WordExample.fromJson(json['example']),
       hsk: (json['hsk'] as num?)?.toInt(),
       strokes: (json['strokes'] as num?)?.toInt(),
       radicals: json['radicals']?.toString(),
@@ -73,7 +129,9 @@ class Word {
         'translations': {
           if (en.isNotEmpty) 'en': en,
           if (ru.isNotEmpty) 'ru': ru,
+          if (tk.isNotEmpty) 'tk': tk,
         },
+        if (example != null) 'example': example!.toJson(),
         if (hsk != null) 'hsk': hsk,
         if (strokes != null) 'strokes': strokes,
         if (radicals != null) 'radicals': radicals,
@@ -81,7 +139,8 @@ class Word {
 
   /// Deck/SRS snapshot shape (§5): only the server-validated snapshot fields.
   /// `hsk` must be included — the server's byLevel progress (srs summary)
-  /// counts cards by `word.hsk`.
+  /// counts cards by `word.hsk`. The example rides along so review
+  /// flashcards can show it.
   Map<String, dynamic> toSnapshotJson() => {
         'simplified': simplified,
         'traditional': traditional,
@@ -90,7 +149,9 @@ class Word {
         'translations': {
           if (en.isNotEmpty) 'en': en,
           if (ru.isNotEmpty) 'ru': ru,
+          if (tk.isNotEmpty) 'tk': tk,
         },
+        if (example != null) 'example': example!.toJson(),
         if (hsk != null) 'hsk': hsk,
       };
 

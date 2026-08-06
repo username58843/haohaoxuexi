@@ -531,8 +531,10 @@ export default function SessionPage() {
       mode: q.mode === 'quiz' ? 'quiz' : 'review',
       packs: listParam(q.packs),
       sources: listParam(q.sources),
-      limit: clampInt(q.limit, 1, 100, 20),
-      count: clampInt(q.count, 0, 500, 20),
+      // 0 = the whole queue / pool — the default since the session-size
+      // pickers were removed (the server caps the review batch).
+      limit: clampInt(q.limit, 0, 500, 0),
+      count: clampInt(q.count, 0, 500, 0),
       qmodes: qmodes.length ? qmodes : ['cp', 'ct'],
       retry: Boolean(q.retry),
     }

@@ -14,8 +14,14 @@ const themeBootScript = `
     var aliases = { red: 'cinnabar', yellow: 'gold', green: 'jade', purple: 'violet' };
     var s = {};
     try { s = JSON.parse(localStorage.getItem('xue_settings_v2') || '{}') || {}; } catch (e) {}
-    var theme = s.theme === 'light' || s.theme === 'dark' ? s.theme
-      : s.theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light'
+    // dark→system migration marker (see SettingsContext): a stored 'dark'
+    // without the marker is the old implicit default, not a user choice —
+    // resolve it from the OS preference like 'system'.
+    var themeMigrated = false;
+    try { themeMigrated = localStorage.getItem('xue_theme_v3') === '1'; } catch (e) {}
+    var explicit = s.theme === 'light' || (s.theme === 'dark' && themeMigrated);
+    var theme = explicit ? s.theme
+      : window.matchMedia('(prefers-color-scheme: light)').matches ? 'light'
       : 'dark';
     var colorKey = aliases[s.themeColor] || s.themeColor;
     var hex = colors[colorKey] || colors.jade;

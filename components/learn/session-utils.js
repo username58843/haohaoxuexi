@@ -41,13 +41,15 @@ export function dedupeWords(words) {
   return Array.from(seen.values())
 }
 
-/** First meaning line: definitions, then translations (RU preferred for RU UI). */
+/** First meaning line: definitions, then translations (UI language preferred). */
 export function meaningLine(word, lang) {
   const defs = Array.isArray(word.definitions) ? word.definitions : []
   const en = (word.translations && word.translations.en) || []
   const ru = (word.translations && word.translations.ru) || []
+  const tk = (word.translations && word.translations.tk) || []
   if (lang === 'ru' && ru.length) return ru[0]
-  return defs[0] || en[0] || ru[0] || ''
+  if (lang === 'tk' && tk.length) return tk[0]
+  return defs[0] || en[0] || ru[0] || tk[0] || ''
 }
 
 function fieldText(word, kind, lang) {

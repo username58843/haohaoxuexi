@@ -73,9 +73,20 @@ function IconContent() {
   )
 }
 
+function IconPacks() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M4 7.5 12 3.5l8 4v9l-8 4-8-4v-9Z" />
+      <path d="m4 7.5 8 4 8-4" />
+      <path d="M12 11.5v9" />
+    </svg>
+  )
+}
+
 const NAV = [
   { key: 'overview', href: '/admin', Icon: IconOverview, labelKey: 'admNavOverview', label: 'Overview' },
   { key: 'users', href: '/admin/users', Icon: IconUsers, labelKey: 'admNavUsers', label: 'Users' },
+  { key: 'packs', href: '/admin/packs', Icon: IconPacks, labelKey: 'admNavPacks', label: 'Packs' },
   { key: 'content', href: '/admin/content', Icon: IconContent, labelKey: 'admNavContent', label: 'Content' },
   { key: 'feedback', href: '/admin/feedback', Icon: IconFeedback, labelKey: 'admNavFeedback', label: 'Feedback' },
   { key: 'audit', href: '/admin/audit', Icon: IconAudit, labelKey: 'admNavAudit', label: 'Audit' },

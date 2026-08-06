@@ -37,7 +37,7 @@ class StudyScreen extends ConsumerStatefulWidget {
     super.key,
     required this.mode,
     this.sources = const [],
-    this.count = 20,
+    this.count = 0,
     this.qmodes = const ['cp', 'ct'],
   });
 
@@ -46,6 +46,8 @@ class StudyScreen extends ConsumerStatefulWidget {
 
   /// Selected sources: pack ids (e.g. `hsk1`, textbook ids) and/or `deck:<id>`.
   final List<String> sources;
+
+  /// Session size; 0 (the default) = the whole queue / pool.
   final int count;
 
   /// Quiz question modes (subset of [kAllQmodes]); defaults to the web's
@@ -134,7 +136,8 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         final api = ref.read(apiProvider);
         final data = await api.get('/srs/queue', query: {
           if (widget.sources.isNotEmpty) 'packs': widget.sources.join(','),
-          'limit': widget.count.clamp(1, 100),
+          // 0 = the whole queue (server-capped).
+          'limit': widget.count.clamp(0, 500),
         });
         final cardsRaw = data['cards'];
         final items = <_ReviewItem>[];
@@ -560,7 +563,11 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
 
   Widget _cardBack(BuildContext context, Word word) {
     final lang = I18n.language;
-    final translations = lang == 'ru' ? word.ru : word.en;
+    final translations = lang == 'ru'
+        ? word.ru
+        : lang == 'tk' && word.tk.isNotEmpty
+            ? word.tk
+            : word.en;
     final extra = [
       for (final t in translations)
         if (!word.definitions.contains(t)) t,
@@ -609,6 +616,10 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                     ),
                   ),
                 ),
+            ],
+            if (word.example != null) ...[
+              const SizedBox(height: 14),
+              ExampleSentenceCard(example: word.example!),
             ],
           ],
         ),

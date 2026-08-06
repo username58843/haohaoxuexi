@@ -6,7 +6,7 @@ import WordSheet from '~/components/WordSheet'
 import MapSection from '~/components/wordmap/MapSection'
 import MapStats from '~/components/wordmap/MapStats'
 import AddToDeck from '~/components/hsk/AddToDeck'
-import { readKnown, writeKnown, migrateLegacyLevel } from '~/components/hsk/known-store'
+import { useKnownWords, migrateLegacyLevel } from '~/components/hsk/known-store'
 import { Button, Field, Chip, Segmented, EmptyState, PageLoader } from '~/components/ui'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
@@ -71,10 +71,11 @@ export default function HskMapPage() {
   const [query, setQuery] = useState('')
   const [hideKnown, setHideKnown] = useState(false)
   const [colorBy, setColorBy] = useState('level') // 'level' | 'known'
-  // The SAME known-words map the /hsk list view uses. Lazily initialized:
-  // readKnown() returns {} on the server, and the page renders <PageLoader/>
-  // until auth resolves, so server/client first paints always match.
-  const [known, setKnown] = useState(() => readKnown())
+  // The SAME known-words store the /hsk list view uses — localStorage-cached
+  // and synced with the account (GET/PUT /words/known) so web and Android see
+  // the same set. readKnown() returns {} on the server, and the page renders
+  // <PageLoader/> until auth resolves, so server/client first paints match.
+  const { known, toggleKnown: toggleKnownId, addKnownIds } = useKnownWords(user)
   const [packs, setPacks] = useState({}) // { [level]: { status, words, error } }
   const [sheetWord, setSheetWord] = useState(null)
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -89,12 +90,6 @@ export default function HskMapPage() {
   useEffect(() => {
     if (!loading && !user) router.replace('/auth')
   }, [loading, user, router])
-
-  // Persist the known map (updaters stay pure; the mount-time write simply
-  // rewrites what was just read).
-  useEffect(() => {
-    writeKnown(known)
-  }, [known])
 
   // Debounce search (200ms).
   useEffect(() => {
@@ -122,16 +117,10 @@ export default function HskMapPage() {
         const words = Array.isArray(data?.items) ? data.items : []
         setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
 
-        // Keep known-map migration behavior identical to the list view.
-        // (Persistence happens in the writeKnown effect; the updater stays pure.)
+        // Keep known-map migration behavior identical to the list view
+        // (the merged ids are also pushed to the account via the store).
         const migratedIds = migrateLegacyLevel(lvl, words)
-        if (migratedIds && migratedIds.length > 0) {
-          setKnown((prev) => {
-            const next = { ...prev }
-            for (const id of migratedIds) next[id] = true
-            return next
-          })
-        }
+        if (migratedIds && migratedIds.length > 0) addKnownIds(migratedIds)
       })
       .catch((err) => {
         const e = apiError(err)
@@ -140,7 +129,7 @@ export default function HskMapPage() {
       .finally(() => {
         inflightRef.current.delete(lvl)
       })
-  }, [])
+  }, [addKnownIds])
 
   // Ensure the pack(s) needed for the active view are loading.
   useEffect(() => {
@@ -238,6 +227,7 @@ export default function HskMapPage() {
           ...(w.definitions || []),
           ...(tr.en || []),
           ...(tr.ru || []),
+          ...(tr.tk || []),
         ]
           .filter(Boolean)
           .join('\n')
@@ -292,17 +282,13 @@ export default function HskMapPage() {
   const visibleMatches = sections.reduce((n, s) => n + s.words.length, 0)
 
   // ----- Actions ----------------------------------------------------------
-  const toggleKnown = useCallback((word) => {
-    const id = wid(word)
-    if (!id) return
-    // Pure updater — persistence happens in the writeKnown effect above.
-    setKnown((prev) => {
-      const next = { ...prev }
-      if (next[id]) delete next[id]
-      else next[id] = true
-      return next
-    })
-  }, [])
+  const toggleKnown = useCallback(
+    (word) => {
+      const id = wid(word)
+      if (id) toggleKnownId(id)
+    },
+    [toggleKnownId]
+  )
 
   const openWord = useCallback((word) => {
     setSheetWord(word)

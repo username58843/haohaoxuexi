@@ -770,3 +770,118 @@
     font-size: 9px;
   }
 }
+
+/* ---- /admin/packs — textbook pack editor ---- */
+.adm-packs__rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.adm-packs__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+
+  & + & {
+    border-top: 1px solid var(--hairline);
+  }
+}
+
+.adm-packs__row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.adm-packs__title {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adm-packs__meta {
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.4px;
+}
+
+.adm-packs__editor-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.adm-packs__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 420px;
+  margin-bottom: 10px;
+}
+
+.adm-packs__table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.adm-packs__thead,
+.adm-packs__tr {
+  display: grid;
+  grid-template-columns: 34px 90px 90px 110px 1.4fr 1.2fr 1.2fr 1.2fr 30px;
+  gap: 6px;
+  align-items: center;
+  min-width: 900px;
+}
+
+.adm-packs__thead {
+  font-size: 10.5px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-family: var(--font-mono, monospace);
+  padding: 0 2px;
+}
+
+.adm-packs__tr .cms-page__input {
+  width: 100%;
+  min-width: 0;
+  font-size: 13px;
+  padding: 6px 8px;
+}
+
+.adm-packs__num {
+  font-size: 11px;
+  color: var(--text-3);
+  text-align: right;
+  padding-right: 2px;
+}
+
+.adm-packs__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(224, 83, 61, 0.12);
+    color: #e0533d;
+  }
+}
+
+.adm-packs__actions {
+  margin-top: 14px;
+}
