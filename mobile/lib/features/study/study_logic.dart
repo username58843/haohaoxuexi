@@ -103,12 +103,14 @@ class QuizQuestion {
 }
 
 /// Best display meaning for [word] in the given UI [language]
-/// (web `meaningLine`: RU preferred for the RU UI).
+/// (web `meaningLine`: the UI language's translation is preferred).
 String quizMeaning(Word word, String language) {
   if (language == 'ru' && word.ru.isNotEmpty) return word.ru.first;
+  if (language == 'tk' && word.tk.isNotEmpty) return word.tk.first;
   if (word.definitions.isNotEmpty) return word.definitions.first;
   if (word.en.isNotEmpty) return word.en.first;
   if (word.ru.isNotEmpty) return word.ru.first;
+  if (word.tk.isNotEmpty) return word.tk.first;
   return '';
 }
 
