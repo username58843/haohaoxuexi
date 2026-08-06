@@ -330,15 +330,16 @@ class HomeScreen extends ConsumerWidget {
                                 spacing: 8,
                                 runSpacing: 8,
                                 children: [
-                                  for (var i = 1; i <= 6; i++)
+                                  for (var i = 1; i <= 7; i++)
                                     FilterChip(
-                                      label: Text('HSK $i'),
-                                      selected: selection.contains('hsk$i'),
+                                      label: Text('HSK ${hskLevelLabel(i)}'),
+                                      selected: selection
+                                          .contains(hskPackIdFor(i)),
                                       onSelected: (v) => setSheetState(() {
                                         if (v) {
-                                          selection.add('hsk$i');
+                                          selection.add(hskPackIdFor(i));
                                         } else {
-                                          selection.remove('hsk$i');
+                                          selection.remove(hskPackIdFor(i));
                                         }
                                       }),
                                     ),
@@ -669,7 +670,7 @@ class _LevelBars extends StatelessWidget {
         children: [
           SectionLabel(tr(context, 'home.hskProgress', 'HSK progress')),
           const SizedBox(height: 12),
-          for (var level = 1; level <= 6; level++)
+          for (var level = 1; level <= 7; level++)
             _row(context, level, byLevel[level] ?? const LevelProgress()),
         ],
       ),
@@ -690,7 +691,7 @@ class _LevelBars extends StatelessWidget {
           SizedBox(
             width: 46,
             child: Text(
-              'HSK $level',
+              'HSK ${hskLevelLabel(level)}',
               style: monoStyle(context, size: 11, letterSpacing: 0.5),
             ),
           ),

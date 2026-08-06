@@ -17,6 +17,8 @@ import { Button, Spinner } from '~/components/ui'
  */
 const CAP = 600
 
+import { hskLevelLabel } from '~/lib/hsk-levels'
+
 function levelTint(level) {
   return `var(--hsk-${level})`
 }
@@ -50,10 +52,10 @@ export default function MapSection({
   const pct = totalInLevel > 0 ? Math.round((knownInLevel / totalInLevel) * 100) : 0
 
   return (
-    <section className="wmap-section" aria-label={`HSK ${level}`}>
+    <section className="wmap-section" aria-label={`HSK ${hskLevelLabel(level)}`}>
       <header className="wmap-section__head" style={{ '--sec-tint': tint }}>
         <span className={`word-row__tag word-row__tag--hsk${level} wmap-section__tag`}>
-          HSK {level}
+          HSK {hskLevelLabel(level)}
         </span>
         <div className="wmap-section__meta">
           <span className="wmap-section__count u-mono">

@@ -20,7 +20,7 @@ import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api, apiError } from '~/lib/api-client'
 import { makeWordId } from '~/lib/words-shared'
 
-const LEVELS = [1, 2, 3, 4, 5, 6]
+import { HSK_LEVELS as LEVELS, hskLevelLabel, hskPackId } from '~/lib/hsk-levels'
 const CHUNK = 60
 
 const wid = (word) => (word && word.id) || makeWordId(word)
@@ -134,7 +134,7 @@ export default function HskPage() {
     inflightRef.current.add(lvl)
     setPacks((prev) => ({ ...prev, [lvl]: { status: 'loading', words: [], error: '' } }))
     try {
-      const { data } = await api.get('/words', { params: { pack: `hsk${lvl}` } })
+      const { data } = await api.get('/words', { params: { pack: hskPackId(lvl) } })
       const words = Array.isArray(data?.items) ? data.items : []
       setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
 
@@ -297,7 +297,7 @@ export default function HskPage() {
 
   const levelOptions = [
     { value: 'all', label: t('hskAll', 'All') },
-    ...LEVELS.map((lvl) => ({ value: String(lvl), label: String(lvl) })),
+    ...LEVELS.map((lvl) => ({ value: String(lvl), label: hskLevelLabel(lvl) })),
   ]
 
   const knownLabel = t('hskKnown', 'Known')
@@ -330,7 +330,9 @@ export default function HskPage() {
       if (!single) {
         out.push(
           <div className="hsk-section" key={`head-${s.level}`}>
-            <span className={`word-row__tag word-row__tag--hsk${s.level}`}>HSK {s.level}</span>
+            <span className={`word-row__tag word-row__tag--hsk${s.level}`}>
+              HSK {hskLevelLabel(s.level)}
+            </span>
             {s.words.length > 0 && (
               <span className="hsk-section__count">
                 {s.words.length} {t('hskStatWords', 'words')} · {s.knownCount}{' '}

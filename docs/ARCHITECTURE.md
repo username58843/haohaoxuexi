@@ -46,6 +46,8 @@ Database from `MONGODB_URI`. All collections indexed by `lib/server/db.js`
   resetToken: string|null, resetExpires: Date|null,   // password-reset link
   settings: { themeColor, language, dailyGoal, alwaysShowPinyin,
               alwaysShowTranslation, theme: 'dark'|'light'|'system' },
+              // theme default is 'system' (OS auto-detect on every launch);
+              // schemaVersion 3 lazily migrated legacy 'dark' → 'system'.
   lastSeen: Date, createdAt: Date, updatedAt: Date,
   // legacy fields may still exist (personalDictionaries, selectedWords,
   // searchHistory, isAdmin, avatar, ipAddress, studyStats) — migrated lazily by
@@ -91,6 +93,21 @@ Database from `MONGODB_URI`. All collections indexed by `lib/server/db.js`
 ```
 "Local day" is computed server-side from the client-supplied `tzOffset`
 (minutes east of UTC, i.e. JS `-new Date().getTimezoneOffset()`).
+
+### known_words  (word-map mastery set, synced web ⇄ Android)
+```js
+{ userId: ObjectId,        // unique index
+  ids: [string],           // canonical word ids, capped at 30000
+  updatedAt: Date }
+```
+
+### pack_overrides  (admin edits of textbook packs)
+```js
+{ packId: string,          // unique index; textbook pack ids only
+  title?: string,          // 1..80
+  words?: [Word],          // full replacement content (validated, ≤ 5000)
+  updatedAt: Date, updatedBy: ObjectId }
+```
 
 ### feedback
 ```js
@@ -151,15 +168,16 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 | `/api/v1/user/settings` | GET/PUT | ✓ | whitelist + value-validate every key (§3 users.settings) |
 | `/api/v1/words/packs` | GET | – | `[{id, title, group:'hsk'|'textbook', count}]` — registry of built-in packs |
 | `/api/v1/words` | GET | – | `?pack=hsk1` → `{items:[Word]}` (whole pack, cached, ETag) |
-| `/api/v1/words/search` | GET | – | `?q=&level=&page=&limit≤100` → `{items,total,page,pages}`; RL 60/min/IP |
+| `/api/v1/words/search` | GET | – | `?q=&level=1..7 (7 = band 7-9)&page=&limit≤100` → `{items,total,page,pages}`; RL 60/min/IP |
+| `/api/v1/words/known` | GET/PUT | ✓ | known-words sync: GET → `{ids, updatedAt}`; PUT `{add?≤2000, remove?≤2000}` delta-merges atomically (deltas commute — offline devices converge); RL 120/min/user |
 | `/api/v1/decks` | GET/POST | ✓ | GET → `{decks}`; POST `{name, words?}` (≤50 decks) |
 | `/api/v1/decks/[id]` | GET/PUT/DELETE | ✓ | own-scoped; PUT `{name?, words?, order?}` word-shape validated |
-| `/api/v1/srs/queue` | GET | ✓ | `?limit≤100&packs=hsk1,hsk2` → `{cards:[SrsCard], dueCount, newCount}` — due first, then new from selected packs not yet in srs |
+| `/api/v1/srs/queue` | GET | ✓ | `?limit=0..500 (0 = all, capped 500)&packs=hsk1,hsk2` → `{cards:[SrsCard], dueCount, newCount}` — due first, then new from selected packs not yet in srs. Textbook packs resolve admin overrides |
 | `/api/v1/srs/review` | POST | ✓ | `{wordId, grade:0..3, word?, tzOffset}` → `{card}` upserts card, applies SM-2 (§7), bumps review_logs |
 | `/api/v1/srs/summary` | GET | ✓ | `?tzOffset=` → `{dueCount, todayReviews, todayCorrect, streak, bestStreak, goal, byState:{new,learning,review}, byLevel:{1..6:{total,seen,mature}}}` |
 | `/api/v1/srs/difficult` | GET | ✓ | `?limit=20 (1..100)&minLapses=2 (1..20)` → `{items:[card], total, minLapses}` — leech list, sorted lapses desc, ease asc, updatedAt desc |
 | `/api/v1/stats/activity` | GET | ✓ | `?days=42 (1..365)&tzOffset=` → `{days:[{day, reviews, correct}]}` |
-| `/api/v1/feedback` | POST | opt | `{topic, message, email?}`; RL 5/hour |
+| `/api/v1/feedback` | POST | opt | `{topic, message, email?}`; RL 5/hour + 20/day per verified user (or IP when anonymous) |
 | `/api/v1/content` | GET | – | `?lang=` → `{entries, meta}` — published copy overrides for the docs pages |
 | `/api/v1/health` | GET | – | `{ok, ts}` — uptime probe |
 | `/api/v1/admin/overview` | GET | admin | `{totals:{users,newUsers7d,activeToday,decks,reviews7d}, signupsByDay[14], reviewsByDay[14]}` |
@@ -167,6 +185,8 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 | `/api/v1/admin/users/[id]` | GET/PUT/DELETE | admin | PUT whitelist `{role?, isPremium?, premiumExpiresAt?, isBanned?, banReason?}`; guards: cannot ban/demote/delete self; cannot demote last admin; ban bumps tokenVersion; all writes → audit_logs |
 | `/api/v1/admin/feedback` | GET/PUT | admin | list + `{id, status}` |
 | `/api/v1/admin/content` | GET/PUT | admin | read all copy overrides / upsert or remove one entry (audited) |
+| `/api/v1/admin/packs` | GET | admin | pack registry with override status (textbook packs editable, HSK read-only) |
+| `/api/v1/admin/packs/[id]` | GET/PUT/DELETE | admin | textbook-pack editor: PUT `{title?, words?}` upserts a pack_override; DELETE restores the shipped JSON. All writes audited; the in-process overrides cache (30s TTL) is invalidated |
 | `/api/v1/admin/audit` | GET | admin | paginated audit log |
 
 Removed entirely: `/api/search/*` (external proxies), `/api/lexicon` (→ v1/words),
@@ -184,18 +204,22 @@ web client; ported identically in Flutter.
 ```js
 { simplified: string, traditional: string, pinyin: string,
   definitions: string[],            // primary gloss lines (language-tagged by pack)
-  translations: { en?: string[], ru?: string[] },  // optional
-  hsk: int|null, strokes: int|null, radicals: string|null }
+  translations: { en?: string[], ru?: string[], tk?: string[] },  // optional
+  example: { zh, py?, en?, ru?, tk? } | undefined,  // one simple sentence
+  hsk: int|null (1..7, 7 = band 7-9), strokes: int|null, radicals: string|null }
 ```
 Deck-stored snapshots keep only: simplified, traditional, pinyin, definitions,
-translations (validated, each string ≤ 200 chars).
+translations, example (validated, each string ≤ 200 chars).
 
 ### Packs
 `lib/server/words.js` reads `/words/*.json` at first use (fs, cached), exposes:
 `getPacks()` (registry with titles), `getPack(id)`, `searchWords(q, level, page,
 limit)` (scored: exact hanzi > prefix > substring > pinyin > meaning).
-HSK packs: `hsk1..hsk6`. Textbook packs keep their file names as ids with
-human titles in the registry. Known data fixes applied at load: `p.inyin` key in
+HSK packs: `hsk1..hsk6` plus `hsk7-9` (the official HSK 3.0 band 7–9 list —
+one combined 七–九级 pack, `hsk: 7` internally, labeled "7–9" in every UI).
+Textbook packs keep their file names as ids with human titles in the registry;
+admins can rename/replace them via `pack_overrides` (getPacksResolved /
+getPackWordsResolved merge overrides with a 30s in-process cache). Known data fixes applied at load: `p.inyin` key in
 tk.json, `sim以前` key in tluy.json, HSK `traditional` field equals simplified
 (display code must not pretend otherwise).
 

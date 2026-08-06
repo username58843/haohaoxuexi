@@ -24,9 +24,10 @@ const Map<int, Color> hskLevelColors = {
   4: Color(0xFF5C5278),
   5: Color(0xFF7A4F62),
   6: Color(0xFF7A5A3D),
+  7: Color(0xFF6E3D55), // the combined HSK 3.0 band 7–9
 };
 
-const List<int> _levels = [1, 2, 3, 4, 5, 6];
+const List<int> _levels = [1, 2, 3, 4, 5, 6, 7];
 
 /// Account-synced "known words" set (canonical [Word.id]s) — the word map's
 /// mastery store, shared with the web via `GET/PUT /api/v1/words/known`.
@@ -286,7 +287,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     // All six packs are bundled assets: watch them all so the stats card
     // covers every level while the wall respects the active filter.
     final packs = <int, AsyncValue<List<Word>>>{
-      for (final l in _levels) l: ref.watch(wordPacksProvider('hsk$l')),
+      for (final l in _levels) l: ref.watch(wordPacksProvider(hskPackIdFor(l))),
     };
     final active = _level == null ? _levels : <int>[_level!];
 
@@ -364,7 +365,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _levelChip(null, tr(context, 'hsk.level.all', 'All')),
-                for (var l = 1; l <= 6; l++) _levelChip(l, 'HSK $l'),
+                for (var l = 1; l <= 7; l++)
+                  _levelChip(l, 'HSK ${hskLevelLabel(l)}'),
               ],
             ),
           ),
@@ -430,7 +432,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         message: apiErrorText(context, errorPack.error ?? 'error'),
         onRetry: () {
           for (final l in _levels) {
-            ref.invalidate(wordPacksProvider('hsk$l'));
+            ref.invalidate(wordPacksProvider(hskPackIdFor(l)));
           }
         },
       );
@@ -630,7 +632,7 @@ class _StatsCard extends StatelessWidget {
                   SizedBox(
                     width: 46,
                     child: Text(
-                      'HSK $l',
+                      'HSK ${hskLevelLabel(l)}',
                       style: monoStyle(
                         context,
                         size: 10,
@@ -722,7 +724,7 @@ class _LevelHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(999),
             ),
             child: Text(
-              'HSK $level',
+              'HSK ${hskLevelLabel(level)}',
               style: monoStyle(
                 context,
                 size: 10,

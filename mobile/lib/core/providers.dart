@@ -515,6 +515,7 @@ final authProvider =
 /// Ids of the HSK packs bundled as assets for offline browsing.
 const List<String> bundledHskPackIds = [
   'hsk1', 'hsk2', 'hsk3', 'hsk4', 'hsk5', 'hsk6', // assets/words/<id>.json
+  'hsk7-9', // the combined HSK 3.0 band 7–9
 ];
 
 /// Lazily loads a bundled HSK word pack from assets, e.g.

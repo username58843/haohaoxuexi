@@ -12,8 +12,7 @@ import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api, apiError } from '~/lib/api-client'
 import { makeWordId } from '~/lib/words-shared'
-
-const LEVELS = [1, 2, 3, 4, 5, 6]
+import { HSK_LEVELS as LEVELS, hskLevelLabel, hskPackId } from '~/lib/hsk-levels'
 
 const wid = (word) => (word && word.id) || makeWordId(word)
 
@@ -66,7 +65,7 @@ export default function HskMapPage() {
   const router = useRouter()
   const { t } = useSettings()
 
-  const [level, setLevel] = useState('all') // 'all' | '1'..'6'
+  const [level, setLevel] = useState('all') // 'all' | '1'..'7' (7 = band 7-9)
   const [queryInput, setQueryInput] = useState('')
   const [query, setQuery] = useState('')
   const [hideKnown, setHideKnown] = useState(false)
@@ -112,7 +111,7 @@ export default function HskMapPage() {
       )
     })
     api
-      .get('/words', { params: { pack: `hsk${lvl}` } })
+      .get('/words', { params: { pack: hskPackId(lvl) } })
       .then(({ data }) => {
         const words = Array.isArray(data?.items) ? data.items : []
         setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
@@ -350,7 +349,7 @@ export default function HskMapPage() {
                     onClick={() => setLevel(String(lvl))}
                     className={`wmap__chip wmap__chip--hsk${lvl}`}
                   >
-                    {lvl}
+                    {hskLevelLabel(lvl)}
                   </Chip>
                 ))}
               </div>
@@ -458,7 +457,7 @@ export default function HskMapPage() {
             <div className="wmap__more" ref={sentinelRef}>
               {!anyLoading && (
                 <Button variant="soft" onClick={loadNext}>
-                  {t('wmapLoadLevel', 'Load HSK')} {nextIdleLevel}
+                  {t('wmapLoadLevel', 'Load HSK')} {hskLevelLabel(nextIdleLevel)}
                 </Button>
               )}
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const LEVELS = [1, 2, 3, 4, 5, 6]
+import { HSK_LEVELS as LEVELS, hskLevelLabel } from '~/lib/hsk-levels'
 
 /**
  * Animated count-up of the overall mastery percentage. Honors
@@ -76,7 +76,7 @@ export default function MapStats({ levelStats, totalWords, totalKnown, t }) {
               style={{ '--leg-tint': `var(--hsk-${lvl})` }}
             >
               <span className="wmap-legend__dot" aria-hidden />
-              <span className="wmap-legend__name u-mono">HSK {lvl}</span>
+              <span className="wmap-legend__name u-mono">HSK {hskLevelLabel(lvl)}</span>
               <span className="wmap-legend__bar" aria-hidden>
                 <span className="wmap-legend__bar-fill" style={{ width: `${pct}%` }} />
               </span>

@@ -14,7 +14,7 @@ import {
 } from '~/components/ui'
 
 const LOCALE_MAP = { en: 'en-US', ru: 'ru-RU', tk: 'tk', zh: 'zh-CN' }
-const HSK_LEVELS = [1, 2, 3, 4, 5, 6]
+import { HSK_LEVELS, hskLevelLabel } from '~/lib/hsk-levels'
 
 /** Tiny template helper: fill('{n} cards', 3) → '3 cards'. */
 function fill(template, n) {
@@ -387,7 +387,7 @@ export default function Dashboard() {
                         'seen'
                       )} · ${row.total} ${t('dashTotal', 'total')}`}
                     >
-                      <span className="dash-hsk__label">HSK {level}</span>
+                      <span className="dash-hsk__label">HSK {hskLevelLabel(level)}</span>
                       <div className="dash-hsk__bar">
                         <div
                           className="dash-hsk__fill dash-hsk__fill--seen"

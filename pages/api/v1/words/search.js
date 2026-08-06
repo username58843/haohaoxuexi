@@ -11,7 +11,8 @@ export default createApiHandler({
       let level = null
       const rawLevel = req.query.level
       if (rawLevel !== undefined && rawLevel !== '' && rawLevel !== 'all') {
-        level = int(rawLevel, { field: 'level', min: 1, max: 6 })
+        // 7 = the combined HSK 3.0 band 7-9.
+        level = int(rawLevel, { field: 'level', min: 1, max: 7 })
       }
 
       const page = int(req.query.page, { field: 'page', def: 1, min: 1, max: 500 })

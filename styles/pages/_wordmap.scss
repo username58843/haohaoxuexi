@@ -70,7 +70,7 @@
 }
 
 /* Level chips get a level-tinted active state instead of the accent. */
-@for $i from 1 through 6 {
+@for $i from 1 through 7 {
   .wmap__chip--hsk#{$i} {
     &.is-active {
       color: var(--on-hsk);

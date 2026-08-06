@@ -551,7 +551,7 @@ textarea.field__input {
 }
 
 /* Level tag colors */
-@for $i from 1 through 6 {
+@for $i from 1 through 7 {
   .word-row__tag--hsk#{$i},
   .hsk-badge--#{$i} {
     color: var(--hsk-#{$i});

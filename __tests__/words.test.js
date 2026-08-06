@@ -1,10 +1,15 @@
 import { getPackWords, getPacks, searchWords, getHskLevelSizes } from '~/lib/server/words'
 
 describe('word packs', () => {
-  it('exposes HSK 1-6 plus textbook packs', () => {
+  it('exposes HSK 1-6, band 7-9 plus textbook packs', () => {
     const packs = getPacks()
     const ids = packs.map((p) => p.id)
-    expect(ids).toEqual(expect.arrayContaining(['hsk1', 'hsk2', 'hsk3', 'hsk4', 'hsk5', 'hsk6']))
+    expect(ids).toEqual(
+      expect.arrayContaining(['hsk1', 'hsk2', 'hsk3', 'hsk4', 'hsk5', 'hsk6', 'hsk7-9'])
+    )
+    const band = packs.find((p) => p.id === 'hsk7-9')
+    expect(band.group).toBe('hsk')
+    expect(band.count).toBeGreaterThan(5000)
     expect(packs.length).toBeGreaterThan(30)
   })
 

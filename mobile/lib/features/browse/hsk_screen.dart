@@ -12,7 +12,7 @@ import '../../core/widgets.dart';
 import '../decks/decks_screen.dart' show apiErrorText;
 import 'word_sheet.dart';
 
-/// HSK browser: offline-first browsing of the bundled hsk1..hsk6 packs with a
+/// HSK browser: offline-first browsing of the bundled hsk1..hsk6 + 7-9 packs with a
 /// level filter and a debounced local search (no network).
 class HskScreen extends ConsumerStatefulWidget {
   const HskScreen({super.key});
@@ -37,7 +37,7 @@ class _HskScreenState extends ConsumerState<HskScreen> {
   }
 
   List<String> get _packIds =>
-      _level == null ? bundledHskPackIds : ['hsk$_level'];
+      _level == null ? bundledHskPackIds : [hskPackIdFor(_level!)];
 
   void _onQueryChanged(String value) {
     _debounce?.cancel();
@@ -145,7 +145,8 @@ class _HskScreenState extends ConsumerState<HskScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 _levelChip(null, tr(context, 'hsk.level.all', 'All')),
-                for (var l = 1; l <= 6; l++) _levelChip(l, 'HSK $l'),
+                for (var l = 1; l <= 7; l++)
+                  _levelChip(l, 'HSK ${hskLevelLabel(l)}'),
               ],
             ),
           ),

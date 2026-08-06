@@ -17,6 +17,13 @@ String makeWordId(String simplified, String pinyin) {
 List<String> _strList(dynamic v) =>
     v is List ? [for (final e in v) e.toString()] : const [];
 
+/// UI label for an HSK level: 1..6 → "1".."6", 7 → "7–9" (the combined
+/// HSK 3.0 band 7–9 ships as ONE official list / one pack).
+String hskLevelLabel(int level) => level == 7 ? '7–9' : '$level';
+
+/// Pack id serving an HSK level: hsk1..hsk6, hsk7-9.
+String hskPackIdFor(int level) => level == 7 ? 'hsk7-9' : 'hsk$level';
+
 /// One simple example sentence for a word (`word.example` in the packs):
 /// Chinese sentence + optional pinyin and en/ru/tk translations.
 class WordExample {

@@ -535,7 +535,7 @@ const ABOUT_EN = `好好学习汉语 (HaoHao XueXi) is a free tool for learning 
 ## What you get
 
 - **Spaced repetition (SRS)** — flashcards scheduled with an SM-2-style algorithm, graded Again / Hard / Good / Easy, so you review each word right before you would forget it.
-- **HSK 1–6** — the complete standard vocabulary for all six levels, plus textbook word packs, with pinyin, definitions, stroke-order animations, and audio.
+- **HSK 1–6 and 7–9** — the complete standard vocabulary for all six classic levels plus the official HSK 3.0 band 7–9 list, plus textbook word packs, with pinyin, definitions, example sentences, stroke-order animations, and audio.
 - **Personal decks** — collect words into your own decks, edit them freely, and import or export them.
 - **Quizzes** — multiple-choice practice modes for quick self-testing.
 - **Progress** — streaks, a daily goal, activity charts, and per-level mastery so you always know where you stand.
@@ -543,6 +543,10 @@ const ABOUT_EN = `好好学习汉语 (HaoHao XueXi) is a free tool for learning 
 ## Feedback
 
 The app improves through the people who use it. Found a bug, missing word, or have an idea? Send feedback right from the app (More → Send feedback) or email [${DOC_CONTACT_EMAIL}](mailto:${DOC_CONTACT_EMAIL}).
+
+## Data sources & credits
+
+Dictionary definitions are derived from [CC-CEDICT](https://cc-cedict.org/) (CC BY-SA 4.0). The HSK 3.0 band 7–9 word list is built from [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (MIT), cross-checked against the official 《国际中文教育中文水平等级标准》 list; HSK 2.0 lists were verified against [hskhsk.com](https://github.com/glxxyz/hskhsk.com) data (MIT). Stroke-order animations use [Hanzi Writer](https://hanziwriter.org/) with data from Make Me a Hanzi.
 
 ## The fine print
 
@@ -568,6 +572,10 @@ const ABOUT_RU = `好好学习汉语 (HaoHao XueXi) — бесплатный и�
 
 Приложение становится лучше благодаря тем, кто им пользуется. Нашли ошибку, пропущенное слово или у вас есть идея? Отправьте отзыв прямо из приложения (Ещё → Отправить отзыв) или напишите на [${DOC_CONTACT_EMAIL}](mailto:${DOC_CONTACT_EMAIL}).
 
+## Источники данных
+
+Словарные определения основаны на [CC-CEDICT](https://cc-cedict.org/) (CC BY-SA 4.0). Список слов HSK 3.0 (уровни 7–9) собран из [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (MIT) и сверен с официальным списком 《国际中文教育中文水平等级标准》; списки HSK 2.0 сверены с данными [hskhsk.com](https://github.com/glxxyz/hskhsk.com) (MIT). Анимации порядка черт — [Hanzi Writer](https://hanziwriter.org/) на данных Make Me a Hanzi.
+
 ## Мелким шрифтом
 
 Как обрабатываются ваши данные, описано в Политике конфиденциальности, а правила пользования сервисом — в Условиях использования.
@@ -592,6 +600,10 @@ const ABOUT_TK = `好好学习汉语 (HaoHao XueXi) — hytaý sözlerini öwren
 
 Programma ony ulanýan adamlaryň kömegi bilen kämilleşýär. Säwlik ýa-da ýetmeýän söz tapdyňyzmy, ýa-da pikiriňiz barmy? Seslenmäni gönüden-göni programmadan iberiň (Başga → Seslenme ibermek) ýa-da [${DOC_CONTACT_EMAIL}](mailto:${DOC_CONTACT_EMAIL}) salgysyna hat ýazyň.
 
+## Maglumat çeşmeleri
+
+Sözlük kesgitlemeleri [CC-CEDICT](https://cc-cedict.org/) esasynda (CC BY-SA 4.0). HSK 3.0 (7–9 derejeler) söz sanawy [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (MIT) çeşmesinden alnyp, resmi 《国际中文教育中文水平等级标准》 sanawy bilen deňeşdirildi; HSK 2.0 sanawlary [hskhsk.com](https://github.com/glxxyz/hskhsk.com) (MIT) maglumatlary bilen barlanyldy. Çyzgy tertibiniň animasiýalary — Make Me a Hanzi maglumatly [Hanzi Writer](https://hanziwriter.org/).
+
 ## Resmi bellikler
 
 Maglumatlaryňyzyň nähili işlenýändigi Gizlinlik syýasatynda, ulanyş düzgünleri bolsa Hyzmat şertlerinde beýan edilýär.
@@ -615,6 +627,10 @@ const ABOUT_ZH = `好好学习汉语（HaoHao XueXi）是一款免费的汉语�
 ## 反馈
 
 这款应用因使用者而不断进步。发现了错误、缺失的词语，或者有好点子？可直接在应用内发送反馈（更多 → 发送反馈），或发送邮件至 [${DOC_CONTACT_EMAIL}](mailto:${DOC_CONTACT_EMAIL})。
+
+## 数据来源与致谢
+
+词典释义源自 [CC-CEDICT](https://cc-cedict.org/)（CC BY-SA 4.0）。HSK 3.0 七–九级词表基于 [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary)（MIT），并与官方《国际中文教育中文水平等级标准》词表核对；HSK 2.0 词表与 [hskhsk.com](https://github.com/glxxyz/hskhsk.com)（MIT）数据核验。笔顺动画使用 [Hanzi Writer](https://hanziwriter.org/)（数据来自 Make Me a Hanzi）。
 
 ## 附则
 

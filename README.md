@@ -3,15 +3,17 @@
 Chinese-vocabulary learning platform: **web app + REST API** (Next.js 16, MongoDB)
 and a **Flutter Android app**, sharing one backend.
 
-Learn all ~5000 HSK 1–6 words with an SM-2 spaced-repetition system, quizzes,
-personal decks, streaks and per-level progress. Free, no ads.
+Learn all ~5200 HSK 1–6 words plus the official HSK 3.0 band 7–9 list
+(~5600 words) with an SM-2 spaced-repetition system, quizzes, personal decks,
+streaks and per-level progress. Every HSK 1–6 word carries EN/RU/TK
+translations and a simple example sentence with TTS. Free, no ads.
 
 ## Repository layout
 
 ```
 /            Next.js app — web UI + /api/v1 REST API (deploys to Vercel)
 /mobile      Flutter Android app (Play-Store-ready, see docs/RELEASE_CHECKLIST.md)
-/words       Word packs (HSK 1–6 + 29 textbook packs, served via the API)
+/words       Word packs (HSK 1–6, HSK 7–9 + 29 textbook packs, served via the API)
 /docs        Architecture contract, design system, store documents
 /scripts     smoke.mjs — end-to-end API test against an in-memory MongoDB
 ```
@@ -21,8 +23,9 @@ personal decks, streaks and per-level progress. Free, no ads.
 - **SRS reviews** — SM-2 scheduling (Again/Hard/Good/Easy), due queue, server-side
   progress that syncs between web and Android
 - **Quizzes** — 4 directions (字↔pinyin, 字↔meaning), instant feedback, mistake retry
-- **HSK lexicon** — browse/search 5000 words, mark known, stroke-order animation,
-  browser TTS
+- **HSK lexicon** — browse/search HSK 1–6 + band 7–9, mark known (synced
+  between web and Android via `/words/known`), stroke-order animation,
+  browser TTS, example sentences with audio
 - **Personal decks** — create, edit, JSON/CSV import/export
 - **Progress** — daily goal, streaks, 14-day activity, per-level mastery bars
 - **Stats** — six-month review heatmap and a difficult-words (leech) list,
@@ -32,7 +35,8 @@ personal decks, streaks and per-level progress. Free, no ads.
 - **Review reminders** — opt-in daily notification on Android (local, inexact
   alarms — no special permissions)
 - **Admin console** — metrics dashboard, user management (ban/premium/roles) with
-  audit log, feedback inbox, content overrides
+  audit log, feedback inbox, content overrides, textbook-pack editor
+  (rename packs / edit their words)
 - **4 UI languages** (en/ru/tk/zh) · dark/light themes · 8 accent colors · PWA
 
 ## Quick start (web)
