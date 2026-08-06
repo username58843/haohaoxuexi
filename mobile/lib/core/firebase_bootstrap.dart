@@ -64,11 +64,17 @@ class FirebaseBootstrap {
         PlatformDispatcher.instance.onError = (error, stack) {
           // Font-loading failures are cosmetic — the text falls back to a
           // system font — so keep them out of the crash-free-users metric.
+          // Covers both google_fonts failure shapes: "Failed to load font
+          // <url>..." (runtime fetch) and "GoogleFonts.config
+          // .allowRuntimeFetching is false but font X was not found in the
+          // application assets" (missing bundled cut).
           // (Should not happen anymore: fonts are bundled and runtime
           // fetching is disabled in main.dart, but keep the guard.)
-          final message = error.toString();
-          final isFontLoadError = message.contains('Failed to load font') ||
-              message.contains('google_fonts');
+          final message = error.toString().toLowerCase();
+          final isFontLoadError = message.contains('failed to load font') ||
+              message.contains('google_fonts') ||
+              message.contains('googlefonts') ||
+              message.contains('was not found in the application assets');
           crashlytics.recordError(error, stack, fatal: !isFontLoadError);
           return true;
         };
