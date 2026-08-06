@@ -62,7 +62,14 @@ class FirebaseBootstrap {
       if (!kDebugMode) {
         FlutterError.onError = crashlytics.recordFlutterFatalError;
         PlatformDispatcher.instance.onError = (error, stack) {
-          crashlytics.recordError(error, stack, fatal: true);
+          // Font-loading failures are cosmetic — the text falls back to a
+          // system font — so keep them out of the crash-free-users metric.
+          // (Should not happen anymore: fonts are bundled and runtime
+          // fetching is disabled in main.dart, but keep the guard.)
+          final message = error.toString();
+          final isFontLoadError = message.contains('Failed to load font') ||
+              message.contains('google_fonts');
+          crashlytics.recordError(error, stack, fatal: !isFontLoadError);
           return true;
         };
       }

@@ -90,8 +90,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               children: [
                 Text('haohaoxuexi.tech', style: monoStyle(context)),
                 const SizedBox(height: 10),
-                const HanziText('好好学习汉语',
-                    size: 32, weight: FontWeight.w700),
+                // Default weight (w600): NotoSerifSC is bundled only in its
+                // SemiBold cut — see the fonts note in pubspec.yaml.
+                const HanziText('好好学习汉语', size: 32),
                 const SizedBox(height: 24),
                 InkCard(
                   padding: const EdgeInsets.all(20),

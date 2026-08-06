@@ -40,6 +40,16 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.0
 
+dependency_overrides:
+  # Vendored patched copy of the Android WebView implementation. Fixes a
+  # WebView-creation crash on OEM ROMs that wrap android.webkit.WebSettings:
+  #   ClassCastException: android.webkit.WebSettingsWrapper cannot be cast to
+  #   com.android.webview.chromium.ContentSettingsAdapter
+  # See third_party/flutter_inappwebview_android/README.md for details and
+  # for when this override can be removed.
+  flutter_inappwebview_android:
+    path: third_party/flutter_inappwebview_android
+
 # Icon sources: icon_full = the exact web logo (public/logo-512.png upscaled),
 # icon_fg = logo in the adaptive safe zone on paper fill, icon_mono = 好 glyph.
 flutter_launcher_icons:
@@ -54,6 +64,13 @@ flutter:
   uses-material-design: true
 
   assets:
+    # Bundled font files picked up by the google_fonts package (exact
+    # gstatic files it would otherwise download at runtime). Runtime
+    # fetching is disabled in main.dart: fonts.gstatic.com is unreachable
+    # for users in China and every failed fetch was reported as a fatal
+    # error to Crashlytics. Files are committed by the "Fetch bundled
+    # fonts" GitHub Actions workflow (see mobile/tool/fetch_fonts.py).
+    - google_fonts/
     - assets/icon/icon_full.png
     - assets/words/hsk1.json
     - assets/words/hsk2.json

@@ -827,11 +827,14 @@ class _MapTile extends StatelessWidget {
                     display,
                     textAlign: TextAlign.center,
                     locale: const Locale('zh'),
+                    // Single default weight (w600): NotoSerifSC is bundled
+                    // only in its SemiBold cut (see pubspec.yaml). The
+                    // known/unknown distinction stays visible through
+                    // glyphColor and the tile tint/border above.
                     style: hanziStyle(
                       context,
                       size: size,
                       color: glyphColor,
-                      weight: known ? FontWeight.w600 : FontWeight.w500,
                       height: 1.12,
                     ),
                   ),

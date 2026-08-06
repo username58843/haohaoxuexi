@@ -35,7 +35,9 @@ class AboutScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const HanziText('好好学习汉语', size: 34, weight: FontWeight.w700),
+                  // Default weight (w600): NotoSerifSC is bundled only in its
+                  // SemiBold cut — see the fonts note in pubspec.yaml.
+                  const HanziText('好好学习汉语', size: 34),
                   const SizedBox(width: 7),
                   // Accent "seal dot" next to the serif hero.
                   Padding(

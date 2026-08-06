@@ -82,6 +82,13 @@ Color onAccent(Color accent) =>
 
 /// Serif style for hanzi — Noto Serif SC (`--font-hanzi`).
 /// Every Chinese string in the UI should use this (or [GoogleFonts.notoSerifSc]).
+///
+/// NOTE: fonts are bundled as assets and runtime fetching is disabled
+/// (fonts.gstatic.com is unreachable in China). NotoSerifSC ships **only in
+/// its SemiBold (w600) cut** to keep the APK small — do not pass other
+/// [weight] values here without adding the matching file to `google_fonts/`
+/// (see `tool/fetch_fonts.py`), otherwise the text silently falls back to
+/// the system font. Manrope ships in w400–w800, JetBrainsMono in w600/w700.
 TextStyle hanziStyle(
   BuildContext context, {
   double size = 24,
