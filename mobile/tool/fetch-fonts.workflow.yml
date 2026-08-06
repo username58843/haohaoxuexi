@@ -1,0 +1,65 @@
+# NOTE: this file is staged at mobile/tool/ because the GitHub integration
+# maintaining this repo is not allowed to write into .github/workflows/.
+# To activate the automation, move it to .github/workflows/fetch-fonts.yml
+# (GitHub web UI: open this file -> edit -> change the filename path -> commit).
+# Until then, fonts can be committed manually: python3 mobile/tool/fetch_fonts.py
+# Downloads the Google Fonts files bundled with the mobile app and commits
+# them to main. The GitHub integration used to maintain this repo can only
+# push text files, so binary .ttf assets are materialized here instead:
+# mobile/tool/fetch_fonts.py downloads them from fonts.gstatic.com and
+# verifies every file against the SHA-256 pinned in the script (the same
+# hashes the google_fonts Flutter package uses).
+#
+# The job is a fast no-op when all fonts are already committed. It can also
+# be run manually from the Actions tab (workflow_dispatch).
+#
+# NOTE: requires workflow write access. If the push step fails with a 403,
+# enable it in Settings -> Actions -> General -> Workflow permissions ->
+# "Read and write permissions".
+name: Fetch bundled fonts
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-fonts
+  cancel-in-progress: false
+
+jobs:
+  fonts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download and verify fonts
+        run: python3 mobile/tool/fetch_fonts.py
+
+      - name: Commit fonts to main
+        run: |
+          if [ -z "$(git status --porcelain -- mobile/google_fonts)" ]; then
+            echo "All fonts already committed — nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mobile/google_fonts
+          git commit \
+            -m "chore(mobile): commit bundled Google Fonts assets" \
+            -m "Downloaded from fonts.gstatic.com and sha256-verified by the fetch-fonts workflow against the hashes pinned in mobile/tool/fetch_fonts.py."
+          # main may have moved while this job ran; fonts are new files, so a
+          # rebase is always clean. Re-check afterwards in case a concurrent
+          # run already pushed the same files.
+          git pull --rebase origin main
+          if [ -z "$(git log origin/main..HEAD --oneline)" ]; then
+            echo "Fonts were committed by another run — nothing to push."
+            exit 0
+          fi
+          git push origin main
