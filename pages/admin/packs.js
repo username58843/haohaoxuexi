@@ -3,12 +3,18 @@ import AdminLayout from '~/components/admin/AdminLayout'
 import { Button, Card, Spinner, useToast } from '~/components/ui'
 import { api, apiError } from '~/lib/api-client'
 import { useSettings } from '~/lib/contexts/SettingsContext'
+import PackImportModal from '~/components/admin/PackImportModal'
+import { buildPackCsv, buildPackJson } from '~/components/admin/pack-io'
+import { downloadFile, safeFileName } from '~/components/decks/deck-utils'
 
 /**
  * /admin/packs — textbook-pack editor. The 29 textbook packs ship as JSON
- * files; admins can rename a pack and edit its words here. Changes are stored
- * as pack_overrides (never touching the shipped files), so "Restore shipped"
- * always brings the original back. HSK packs are listed read-only.
+ * files; admins can rename a pack, edit its words row by row, and export or
+ * import the whole list as JSON/CSV — hand-editing hundreds of rows is
+ * unworkable, so a list prepared elsewhere can be pasted in wholesale (the same
+ * flow personal decks already have). Changes are stored as pack_overrides
+ * (never touching the shipped files), so "Restore shipped" always brings the
+ * original back. HSK packs are listed read-only.
  */
 
 // ';'-separated editing for meaning lists (definitions / EN / RU / TK).
@@ -193,6 +199,7 @@ function PackEditor({ packId, onClose, onSaved, toast, t }) {
   const [rows, setRows] = useState([])
   const [saving, setSaving] = useState(false)
   const [dirty, setDirty] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
 
   useEffect(() => {
     let stale = false
@@ -244,8 +251,42 @@ function PackEditor({ packId, onClose, onSaved, toast, t }) {
     ])
   }, [])
 
+  // Stable snapshot of the edited rows: the import dialog re-parses its input
+  // whenever this changes, so it must not be a fresh array on every render.
+  const currentWords = useMemo(() => rows.map(rowToWord), [rows])
+
+  // Export what is on screen (including unsaved edits), so the file always
+  // matches what the admin is looking at.
+  const exportFile = (format) => {
+    const words = currentWords.filter((w) => w.simplified)
+    const base = safeFileName(title || packId)
+    if (format === 'csv') {
+      downloadFile(`${base}.csv`, buildPackCsv(words), 'text/csv;charset=utf-8')
+    } else {
+      downloadFile(
+        `${base}.json`,
+        buildPackJson(words, { id: packId, title }),
+        'application/json'
+      )
+    }
+  }
+
+  const applyImport = ({ words, title: importedTitle, mode }) => {
+    setImportOpen(false)
+    if (!words.length) return
+    setDirty(true)
+    setRows((prev) => {
+      const imported = words.map((w, i) => wordToRow(w, `imp${Date.now()}-${i}`))
+      return mode === 'append' ? [...prev, ...imported] : imported
+    })
+    if (importedTitle) setTitle(importedTitle)
+    toast.success(
+      `${t('admPackImportDone', 'Imported words')}: ${words.length}`
+    )
+  }
+
   const save = async () => {
-    const words = rows.map(rowToWord).filter((w) => w.simplified)
+    const words = currentWords.filter((w) => w.simplified)
     if (!words.length) {
       toast.error(t('admPacksNeedWords', 'A pack needs at least one word'))
       return
@@ -360,6 +401,36 @@ function PackEditor({ packId, onClose, onSaved, toast, t }) {
           )}
         </p>
 
+        {/* Bulk word list handling: export the current list, edit or generate it
+            elsewhere, import it back — the practical way to fill a pack from a
+            book instead of typing every row. */}
+        <div className="adm-packs__io">
+          <span className="adm-packs__io-label">
+            {t('admPacksIoLabel', 'Word list')}
+          </span>
+          <div className="adm-packs__io-actions">
+            <Button size="sm" variant="soft" onClick={() => setImportOpen(true)}>
+              {t('admPacksImport', 'Import')}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => exportFile('json')}
+              disabled={!rows.length}
+            >
+              {t('admPacksExportJson', 'Export JSON')}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => exportFile('csv')}
+              disabled={!rows.length}
+            >
+              {t('admPacksExportCsv', 'Export CSV')}
+            </Button>
+          </div>
+        </div>
+
         <div className="adm-packs__table" role="table">
           <div className="adm-packs__thead" role="row">
             <span>#</span>
@@ -442,6 +513,13 @@ function PackEditor({ packId, onClose, onSaved, toast, t }) {
           )}
         </div>
       </Card>
+
+      <PackImportModal
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        existingWords={currentWords}
+        onConfirm={applyImport}
+      />
     </section>
   )
 }

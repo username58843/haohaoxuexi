@@ -1,33 +1,70 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
-import { Card, Segmented, Chip, PageLoader } from '~/components/ui'
+import {
+  Button,
+  Card,
+  Segmented,
+  Chip,
+  PageLoader,
+  Toggle as ToggleRow,
+  useToast,
+} from '~/components/ui'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
+import { useKnownWords } from '~/components/hsk/known-store'
 
 const GOAL_STEP = 5
 const GOAL_MIN = 5
 const GOAL_MAX = 500
 
-function ToggleRow({ label, desc, checked, onChange }) {
+/**
+ * "Known words" reset. The word-map mastery set used to be cached in one
+ * browser-wide bucket, so an account could inherit marks left by a previous
+ * account on the same device; the cache is per-account now, but an account that
+ * already absorbed someone else's marks needs a way to start over.
+ */
+function KnownWordsCard({ t, user }) {
+  const { known, clearKnown } = useKnownWords(user)
+  const toast = useToast()
+  const [busy, setBusy] = useState(false)
+  const count = Object.keys(known).length
+
+  const reset = async () => {
+    if (
+      !window.confirm(
+        t(
+          'acctKnownResetConfirm',
+          'Clear every word marked as known? Your reviews, decks and streak are not affected.'
+        )
+      )
+    ) {
+      return
+    }
+    setBusy(true)
+    const ok = await clearKnown()
+    setBusy(false)
+    if (ok) toast.success(t('acctKnownResetDone', 'Known words cleared'))
+    else toast.error(t('acctKnownResetFailed', 'Could not clear known words — try again'))
+  }
+
   return (
-    <div className="acct-toggle">
-      <div className="acct-toggle__text">
-        <span className="acct-toggle__label">{label}</span>
-        {desc && <span className="acct-toggle__desc">{desc}</span>}
+    <Card>
+      <h2 className="acct-card__title">{t('acctKnownTitle', 'Known words')}</h2>
+      <p className="acct-card__desc">
+        {t(
+          'acctKnownDesc',
+          'Words you marked as known in the HSK list and word map. They are stored on your account and shared with the Android app.'
+        )}
+      </p>
+      <div className="acct-known">
+        <span className="acct-known__count u-mono">{count}</span>
+        <Button variant="soft" size="sm" onClick={reset} loading={busy} disabled={!count}>
+          {t('acctKnownReset', 'Clear known words')}
+        </Button>
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        className={`acct-switch${checked ? ' is-on' : ''}`}
-        onClick={() => onChange(!checked)}
-      >
-        <span className="acct-switch__knob" aria-hidden />
-      </button>
-    </div>
+    </Card>
   )
 }
 
@@ -43,6 +80,7 @@ export default function SettingsPage() {
     dailyGoal,
     alwaysShowPinyin,
     alwaysShowTranslation,
+    quizSpeakOnCorrect,
     themeColors,
     languages,
   } = useSettings()
@@ -194,7 +232,18 @@ export default function SettingsPage() {
             checked={alwaysShowTranslation}
             onChange={(v) => update({ alwaysShowTranslation: v })}
           />
+          <ToggleRow
+            label={t('acctSpeakToggle', 'Speak on correct answer')}
+            desc={t(
+              'acctSpeakToggleDesc',
+              'In a quiz, read the question out loud after every correct answer — the word in Chinese, or the meaning in your interface language.'
+            )}
+            checked={quizSpeakOnCorrect}
+            onChange={(v) => update({ quizSpeakOnCorrect: v })}
+          />
         </Card>
+
+        <KnownWordsCard t={t} user={user} />
       </div>
     </AppShell>
   )

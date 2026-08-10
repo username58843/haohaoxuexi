@@ -9,8 +9,9 @@ import '../../core/theme.dart';
 /// Session logic for the study screen, mirroring the web
 /// `components/learn/session-utils.js`:
 /// - client-side SM-2 interval previews (ARCHITECTURE.md §7) for grade buttons
-/// - multiple-choice quiz building over the four question modes
-///   (字→Pinyin, Pinyin→字, 字→Meaning, Meaning→字) + the [QmodeLabel] widget.
+/// - multiple-choice quiz building over the five question modes
+///   (汉字→Pinyin, Pinyin→汉字, 汉字→Meaning, Meaning→汉字, Meaning→Pinyin)
+///   + the [QmodeLabel] widget.
 
 /// Predicts the next interval (in days) for [card] if graded with [grade]
 /// (0 Again · 1 Hard · 2 Good · 3 Easy). Mirrors the server SM-2 variant —
@@ -65,8 +66,9 @@ String formatInterval(double days) {
 enum QuizField { hanzi, pinyin, meaning }
 
 /// Question-mode ids, identical to the web:
-/// `cp` 字→Pinyin · `pc` Pinyin→字 · `ct` 字→Meaning · `tc` Meaning→字.
-const List<String> kAllQmodes = ['cp', 'pc', 'ct', 'tc'];
+/// `cp` 汉字→Pinyin · `pc` Pinyin→汉字 · `ct` 汉字→Meaning · `tc` Meaning→汉字 ·
+/// `tp` Meaning→Pinyin.
+const List<String> kAllQmodes = ['cp', 'pc', 'ct', 'tc', 'tp'];
 
 /// prompt/answer field per question mode (web `QMODE_DEFS`).
 const Map<String, ({QuizField prompt, QuizField answer})> kQmodeDefs = {
@@ -74,6 +76,7 @@ const Map<String, ({QuizField prompt, QuizField answer})> kQmodeDefs = {
   'pc': (prompt: QuizField.pinyin, answer: QuizField.hanzi),
   'ct': (prompt: QuizField.hanzi, answer: QuizField.meaning),
   'tc': (prompt: QuizField.meaning, answer: QuizField.hanzi),
+  'tp': (prompt: QuizField.meaning, answer: QuizField.pinyin),
 };
 
 class QuizQuestion {
@@ -206,9 +209,34 @@ List<QuizQuestion> buildQuiz(
   return questions;
 }
 
-/// Human label for a question mode, e.g. 字 → Pinyin (web `QmodeLabel`):
-/// the 字 glyph is rendered in the hanzi serif, the Pinyin/Meaning side is a
-/// localized `learn.pinyin` / `learn.meaning` string.
+/// What to pronounce after a correct quiz answer, when the account's
+/// "speak on correct answer" setting is on (web `speechForQuestion`).
+///
+/// The prompt side decides, so the audio always reinforces what was just asked:
+///  - 汉字 or Pinyin prompt (cp / pc / ct) → the word itself, in Mandarin.
+///    A pinyin prompt speaks the hanzi rather than the latin spelling: same
+///    pronunciation, and Chinese voices mangle romanized text.
+///  - Meaning prompt (tc / tp) → the meaning line, in the UI language.
+///
+/// Returns (text, lang) — `lang` is a UI language code, 'zh' for Mandarin — or
+/// null when there is nothing usable to say.
+({String text, String lang})? speechForQuestion(
+    QuizQuestion question, String language) {
+  final def = kQmodeDefs[question.qmode];
+  if (def == null) return null;
+  if (def.prompt == QuizField.meaning) {
+    final text = quizMeaning(question.word, language);
+    return text.isEmpty ? null : (text: text, lang: language);
+  }
+  final text = question.word.simplified;
+  return text.isEmpty ? null : (text: text, lang: 'zh');
+}
+
+/// Human label for a question mode, e.g. 汉字 → Pinyin (web `QmodeLabel`):
+/// 汉字 is rendered in the hanzi serif, the Pinyin/Meaning side is a localized
+/// `learn.pinyin` / `learn.meaning` string. The Chinese side is spelled 汉字
+/// (the actual word for "Chinese characters") rather than the bare 字, which on
+/// its own reads as "character/word" and left users guessing.
 class QmodeLabel extends StatelessWidget {
   const QmodeLabel(
     this.mode, {
@@ -239,13 +267,14 @@ class QmodeLabel extends StatelessWidget {
     final pinyin = label('learn.pinyin', 'Pinyin');
     final meaning = label('learn.meaning', 'Meaning');
     final hanzi = TextSpan(
-      text: '字',
+      text: '汉字',
       style: hanziStyle(context, size: hanziSize, color: style?.color),
     );
     final parts = switch (mode) {
       'cp' => [hanzi, TextSpan(text: ' → $pinyin')],
       'pc' => [TextSpan(text: '$pinyin → '), hanzi],
       'ct' => [hanzi, TextSpan(text: ' → $meaning')],
+      'tp' => [TextSpan(text: '$meaning → $pinyin')],
       _ => [TextSpan(text: '$meaning → '), hanzi],
     };
     return Text.rich(

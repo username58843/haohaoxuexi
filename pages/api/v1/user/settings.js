@@ -40,6 +40,11 @@ export default createApiHandler({
           field: 'alwaysShowTranslation',
         })
       }
+      if (body.quizSpeakOnCorrect !== undefined) {
+        settings.quizSpeakOnCorrect = bool(body.quizSpeakOnCorrect, {
+          field: 'quizSpeakOnCorrect',
+        })
+      }
 
       const users = await getCollection('users')
       await users.updateOne(

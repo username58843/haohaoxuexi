@@ -31,7 +31,7 @@ Behavior of the bootstrap:
 
 1. In the [Firebase console](https://console.firebase.google.com/) create a
    project (or open an existing one).
-2. **Add an Android app** with package name **`com.haohaoxuexi.app`**.
+2. **Add an Android app** with package name **`cn.haohaoxuexi.chinese`**.
    - For release builds also register your **SHA-1/SHA-256** signing
      certificate fingerprints (from `keytool -list -v -keystore <your.jks>`),
      required if you later enable services that check app integrity.
@@ -59,7 +59,7 @@ telemetry stack.
 
 - **Analytics**: Firebase console → Analytics → DebugView. To see events from a
   debug device run
-  `adb shell setprop debug.firebase.analytics.app com.haohaoxuexi.app`
+  `adb shell setprop debug.firebase.analytics.app cn.haohaoxuexi.chinese`
   (analytics collection is release-only by default; DebugView still works for
   release builds installed locally).
 - **Crashlytics**: force a test crash from anywhere:

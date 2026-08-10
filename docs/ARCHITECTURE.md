@@ -45,9 +45,12 @@ Database from `MONGODB_URI`. All collections indexed by `lib/server/db.js`
   verifyCode: string|null, verifyExpires: Date|null,  // 6-digit email code
   resetToken: string|null, resetExpires: Date|null,   // password-reset link
   settings: { themeColor, language, dailyGoal, alwaysShowPinyin,
-              alwaysShowTranslation, theme: 'dark'|'light'|'system' },
+              alwaysShowTranslation, quizSpeakOnCorrect,
+              theme: 'dark'|'light'|'system' },
               // theme default is 'system' (OS auto-detect on every launch);
               // schemaVersion 3 lazily migrated legacy 'dark' → 'system'.
+              // quizSpeakOnCorrect defaults to false — opt-in quiz audio,
+              // account-scoped so it survives sessions and devices.
   lastSeen: Date, createdAt: Date, updatedAt: Date,
   // legacy fields may still exist (personalDictionaries, selectedWords,
   // searchHistory, isAdmin, avatar, ipAddress, studyStats) — migrated lazily by
@@ -100,6 +103,12 @@ Database from `MONGODB_URI`. All collections indexed by `lib/server/db.js`
   ids: [string],           // canonical word ids, capped at 30000
   updatedAt: Date }
 ```
+Deleted with the account (`deleteUserCompletely`). Clients cache the set
+**per account** — `xue_known_v2:<userId>` in localStorage,
+`known_words_v1:<userId>` in SharedPreferences — with the signed-out bucket
+(the bare key) consumed on the first login that claims it. A single shared
+bucket used to leak marks into whichever account signed in next, since it
+outlived logout and account deletion.
 
 ### pack_overrides  (admin edits of textbook packs)
 ```js
@@ -169,7 +178,7 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 | `/api/v1/words/packs` | GET | – | `[{id, title, group:'hsk'|'textbook', count}]` — registry of built-in packs |
 | `/api/v1/words` | GET | – | `?pack=hsk1` → `{items:[Word]}` (whole pack, cached, ETag) |
 | `/api/v1/words/search` | GET | – | `?q=&level=1..7 (7 = band 7-9)&page=&limit≤100` → `{items,total,page,pages}`; RL 60/min/IP |
-| `/api/v1/words/known` | GET/PUT | ✓ | known-words sync: GET → `{ids, updatedAt}`; PUT `{add?≤2000, remove?≤2000}` delta-merges atomically (deltas commute — offline devices converge); RL 120/min/user |
+| `/api/v1/words/known` | GET/PUT/DELETE | ✓ | known-words sync: GET → `{ids, updatedAt}`; PUT `{add?≤2000, remove?≤2000}` delta-merges atomically (deltas commute — offline devices converge), RL 120/min/user; DELETE drops the whole set ("clear known words" in settings), RL 10/min/user |
 | `/api/v1/decks` | GET/POST | ✓ | GET → `{decks}`; POST `{name, words?}` (≤50 decks) |
 | `/api/v1/decks/[id]` | GET/PUT/DELETE | ✓ | own-scoped; PUT `{name?, words?, order?}` word-shape validated |
 | `/api/v1/srs/queue` | GET | ✓ | `?limit=0..500 (0 = all, capped 500)&packs=hsk1,hsk2` → `{cards:[SrsCard], dueCount, newCount}` — due first, then new from selected packs not yet in srs. Textbook packs resolve admin overrides |
@@ -186,7 +195,7 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 | `/api/v1/admin/feedback` | GET/PUT | admin | list + `{id, status}` |
 | `/api/v1/admin/content` | GET/PUT | admin | read all copy overrides / upsert or remove one entry (audited) |
 | `/api/v1/admin/packs` | GET | admin | pack registry with override status (textbook packs editable, HSK read-only) |
-| `/api/v1/admin/packs/[id]` | GET/PUT/DELETE | admin | textbook-pack editor: PUT `{title?, words?}` upserts a pack_override; DELETE restores the shipped JSON. All writes audited; the in-process overrides cache (30s TTL) is invalidated |
+| `/api/v1/admin/packs/[id]` | GET/PUT/DELETE | admin | textbook-pack editor: PUT `{title?, words?}` upserts a pack_override (the UI can build `words` from a JSON/CSV import); DELETE restores the shipped JSON. All writes audited; the in-process overrides cache (30s TTL) is invalidated |
 | `/api/v1/admin/audit` | GET | admin | paginated audit log |
 
 Removed entirely: `/api/search/*` (external proxies), `/api/lexicon` (→ v1/words),
@@ -294,7 +303,7 @@ Goal met: `todayReviews ≥ settings.dailyGoal` (default 20).
   mirrored to `PUT /user/settings` (`lib/core/reminders.dart`).
 - Design mirrors web tokens (§ DESIGN.md): dark ink canvas, vermilion accent,
   Songti-class serif for hanzi (Noto Serif SC), Manrope-class UI font.
-- Android: `applicationId com.haohaoxuexi.app`, minSdk 23, targetSdk 35,
+- Android: `applicationId cn.haohaoxuexi.chinese`, minSdk 23, targetSdk 35,
   versionCode/Name managed in `pubspec.yaml`; release signing via
   `android/key.properties` (gitignored, template provided); ProGuard on;
   permissions: INTERNET, POST_NOTIFICATIONS (FCM + reminder),

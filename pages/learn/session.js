@@ -15,7 +15,9 @@ import {
   dedupeWords,
   ensureWordId,
   shuffle,
+  speechForQuestion,
 } from '~/components/learn/session-utils'
+import { speak } from '~/lib/speech'
 
 const RETRY_KEY = 'xue_retry_words'
 
@@ -43,7 +45,7 @@ async function fetchSource(source) {
 }
 
 function SessionRunner({ params, userId, onReload }) {
-  const { t, language } = useSettings()
+  const { t, language, quizSpeakOnCorrect: speakOnCorrect } = useSettings()
   const router = useRouter()
   const toast = useToast()
 
@@ -259,6 +261,13 @@ function SessionRunner({ params, userId, onReload }) {
       if (correct) {
         statsRef.current.correct += 1
         setCorrectCount((c) => c + 1)
+        // Opt-in audio: read the question back (word in Mandarin, or the
+        // meaning in the UI language). Fired straight from the click handler so
+        // browsers count it as a user-initiated sound.
+        if (speakOnCorrect) {
+          const utterance = speechForQuestion(q, language)
+          if (utterance) speak(utterance.text, { lang: utterance.lang })
+        }
         clearTimeout(timerRef.current)
         timerRef.current = setTimeout(advance, 650)
       } else {
@@ -269,7 +278,7 @@ function SessionRunner({ params, userId, onReload }) {
         }
       }
     },
-    [answered, questions, qi, advance]
+    [answered, questions, qi, advance, speakOnCorrect, language]
   )
 
   // ------- progress / in-session helpers -------

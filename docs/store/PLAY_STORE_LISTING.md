@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | App name (30 chars max) | 好好学习 — Learn Chinese HSK |
-| Package name | com.haohaoxuexi.app |
+| Package name | cn.haohaoxuexi.chinese |
 | Category | Education |
 | Tags | language learning, Chinese, HSK, flashcards |
 | Content rating | Everyone (IARC questionnaire: no violence, no ads, no user-generated public content, no location) |
@@ -38,8 +38,10 @@ translations, stroke counts and radicals. Full-text search across characters,
 pinyin and meanings.
 
 **Quizzes**
-Multiple-choice practice in four directions: characters → pinyin,
-pinyin → characters, characters → meaning, meaning → characters.
+Multiple-choice practice in five directions: characters → pinyin,
+pinyin → characters, characters → meaning, meaning → characters,
+meaning → pinyin. Optional audio reads the question aloud after every
+correct answer.
 
 **Personal decks**
 Collect words into your own decks — from textbook lessons, an upcoming exam

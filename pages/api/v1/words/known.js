@@ -7,12 +7,14 @@ import { getCollection } from '~/lib/server/db'
  * web and Android. One document per user in `known_words`:
  *   { userId (unique), ids: [wordId], updatedAt }
  *
- * GET  → { ids, updatedAt } — the full set.
- * PUT  → { add?: [wordId], remove?: [wordId] } — delta merge. Clients keep the
- *        set locally (localStorage / SharedPreferences), apply toggles
- *        optimistically and push debounced deltas; on login they merge the
- *        server set with local state. Deltas commute, so two devices editing
- *        offline converge without clobbering each other (unlike full-set PUTs).
+ * GET    → { ids, updatedAt } — the full set.
+ * PUT    → { add?: [wordId], remove?: [wordId] } — delta merge. Clients keep the
+ *          set locally (localStorage / SharedPreferences), apply toggles
+ *          optimistically and push debounced deltas; on login they merge the
+ *          server set with local state. Deltas commute, so two devices editing
+ *          offline converge without clobbering each other (unlike full-set PUTs).
+ * DELETE → drops the whole set for this account ("reset known words" in
+ *          settings). Clients wipe their local cache in the same action.
  *
  * Canonical word ids (`simplified·pinyinKey`, ARCHITECTURE.md §5) are opaque
  * strings here — unknown ids are harmless and simply never match a word.
@@ -86,6 +88,15 @@ export default createApiHandler({
       )
 
       res.status(200).json({ ok: true })
+    },
+  },
+  DELETE: {
+    auth: true,
+    rateLimit: { name: 'known_del', max: 10, windowMs: 60 * 1000, keyFn: userRateKey },
+    handler: async (req, res) => {
+      const col = await getCollection('known_words')
+      const { deletedCount } = await col.deleteOne({ userId: req.userId })
+      res.status(200).json({ ok: true, removed: deletedCount > 0 })
     },
   },
 })

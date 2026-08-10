@@ -9,6 +9,7 @@ import '../../core/providers.dart';
 import '../../core/reminders.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
+import '../browse/map_screen.dart' show knownWordsProvider;
 
 /// Settings tab (4th tab): appearance, language, study goal, account actions.
 /// Everything applies instantly via [settingsProvider] (which mirrors changed
@@ -233,9 +234,29 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ],
+                const SizedBox(height: 12),
+                const Divider(),
+                const SizedBox(height: 12),
+                SwitchRow(
+                  label: tr(context, 'settings.speak', 'Speak on correct answer'),
+                  hint: tr(
+                    context,
+                    'settings.speak.hint',
+                    'In a quiz, read the question aloud after every correct '
+                        'answer',
+                  ),
+                  value: settings.quizSpeakOnCorrect,
+                  onChanged: notifier.setQuizSpeakOnCorrect,
+                ),
               ],
             ),
           ),
+          if (user != null) ...[
+            const SizedBox(height: 24),
+            SectionLabel(tr(context, 'settings.knownWords', 'Known words')),
+            const SizedBox(height: 10),
+            const _KnownWordsCard(),
+          ],
           const SizedBox(height: 24),
           SectionLabel(tr(context, 'settings.account', 'Account')),
           const SizedBox(height: 10),
@@ -391,6 +412,104 @@ String _apiErrorText(BuildContext context, ApiException e) {
 }
 
 /// Small in-card field caption.
+/// Known-words reset. The word-map mastery set used to be cached in one
+/// device-wide bucket, so an account could inherit marks left by a previous
+/// account on the same phone; the cache is per-account now, but an account that
+/// already absorbed someone else's marks needs a way to start over.
+class _KnownWordsCard extends ConsumerStatefulWidget {
+  const _KnownWordsCard();
+
+  @override
+  ConsumerState<_KnownWordsCard> createState() => _KnownWordsCardState();
+}
+
+class _KnownWordsCardState extends ConsumerState<_KnownWordsCard> {
+  bool _busy = false;
+
+  Future<void> _clear() async {
+    final doneMsg = tr(context, 'settings.knownWords.done', 'Known words cleared');
+    final failMsg = tr(context, 'settings.knownWords.failed',
+        'Could not clear known words — try again');
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(tr(dialogContext, 'settings.knownWords', 'Known words')),
+        content: Text(tr(
+          dialogContext,
+          'settings.knownWords.confirm',
+          'Clear every word marked as known? Your reviews, decks and streak '
+              'are not affected.',
+        )),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(tr(dialogContext, 'common.cancel', 'Cancel')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(tr(dialogContext, 'settings.knownWords.clear', 'Clear')),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _busy = true);
+    final ok = await ref.read(knownWordsProvider.notifier).clear();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(ok ? doneMsg : failMsg)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final count = ref.watch(knownWordsProvider).length;
+    return InkCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            tr(
+              context,
+              'settings.knownWords.hint',
+              'Words you marked as known in the HSK list and word map. They are '
+                  'stored on your account and shared with the web app.',
+            ),
+            style: GoogleFonts.manrope(
+              fontSize: 12.5,
+              height: 1.35,
+              color: text2Of(context),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Text(
+                '$count',
+                style: monoStyle(
+                  context,
+                  size: 22,
+                  weight: FontWeight.w700,
+                  letterSpacing: 0,
+                  color: accentOf(context),
+                ),
+              ),
+              const Spacer(),
+              PillButton(
+                label: tr(context, 'settings.knownWords.clear', 'Clear'),
+                size: PillSize.sm,
+                variant: PillVariant.soft,
+                onPressed: _busy || count == 0 ? null : _clear,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel(this.text);
 

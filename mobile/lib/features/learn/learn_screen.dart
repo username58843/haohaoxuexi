@@ -519,6 +519,30 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             ),
         ],
       ),
+      const SizedBox(height: 18),
+      // Quiz audio sits next to the question types because what it reads out
+      // depends on the direction being practised. The choice is stored on the
+      // account (off for new users), so it never has to be re-enabled per
+      // session.
+      SectionLabel(tr(context, 'learn.audio', 'Audio')),
+      const SizedBox(height: 10),
+      InkCard(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: SwitchRow(
+          label: tr(context, 'learn.speakToggle', 'Speak on correct answer'),
+          hint: tr(
+            context,
+            'learn.speakToggleHint',
+            'After each correct answer the question is read aloud — the word in '
+                'Chinese, or, when the question shows a meaning, that meaning '
+                'in your interface language.',
+          ),
+          value:
+              ref.watch(settingsProvider.select((s) => s.quizSpeakOnCorrect)),
+          onChanged: (v) =>
+              ref.read(settingsProvider.notifier).setQuizSpeakOnCorrect(v),
+        ),
+      ),
       const SizedBox(height: 22),
       PillButton(
         label: tr(context, 'learn.startQuiz', 'Start quiz'),

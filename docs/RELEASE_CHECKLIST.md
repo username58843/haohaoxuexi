@@ -29,7 +29,7 @@
    flutter build appbundle --release --dart-define=API_BASE_URL=https://haohaoxuexi.vercel.app
    ```
    Output: `build/app/outputs/bundle/release/app-release.aab`.
-3. Play Console → create app (`com.haohaoxuexi.app`), fill:
+3. Play Console → create app (`cn.haohaoxuexi.chinese`), fill:
    - Store listing from `docs/store/PLAY_STORE_LISTING.md`
    - Data safety from `docs/store/DATA_SAFETY.md`
    - Content rating questionnaire (Everyone)

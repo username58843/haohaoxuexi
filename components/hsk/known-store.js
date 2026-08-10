@@ -4,14 +4,23 @@ import { api } from '~/lib/api-client'
 /**
  * "Known words" store for the HSK lexicon browser and word map.
  *
- * Local format:  'xue_known_v2'  →  { [wordId]: true }  (offline cache)
- * Server:        GET/PUT /api/v1/words/known  (per-account, syncs web ⇄ Android)
+ * Local format:  'xue_known_v2:<userId>'  →  { [wordId]: true }  (offline cache)
+ *                'xue_known_v2'           →  the signed-out (guest) bucket
+ * Server:        GET/PUT/DELETE /api/v1/words/known  (per-account, syncs web ⇄ Android)
+ *
+ * The local cache is scoped per account. It used to be one shared bucket, which
+ * leaked marks across accounts on the same browser: the bucket outlived logout
+ * and account deletion (it is localStorage, so clearing cookies did nothing),
+ * and the login merge then pushed those ids up to whichever account signed in
+ * next. Keys now carry the user id, state is re-read whenever the signed-in
+ * account changes, and the guest bucket is *consumed* (merged once, then
+ * deleted) so a second account can never inherit it.
  *
  * Sync model (see useKnownWords):
  *  - toggles apply instantly to local state + localStorage;
- *  - each toggle is queued as a delta in 'xue_known_pending_v1' and flushed
- *    (debounced) as PUT { add, remove } — deltas survive reloads, so offline
- *    changes sync on the next visit;
+ *  - each toggle is queued as a delta in 'xue_known_pending_v1:<userId>' and
+ *    flushed (debounced) as PUT { add, remove } — deltas survive reloads, so
+ *    offline changes sync on the next visit;
  *  - on login the server set is merged in (union), and local-only ids are
  *    pushed up, so pre-sync/offline progress is never lost.
  *
@@ -29,6 +38,10 @@ const MIGRATED_KEY = 'xue_known_migrated'
 const ALL_LEVELS = [1, 2, 3, 4, 5, 6]
 const FLUSH_DELAY_MS = 800
 
+/** Storage keys are per-account; the bare keys are the guest (signed-out) bucket. */
+const knownKeyFor = (userId) => (userId ? `${KNOWN_KEY}:${userId}` : KNOWN_KEY)
+const pendingKeyFor = (userId) => (userId ? `${PENDING_KEY}:${userId}` : PENDING_KEY)
+
 function safeParse(json, fallback) {
   try {
     const value = JSON.parse(json)
@@ -38,15 +51,15 @@ function safeParse(json, fallback) {
   }
 }
 
-export function readKnown() {
+export function readKnown(userId = null) {
   if (typeof window === 'undefined') return {}
-  return safeParse(localStorage.getItem(KNOWN_KEY), {})
+  return safeParse(localStorage.getItem(knownKeyFor(userId)), {})
 }
 
-export function writeKnown(map) {
+export function writeKnown(userId, map) {
   if (typeof window === 'undefined') return
   try {
-    localStorage.setItem(KNOWN_KEY, JSON.stringify(map))
+    localStorage.setItem(knownKeyFor(userId), JSON.stringify(map))
   } catch {
     /* private mode / quota — known map stays in memory for the session */
   }
@@ -95,22 +108,22 @@ export function migrateLegacyLevel(level, words) {
 // Server sync
 // ---------------------------------------------------------------------------
 
-function readPending() {
+function readPending(userId) {
   if (typeof window === 'undefined') return { add: {}, remove: {} }
-  const raw = safeParse(localStorage.getItem(PENDING_KEY), {})
+  const raw = safeParse(localStorage.getItem(pendingKeyFor(userId)), {})
   return {
     add: raw.add && typeof raw.add === 'object' ? raw.add : {},
     remove: raw.remove && typeof raw.remove === 'object' ? raw.remove : {},
   }
 }
 
-function writePending(pending) {
+function writePending(userId, pending) {
   if (typeof window === 'undefined') return
   try {
     if (!Object.keys(pending.add).length && !Object.keys(pending.remove).length) {
-      localStorage.removeItem(PENDING_KEY)
+      localStorage.removeItem(pendingKeyFor(userId))
     } else {
-      localStorage.setItem(PENDING_KEY, JSON.stringify(pending))
+      localStorage.setItem(pendingKeyFor(userId), JSON.stringify(pending))
     }
   } catch {
     /* private mode — deltas stay in memory for this session */
@@ -118,8 +131,8 @@ function writePending(pending) {
 }
 
 /** Queue one toggle as a pending delta. Idempotent for a given (id, on). */
-function queuePending(id, on) {
-  const pending = readPending()
+function queuePending(userId, id, on) {
+  const pending = readPending(userId)
   if (on) {
     pending.add[id] = true
     delete pending.remove[id]
@@ -127,32 +140,65 @@ function queuePending(id, on) {
     pending.remove[id] = true
     delete pending.add[id]
   }
-  writePending(pending)
+  writePending(userId, pending)
+}
+
+/**
+ * Reads the guest bucket and deletes it, so words marked before signing in are
+ * adopted by exactly one account. Without the delete, every future account on
+ * this browser would inherit the same set (the original cross-account leak).
+ */
+function takeGuestKnown() {
+  if (typeof window === 'undefined') return {}
+  const guest = safeParse(localStorage.getItem(KNOWN_KEY), {})
+  try {
+    localStorage.removeItem(KNOWN_KEY)
+    localStorage.removeItem(PENDING_KEY)
+  } catch {
+    /* best effort */
+  }
+  return guest
 }
 
 /**
  * The shared known-words state with server sync. Pass the authed `user`
  * (from useAuth); sync activates when it is present.
  *
- * Returns { known, toggleKnown, addKnownIds }:
+ * Returns { known, toggleKnown, addKnownIds, clearKnown }:
  *  - known: { [wordId]: true }
  *  - toggleKnown(wordIdOrWord): optimistic flip + debounced server delta
  *  - addKnownIds(ids): bulk merge (legacy migration) + server push
+ *  - clearKnown(): wipe the set for this account, locally and on the server
  */
 export function useKnownWords(user) {
-  const [known, setKnown] = useState(() => readKnown())
+  const userId = user?.id || null
+  const [known, setKnown] = useState(() => readKnown(null))
+  // The account the in-memory state belongs to; `null` = guest.
+  const [scope, setScope] = useState(null)
+  const scopeRef = useRef(null)
   const flushTimerRef = useRef(null)
   const flushingRef = useRef(false)
   const syncedForRef = useRef(null)
 
+  // Re-point the store when the signed-in account changes: state adjusted
+  // during render (the documented alternative to a reset effect), so one
+  // account's marks are never written into another account's bucket.
+  if (scope !== userId) {
+    setScope(userId)
+    setKnown(readKnown(userId))
+  }
+  scopeRef.current = userId
+
   // Persist locally on every change (mount-time write rewrites what was read).
   useEffect(() => {
-    writeKnown(known)
-  }, [known])
+    writeKnown(scope, known)
+  }, [scope, known])
 
   const flush = useCallback(async () => {
     if (flushingRef.current) return
-    const pending = readPending()
+    const owner = scopeRef.current
+    if (!owner) return // guest — deltas stay queued until an account signs in
+    const pending = readPending(owner)
     const add = Object.keys(pending.add)
     const remove = Object.keys(pending.remove)
     if (!add.length && !remove.length) return
@@ -160,10 +206,10 @@ export function useKnownWords(user) {
     try {
       await api.put('/words/known', { add, remove })
       // Clear exactly what was sent — deltas queued mid-flight stay pending.
-      const after = readPending()
+      const after = readPending(owner)
       for (const id of add) delete after.add[id]
       for (const id of remove) delete after.remove[id]
-      writePending(after)
+      writePending(owner, after)
     } catch {
       /* offline / signed out — deltas stay queued for the next flush */
     } finally {
@@ -178,9 +224,9 @@ export function useKnownWords(user) {
 
   useEffect(() => () => clearTimeout(flushTimerRef.current), [])
 
-  // On login: merge the server set with local state (union), push local-only
-  // ids up, and flush any deltas queued while offline. Runs once per user id.
-  const userId = user?.id
+  // On login: merge the server set with this account's local state (union),
+  // adopt-and-consume anything marked while signed out, push local-only ids up
+  // and flush deltas queued while offline. Runs once per user id.
   useEffect(() => {
     if (!userId) {
       syncedForRef.current = null
@@ -194,17 +240,18 @@ export function useKnownWords(user) {
         const { data } = await api.get('/words/known')
         if (cancelled) return
         const serverIds = new Set(Array.isArray(data?.ids) ? data.ids : [])
-        const local = readKnown()
-        const pending = readPending()
-        const merged = { ...local }
+        const pending = readPending(userId)
+        // Guest marks are claimed only once the account is known, and the
+        // guest bucket is deleted in the process.
+        const merged = { ...readKnown(userId), ...takeGuestKnown() }
         for (const id of serverIds) {
           // A locally-queued removal wins over the (stale) server copy.
           if (!pending.remove[id]) merged[id] = true
         }
-        for (const id of Object.keys(local)) {
+        for (const id of Object.keys(merged)) {
           if (!serverIds.has(id)) pending.add[id] = true
         }
-        writePending(pending)
+        writePending(userId, pending)
         setKnown(merged)
         flush()
       } catch {
@@ -227,7 +274,7 @@ export function useKnownWords(user) {
         // Side effect inside the updater is deliberate and safe: for a given
         // `prev` the queued delta is deterministic and idempotent, so React's
         // dev-mode double-invoke queues the exact same operation twice.
-        queuePending(id, on)
+        queuePending(scopeRef.current, id, on)
         const next = { ...prev }
         if (on) next[id] = true
         else delete next[id]
@@ -247,7 +294,7 @@ export function useKnownWords(user) {
         for (const id of ids) {
           if (id && !next[id]) {
             next[id] = true
-            queuePending(id, true)
+            queuePending(scopeRef.current, id, true)
             changed = true
           }
         }
@@ -258,5 +305,25 @@ export function useKnownWords(user) {
     [scheduleFlush]
   )
 
-  return { known, toggleKnown, addKnownIds }
+  /**
+   * Wipes the set for the signed-in account (local cache, queued deltas and
+   * the server document). Powers the "reset known words" action in settings —
+   * the escape hatch for accounts that inherited another account's marks
+   * before the per-account scoping above existed.
+   */
+  const clearKnown = useCallback(async () => {
+    const owner = scopeRef.current
+    clearTimeout(flushTimerRef.current)
+    writePending(owner, { add: {}, remove: {} })
+    setKnown({})
+    if (!owner) return true
+    try {
+      await api.delete('/words/known')
+      return true
+    } catch {
+      return false
+    }
+  }, [])
+
+  return { known, toggleKnown, addKnownIds, clearKnown }
 }

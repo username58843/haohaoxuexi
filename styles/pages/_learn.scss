@@ -98,6 +98,11 @@
   color: var(--text-3);
 }
 
+/* Quiz audio option — a settings-style toggle row inside the learn panel. */
+.learn-audio {
+  padding: 14px 16px;
+}
+
 .chip.is-active .learn-chip__count {
   color: inherit;
   opacity: 0.7;

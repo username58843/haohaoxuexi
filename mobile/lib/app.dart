@@ -101,7 +101,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               .where((s) => s.isNotEmpty)
               .toList();
           // Question modes: filtered to the known ids, defaulting to the
-          // web's 字→Pinyin + 字→Meaning pair (like /learn/session).
+          // web's 汉字→Pinyin + 汉字→Meaning pair (like /learn/session).
           final qmodes = (params['qmodes'] ?? '')
               .split(',')
               .map((s) => s.trim())

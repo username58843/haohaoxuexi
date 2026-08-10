@@ -885,3 +885,44 @@
 .adm-packs__actions {
   margin-top: 14px;
 }
+
+/* Bulk import / export bar above the word table. */
+.adm-packs__io {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 4px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+}
+
+.adm-packs__io-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.adm-packs__io-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Replace / append switch inside the pack import dialog. */
+.adm-packs__import-mode {
+  margin: 4px 0 14px;
+}
+
+.adm-packs__import-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+  cursor: pointer;
+}

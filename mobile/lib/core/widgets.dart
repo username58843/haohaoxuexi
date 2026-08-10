@@ -189,6 +189,60 @@ class SectionLabel extends StatelessWidget {
   }
 }
 
+/// Labelled on/off row: title, optional hint line, trailing [Switch] — the
+/// settings-screen preference row, shared so a preference can also be offered
+/// in context (e.g. the quiz audio option on the Learn tab).
+class SwitchRow extends StatelessWidget {
+  const SwitchRow({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+    this.hint,
+  });
+
+  final String label;
+  final String? hint;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.manrope(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              if (hint != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  hint!,
+                  style: GoogleFonts.manrope(
+                    fontSize: 12.5,
+                    height: 1.35,
+                    color: text2Of(context),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Switch(value: value, onChanged: onChanged),
+      ],
+    );
+  }
+}
+
 /// Chinese text rendered in Noto Serif SC.
 class HanziText extends StatelessWidget {
   const HanziText(

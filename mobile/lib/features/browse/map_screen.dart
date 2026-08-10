@@ -30,13 +30,19 @@ const Map<int, Color> hskLevelColors = {
 const List<int> _levels = [1, 2, 3, 4, 5, 6, 7];
 
 /// Account-synced "known words" set (canonical [Word.id]s) — the word map's
-/// mastery store, shared with the web via `GET/PUT /api/v1/words/known`.
+/// mastery store, shared with the web via `GET/PUT/DELETE /api/v1/words/known`.
 ///
-/// - The local cache ('known_words_v1' in SharedPreferences) applies toggles
-///   instantly and keeps the map usable offline.
-/// - Every toggle is queued as a delta ('known_words_pending_v1') and flushed
-///   (debounced) as `PUT { add, remove }`. Pending deltas survive restarts, so
-///   changes made offline sync on the next launch.
+/// - The local cache is scoped per account ('known_words_v1:<userId>' in
+///   SharedPreferences, plain 'known_words_v1' while signed out). It used to be
+///   one shared bucket, which leaked marks between accounts on the same device:
+///   the bucket outlived logout and account deletion, and the login merge then
+///   pushed those ids up to whichever account signed in next. The signed-out
+///   bucket is *consumed* — merged once into the account that claims it, then
+///   deleted — so a second account can never inherit it.
+/// - Toggles apply instantly to the cache, keeping the map usable offline.
+/// - Every toggle is queued as a delta ('known_words_pending_v1:<userId>') and
+///   flushed (debounced) as `PUT { add, remove }`. Pending deltas survive
+///   restarts, so changes made offline sync on the next launch.
 /// - When a signed-in session is (re)established, the server set is merged in
 ///   (union) and local-only ids are pushed up — progress made on this device
 ///   before sync existed, or while offline, is never lost.
@@ -49,26 +55,49 @@ class KnownWordsNotifier extends Notifier<Set<String>> {
   bool _flushing = false;
   String? _syncedForUser;
 
+  /// Account the in-memory set belongs to; null = signed out.
+  String? _scope;
+
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
+
+  String _storeKeyFor(String? userId) =>
+      userId == null ? _storeKey : '$_storeKey:$userId';
+
+  String _pendingKeyFor(String? userId) =>
+      userId == null ? _pendingKey : '$_pendingKey:$userId';
+
+  Set<String> _readStore(String? userId) =>
+      (_prefs.getStringList(_storeKeyFor(userId)) ?? const []).toSet();
 
   @override
   Set<String> build() {
     ref.onDispose(() => _flushTimer?.cancel());
-    // Merge with the account whenever a signed-in session appears.
+    // Follow the session: re-point the cache at the signed-in account, or back
+    // at the signed-out bucket, so one account's marks are never written into
+    // another account's storage.
     ref.listen(authProvider, (previous, next) {
       final user = next.value;
       if (user != null) {
+        if (_scope != user.id) {
+          _scope = user.id;
+          state = _readStore(user.id);
+        }
         unawaited(_syncWithServer(user.id));
       } else if (!next.isLoading) {
         _syncedForUser = null; // logged out — re-merge on the next login
+        if (_scope != null) {
+          _scope = null;
+          state = _readStore(null);
+        }
       }
     });
     final current = ref.read(authProvider).value;
+    _scope = current?.id;
     if (current != null) {
       // Session was already restored before this provider first built.
       Future.microtask(() => _syncWithServer(current.id));
     }
-    return (_prefs.getStringList(_storeKey) ?? const []).toSet();
+    return _readStore(_scope);
   }
 
   void toggle(String wordId) {
@@ -89,13 +118,31 @@ class KnownWordsNotifier extends Notifier<Set<String>> {
     _scheduleFlush();
   }
 
+  /// Wipes the set for the signed-in account (cache, queued deltas and the
+  /// server document). Powers "clear known words" in settings — the escape
+  /// hatch for accounts that absorbed another account's marks before the
+  /// per-account scoping above existed. Returns false when the server call
+  /// fails (the local cache is cleared either way).
+  Future<bool> clear() async {
+    _flushTimer?.cancel();
+    _writePending((add: <String>{}, remove: <String>{}));
+    _setLocal(<String>{});
+    if (_scope == null) return true;
+    try {
+      await ref.read(apiProvider).delete('/words/known');
+      return true;
+    } on ApiException {
+      return false;
+    }
+  }
+
   void _setLocal(Set<String> next) {
     state = next;
-    _prefs.setStringList(_storeKey, next.toList(growable: false));
+    _prefs.setStringList(_storeKeyFor(_scope), next.toList(growable: false));
   }
 
   ({Set<String> add, Set<String> remove}) _readPending() {
-    final raw = _prefs.getString(_pendingKey);
+    final raw = _prefs.getString(_pendingKeyFor(_scope));
     if (raw == null || raw.isEmpty) {
       return (add: <String>{}, remove: <String>{});
     }
@@ -117,17 +164,27 @@ class KnownWordsNotifier extends Notifier<Set<String>> {
   }
 
   void _writePending(({Set<String> add, Set<String> remove}) pending) {
+    final key = _pendingKeyFor(_scope);
     if (pending.add.isEmpty && pending.remove.isEmpty) {
-      _prefs.remove(_pendingKey);
+      _prefs.remove(key);
     } else {
       _prefs.setString(
-        _pendingKey,
+        key,
         jsonEncode({
           'add': pending.add.toList(growable: false),
           'remove': pending.remove.toList(growable: false),
         }),
       );
     }
+  }
+
+  /// Reads the signed-out bucket and deletes it, so words marked before signing
+  /// in are adopted by exactly one account.
+  Set<String> _takeGuestKnown() {
+    final guest = _readStore(null);
+    _prefs.remove(_storeKeyFor(null));
+    _prefs.remove(_pendingKeyFor(null));
+    return guest;
   }
 
   void _scheduleFlush() {
@@ -137,7 +194,7 @@ class KnownWordsNotifier extends Notifier<Set<String>> {
 
   Future<void> _flush() async {
     if (_flushing) return;
-    if (ref.read(authProvider).value == null) return; // guest — keep queued
+    if (_scope == null) return; // guest — keep queued until an account signs in
     final pending = _readPending();
     final add = pending.add.toList(growable: false);
     final remove = pending.remove.toList(growable: false);
@@ -162,6 +219,7 @@ class KnownWordsNotifier extends Notifier<Set<String>> {
   Future<void> _syncWithServer(String userId) async {
     if (_syncedForUser == userId) return;
     _syncedForUser = userId;
+    _scope = userId;
     try {
       final data = await ref.read(apiProvider).get('/words/known');
       final rawIds = data['ids'];
@@ -172,7 +230,9 @@ class KnownWordsNotifier extends Notifier<Set<String>> {
             }
           : <String>{};
       final pending = _readPending();
-      final local = Set<String>.of(state);
+      // Guest marks are claimed only once the account is known, and the
+      // signed-out bucket is deleted in the process.
+      final local = _readStore(userId)..addAll(_takeGuestKnown());
       final merged = Set<String>.of(local)
         // A locally-queued removal wins over the (stale) server copy.
         ..addAll(serverIds.where((id) => !pending.remove.contains(id)));

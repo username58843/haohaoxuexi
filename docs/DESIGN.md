@@ -100,8 +100,8 @@ Icon set: existing `NavIcons.js` line style (1.8px stroke), extend as needed.
   start review); weekly activity bar chart (last 14 local days); HSK level
   progress bars (seen/mature per level); quick actions (browse HSK, decks).
 - **Learn hub `/learn`**: mode switch (Review due · Quiz); pack/deck multiselect
-  (chips grouped: My decks / HSK / Textbook packs); quiz options (count, modes);
-  big start button showing count.
+  (chips grouped: My decks / HSK / Textbook packs); quiz options (question-mode
+  chips + an Audio toggle for speak-on-correct); big start button showing count.
 - **Session `/learn/session`**: minimal chrome, progress bar, card area
   (Flashcard: tap-to-flip, grade buttons Again/Hard/Good/Easy with interval
   preview; MCQ: 4 answers, hotkeys 1–4, immediate feedback); results screen

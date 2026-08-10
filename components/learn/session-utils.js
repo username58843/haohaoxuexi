@@ -6,7 +6,7 @@ import { makeWordId } from '~/lib/words-shared'
  * quiz question building, SRS interval previews, word normalization.
  */
 
-export const ALL_QMODES = ['cp', 'pc', 'ct', 'tc']
+export const ALL_QMODES = ['cp', 'pc', 'ct', 'tc', 'tp']
 
 /** prompt/answer field per question mode. */
 export const QMODE_DEFS = {
@@ -14,6 +14,7 @@ export const QMODE_DEFS = {
   pc: { prompt: 'pinyin', answer: 'hanzi' },
   ct: { prompt: 'hanzi', answer: 'meaning' },
   tc: { prompt: 'meaning', answer: 'hanzi' },
+  tp: { prompt: 'meaning', answer: 'pinyin' },
 }
 
 /** Fisher–Yates on a copy. */
@@ -147,11 +148,16 @@ export function previewIntervals(card, t) {
   ]
 }
 
-/** Human label for a question mode, e.g. 字 → Pinyin. */
+/**
+ * Human label for a question mode, e.g. 汉字 → Pinyin. The Chinese side is
+ * spelled 汉字 (the actual word for "Chinese characters") rather than the bare
+ * 字 — on its own that glyph reads as "character/word" and users had to guess
+ * what the direction meant.
+ */
 export function QmodeLabel({ mode, t }) {
   const hanzi = (
     <span className="hanzi" lang="zh">
-      字
+      汉字
     </span>
   )
   const pinyin = t('learnPinyin', 'Pinyin')
@@ -159,5 +165,32 @@ export function QmodeLabel({ mode, t }) {
   if (mode === 'cp') return <>{hanzi}{' → '}{pinyin}</>
   if (mode === 'pc') return <>{pinyin}{' → '}{hanzi}</>
   if (mode === 'ct') return <>{hanzi}{' → '}{meaning}</>
+  if (mode === 'tp') return <>{meaning}{' → '}{pinyin}</>
   return <>{meaning}{' → '}{hanzi}</>
+}
+
+/**
+ * What to pronounce after a correct quiz answer, when the per-account
+ * "speak on correct answer" setting is on.
+ *
+ * The prompt side decides, so the audio always reinforces what the user was
+ * just asked:
+ *  - 汉字 or Pinyin prompt (cp / pc / ct) → the word itself, in Mandarin.
+ *    A pinyin prompt speaks the hanzi, not the latin spelling: same
+ *    pronunciation, and Chinese voices mangle romanized text.
+ *  - Meaning prompt (tc / tp) → the meaning line, in the UI language.
+ *
+ * Returns { text, lang } — `lang` is a UI language code ('zh' for Mandarin) —
+ * or null when there is nothing usable to say.
+ */
+export function speechForQuestion(question, lang) {
+  if (!question || !question.word) return null
+  const def = QMODE_DEFS[question.qmode]
+  if (!def) return null
+  if (def.prompt === 'meaning') {
+    const text = meaningLine(question.word, lang)
+    return text ? { text, lang: lang || 'en' } : null
+  }
+  const text = question.word.simplified || ''
+  return text ? { text, lang: 'zh' } : null
 }

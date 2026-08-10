@@ -22,7 +22,8 @@ translations and a simple example sentence with TTS. Free, no ads.
 
 - **SRS reviews** — SM-2 scheduling (Again/Hard/Good/Easy), due queue, server-side
   progress that syncs between web and Android
-- **Quizzes** — 4 directions (字↔pinyin, 字↔meaning), instant feedback, mistake retry
+- **Quizzes** — 5 directions (汉字↔pinyin, 汉字↔meaning, meaning→pinyin), instant
+  feedback, mistake retry, optional TTS on every correct answer
 - **HSK lexicon** — browse/search HSK 1–6 + band 7–9, mark known (synced
   between web and Android via `/words/known`), stroke-order animation,
   browser TTS, example sentences with audio
@@ -36,7 +37,7 @@ translations and a simple example sentence with TTS. Free, no ads.
   alarms — no special permissions)
 - **Admin console** — metrics dashboard, user management (ban/premium/roles) with
   audit log, feedback inbox, content overrides, textbook-pack editor
-  (rename packs / edit their words)
+  (rename packs, edit their words, JSON/CSV import & export)
 - **4 UI languages** (en/ru/tk/zh) · dark/light themes · 8 accent colors · PWA
 
 ## Quick start (web)

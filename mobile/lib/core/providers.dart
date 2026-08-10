@@ -33,6 +33,7 @@ class AppSettings {
     this.accent = defaultAccentKey,
     this.language = 'en',
     this.dailyGoal = 20,
+    this.quizSpeakOnCorrect = false,
     this.onboardingDone = false,
     this.reminderEnabled = false,
     this.reminderMinutes = 20 * 60,
@@ -46,6 +47,11 @@ class AppSettings {
   /// 'en' | 'ru' | 'tk' | 'zh'
   final String language;
   final int dailyGoal;
+
+  /// Quiz audio: pronounce the question after every correct answer. Opt-in and
+  /// account-scoped (mirrored to `PUT /user/settings`), so enabling it once is
+  /// remembered on every device instead of per session.
+  final bool quizSpeakOnCorrect;
   final bool onboardingDone;
 
   /// Daily review reminder — device-local (never mirrored to the server):
@@ -58,6 +64,7 @@ class AppSettings {
     String? accent,
     String? language,
     int? dailyGoal,
+    bool? quizSpeakOnCorrect,
     bool? onboardingDone,
     bool? reminderEnabled,
     int? reminderMinutes,
@@ -67,6 +74,7 @@ class AppSettings {
       accent: accent ?? this.accent,
       language: language ?? this.language,
       dailyGoal: dailyGoal ?? this.dailyGoal,
+      quizSpeakOnCorrect: quizSpeakOnCorrect ?? this.quizSpeakOnCorrect,
       onboardingDone: onboardingDone ?? this.onboardingDone,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
       reminderMinutes: reminderMinutes ?? this.reminderMinutes,
@@ -79,6 +87,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
   static const _kAccent = 'accent';
   static const _kLanguage = 'language';
   static const _kDailyGoal = 'dailyGoal';
+  static const _kQuizSpeakOnCorrect = 'quizSpeakOnCorrect';
   static const _kOnboardingDone = 'onboardingDone';
   static const _kReminderEnabled = 'reminderEnabled';
   static const _kReminderMinutes = 'reminderMinutes';
@@ -118,6 +127,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
           accentColors.containsKey(accentRaw) ? accentRaw! : defaultAccentKey,
       language: language,
       dailyGoal: p.getInt(_kDailyGoal) ?? 20,
+      quizSpeakOnCorrect: p.getBool(_kQuizSpeakOnCorrect) ?? false,
       onboardingDone: p.getBool(_kOnboardingDone) ?? false,
       reminderEnabled: p.getBool(_kReminderEnabled) ?? false,
       reminderMinutes: p.getInt(_kReminderMinutes) ?? 20 * 60,
@@ -189,6 +199,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
     _mirror({'dailyGoal': clamped});
   }
 
+  void setQuizSpeakOnCorrect(bool enabled) {
+    state = state.copyWith(quizSpeakOnCorrect: enabled);
+    _prefs.setBool(_kQuizSpeakOnCorrect, enabled);
+    _mirror({'quizSpeakOnCorrect': enabled});
+  }
+
   void setOnboardingDone() {
     state = state.copyWith(onboardingDone: true);
     _prefs.setBool(_kOnboardingDone, true);
@@ -249,6 +265,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
       _prefs.setInt(_kDailyGoal, goal.toInt());
     }
 
+    final speak = server['quizSpeakOnCorrect'];
+    if (speak is bool) {
+      next = next.copyWith(quizSpeakOnCorrect: speak);
+      _prefs.setBool(_kQuizSpeakOnCorrect, speak);
+    }
+
     state = next;
   }
 
@@ -262,6 +284,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       'theme': state.themeMode.name,
       'themeColor': state.accent,
       'dailyGoal': state.dailyGoal,
+      'quizSpeakOnCorrect': state.quizSpeakOnCorrect,
     });
   }
 

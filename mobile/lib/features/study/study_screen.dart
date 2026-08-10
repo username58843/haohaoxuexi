@@ -11,6 +11,7 @@ import '../../core/firebase_bootstrap.dart';
 import '../../core/i18n.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
+import '../../core/speech.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 import '../browse/word_sheet.dart';
@@ -51,7 +52,7 @@ class StudyScreen extends ConsumerStatefulWidget {
   final int count;
 
   /// Quiz question modes (subset of [kAllQmodes]); defaults to the web's
-  /// 字→Pinyin + 字→Meaning pair.
+  /// 汉字→Pinyin + 汉字→Meaning pair.
   final List<String> qmodes;
 
   @override
@@ -287,6 +288,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     _seenIds.add(q.word.id);
     if (correct) {
       _firstTryCorrect++;
+      _speakAnswer(q);
     } else {
       _mistakes[q.word.id] = q.word;
     }
@@ -301,6 +303,16 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         if (mounted) _next();
       });
     }
+  }
+
+  /// Opt-in audio after a correct answer: reads the question back (the word in
+  /// Mandarin, or the meaning in the UI language). Silent when the account has
+  /// the setting off or the device has no voice for that language.
+  void _speakAnswer(QuizQuestion question) {
+    if (!ref.read(settingsProvider).quizSpeakOnCorrect) return;
+    final utterance = speechForQuestion(question, ref.read(languageProvider));
+    if (utterance == null) return;
+    unawaited(Speech.speak(utterance.text, lang: utterance.lang));
   }
 
   void _next() {

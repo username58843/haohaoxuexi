@@ -459,3 +459,18 @@
     background: var(--on-accent);
   }
 }
+
+/* Known-words reset row: the set size next to the clear action. */
+.acct-known {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.acct-known__count {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}

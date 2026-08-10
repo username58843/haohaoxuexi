@@ -33,7 +33,7 @@ if (hasReleaseKeystore) {
 }
 
 android {
-    namespace = "com.haohaoxuexi.app"
+    namespace = "cn.haohaoxuexi.chinese"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -50,7 +50,10 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.haohaoxuexi.app"
+        // Play Store application id. Renamed from com.haohaoxuexi.app — a new
+        // Firebase Android app and a new Play Console listing are required for
+        // it (see docs/FIREBASE_SETUP.md and docs/RELEASE_CHECKLIST.md).
+        applicationId = "cn.haohaoxuexi.chinese"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

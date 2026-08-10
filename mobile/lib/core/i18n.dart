@@ -139,6 +139,20 @@ const Map<String, Map<String, String>> _overrides = {
     'settings.reminder.time': 'Время напоминания',
     'settings.reminder.denied':
         'Уведомления отключены — разрешите их в настройках системы.',
+    'settings.speak': 'Озвучивать при верном ответе',
+    'settings.speak.hint':
+        'В тесте произносить вопрос вслух после каждого верного ответа',
+    'settings.knownWords': 'Известные слова',
+    'settings.knownWords.hint':
+        'Слова, отмеченные как известные в списке HSK и карте слов. Они '
+            'хранятся в аккаунте и синхронизируются с веб-версией.',
+    'settings.knownWords.clear': 'Очистить',
+    'settings.knownWords.confirm':
+        'Снять отметку «знаю» со всех слов? Повторения, колоды и серия не '
+            'затрагиваются.',
+    'settings.knownWords.done': 'Известные слова очищены',
+    'settings.knownWords.failed':
+        'Не удалось очистить известные слова — попробуйте ещё раз',
     'settings.account': 'Аккаунт',
     'settings.signIn': 'Войти',
     'settings.profile': 'Профиль',
@@ -292,6 +306,12 @@ const Map<String, Map<String, String>> _overrides = {
         'Пока повторять нечего — выберите набор, чтобы добавить новые карточки.',
     'learn.wordPacks': 'Наборы слов',
     'learn.questionModes': 'Типы вопросов',
+    'learn.audio': 'Озвучка',
+    'learn.speakToggle': 'Озвучивать при верном ответе',
+    'learn.speakToggleHint':
+        'После каждого верного ответа вопрос произносится вслух — слово '
+            'по-китайски, а если в вопросе показано значение, то это значение '
+            'на языке интерфейса.',
     'learn.pinyin': 'Пиньинь',
     'learn.meaning': 'Значение',
     'learn.startQuiz': 'Начать тест',
@@ -456,6 +476,20 @@ const Map<String, Map<String, String>> _overrides = {
     'settings.reminder.time': 'Ýatlatma wagty',
     'settings.reminder.denied':
         'Bildirişler öçürilen — olara ulgam sazlamalarynda rugsat beriň.',
+    'settings.speak': 'Dogry jogapda seslendir',
+    'settings.speak.hint':
+        'Testde her dogry jogapdan soň soragy sesli oka',
+    'settings.knownWords': 'Bilinýän sözler',
+    'settings.knownWords.hint':
+        'HSK sanawynda we söz kartasynda bilinýän diýip bellän sözleriň. Olar '
+            'hasabyňda saklanýar we web wersiýasy bilen sinhronlanýar.',
+    'settings.knownWords.clear': 'Arassala',
+    'settings.knownWords.confirm':
+        'Ähli sözlerden «bilýärin» bellikini aýyrmalymy? Gaýtalamalar, '
+            'toplumlar we yzygiderlik üýtgemeýär.',
+    'settings.knownWords.done': 'Bilinýän sözler arassalandy',
+    'settings.knownWords.failed':
+        'Bilinýän sözleri arassalamak bolmady — ýene synanyş',
     'settings.account': 'Hasap',
     'settings.signIn': 'Girmek',
     'settings.profile': 'Profil',
@@ -610,6 +644,11 @@ const Map<String, Map<String, String>> _overrides = {
         'Häzir gaýtalamaly zat ýok — täze kartlar üçin toplum saýlaň.',
     'learn.wordPacks': 'Söz toplumlary',
     'learn.questionModes': 'Sorag görnüşleri',
+    'learn.audio': 'Ses',
+    'learn.speakToggle': 'Dogry jogapda seslendir',
+    'learn.speakToggleHint':
+        'Her dogry jogapdan soň sorag sesli okalýar — söz hytaý dilinde, sorag '
+            'many görkezýän bolsa, ol many interfeýs dilinde.',
     'learn.pinyin': 'Pinyin',
     'learn.meaning': 'Many',
     'learn.startQuiz': 'Testi başlat',
@@ -769,6 +808,15 @@ const Map<String, Map<String, String>> _overrides = {
     'settings.reminder.hint': '提醒你复习到期卡片',
     'settings.reminder.time': '提醒时间',
     'settings.reminder.denied': '通知已关闭——请在系统设置中允许通知。',
+    'settings.speak': '答对时朗读',
+    'settings.speak.hint': '在测验中，每次答对后朗读题目',
+    'settings.knownWords': '已认识的词',
+    'settings.knownWords.hint':
+        '你在 HSK 词表和词汇地图中标记为已认识的词。数据保存在账号中，并与网页版同步。',
+    'settings.knownWords.clear': '清除',
+    'settings.knownWords.confirm': '要清除所有“已认识”标记吗？复习记录、卡组和连续天数不受影响。',
+    'settings.knownWords.done': '已清除已认识的词',
+    'settings.knownWords.failed': '无法清除已认识的词 — 请重试',
     'settings.account': '账户',
     'settings.signIn': '登录',
     'settings.profile': '个人资料',
@@ -914,6 +962,9 @@ const Map<String, Map<String, String>> _overrides = {
     'learn.reviewHint': '暂无到期卡片——选择一个词包来添加新卡。',
     'learn.wordPacks': '单词包',
     'learn.questionModes': '题型',
+    'learn.audio': '朗读',
+    'learn.speakToggle': '答对时朗读',
+    'learn.speakToggleHint': '每次答对后朗读题目 — 汉语词语；若题目显示的是释义，则以界面语言朗读该释义。',
     'learn.pinyin': '拼音',
     'learn.meaning': '释义',
     'learn.startQuiz': '开始测验',

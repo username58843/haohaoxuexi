@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
-import { Button, Card, Chip, EmptyState, PageLoader, Segmented } from '~/components/ui'
+import { Button, Card, Chip, EmptyState, PageLoader, Segmented, Toggle } from '~/components/ui'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api, apiError } from '~/lib/api-client'
@@ -81,7 +81,7 @@ function Chevron() {
 
 export default function LearnPage() {
   const { user, loading } = useAuth()
-  const { t } = useSettings()
+  const { t, quizSpeakOnCorrect, update } = useSettings()
   const router = useRouter()
 
   const [tab, setTab] = useState('quiz')
@@ -486,6 +486,25 @@ export default function LearnPage() {
                     </Chip>
                   ))}
                 </ChipGroup>
+
+                {/* Quiz audio sits next to the question types because what it
+                    reads out depends on the direction being practised. The
+                    choice is stored on the account (off for new users), so it
+                    never has to be re-enabled per session. */}
+                <section className="learn-section">
+                  <span className="eyebrow">{t('learnAudioLabel', 'Audio')}</span>
+                  <Card className="learn-audio">
+                    <Toggle
+                      label={t('learnSpeakToggle', 'Speak on correct answer')}
+                      desc={t(
+                        'learnSpeakToggleDesc',
+                        'After each correct answer the question is read aloud — the word in Chinese, or, when the question shows a meaning, that meaning in your interface language.'
+                      )}
+                      checked={quizSpeakOnCorrect}
+                      onChange={(v) => update({ quizSpeakOnCorrect: v })}
+                    />
+                  </Card>
+                </section>
 
                 <Button
                   className="learn-start"
