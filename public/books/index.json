@@ -1,0 +1,65 @@
+[
+ {
+  "id": "lunyu",
+  "title": "论语",
+  "author": "孔子及弟子",
+  "script": "simplified",
+  "file": "lunyu.txt",
+  "size": 65171,
+  "chapters": 20
+ },
+ {
+  "id": "daxue",
+  "title": "大學",
+  "author": "曾子",
+  "script": "traditional",
+  "file": "daxue.txt",
+  "size": 6658,
+  "chapters": 1
+ },
+ {
+  "id": "zhongyong",
+  "title": "中庸",
+  "author": "子思",
+  "script": "traditional",
+  "file": "zhongyong.txt",
+  "size": 13422,
+  "chapters": 1
+ },
+ {
+  "id": "sanzijing",
+  "title": "三字經",
+  "author": "王應麟",
+  "script": "traditional",
+  "file": "sanzijing.txt",
+  "size": 6429,
+  "chapters": 1
+ },
+ {
+  "id": "qianziwen",
+  "title": "千字文",
+  "author": "周興嗣",
+  "script": "traditional",
+  "file": "qianziwen.txt",
+  "size": 3823,
+  "chapters": 1
+ },
+ {
+  "id": "daodejing",
+  "title": "道德经",
+  "author": "老子",
+  "script": "simplified",
+  "file": "daodejing.txt",
+  "size": 20945,
+  "chapters": 81
+ },
+ {
+  "id": "xiyouji",
+  "title": "西遊記",
+  "author": "吳承恩",
+  "script": "traditional",
+  "file": "xiyouji.txt",
+  "size": 2153670,
+  "chapters": 100
+ }
+]
