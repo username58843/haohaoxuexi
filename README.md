@@ -28,6 +28,16 @@ translations and a simple example sentence with TTS. Free, no ads.
   between web and Android via `/words/known`), stroke-order animation,
   browser TTS, example sentences with audio
 - **Personal decks** — create, edit, JSON/CSV import/export
+- **Books** (web) — read Chinese in the original: bundled public-domain
+  classics plus your own TXT/EPUB/PDF uploads (parsed and stored entirely in
+  the browser — nothing heavy touches the server). Tap any word for an
+  instant HSK-dictionary popup (en/ru/tk), pinyin ruby mode, chapter TOC,
+  sentence translation, reading-progress sync per account, and an optional
+  AI chapter retelling (Chinese / graded simple Chinese / summary in your
+  language) with browser TTS narration
+- **Notes** (web) — a Notesnook-style notebook: rich-text editor (TipTap),
+  notebooks, tags, pin/favorite, archive and a 30-day trash; autosaves to
+  your account and syncs across devices
 - **Progress** — daily goal, streaks, 14-day activity, per-level mastery bars
 - **Stats** — six-month review heatmap and a difficult-words (leech) list,
   on web (`/stats`) and Android

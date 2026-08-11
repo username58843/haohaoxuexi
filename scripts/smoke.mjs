@@ -102,13 +102,30 @@ async function main() {
     r = await req('POST', '/auth/register', { body: { email: 'bad', password: 'short', name: 'x' } })
     check('register rejects invalid input', r.status === 400, `got ${r.status}`)
 
-    // --- register
+    // --- register + email verification (the code is read straight from the
+    // in-memory DB — no real email leaves the smoke run)
+    const mcAuth = new MongoClient(uri)
+    await mcAuth.connect()
+    const verifyCodeFor = async (email) =>
+      (await mcAuth.db().collection('users').findOne({ email }))?.verifyCode
+
     r = await req('POST', '/auth/register', {
       body: { email: 'alice@example.com', password: 'password123', name: 'Alice' },
     })
     check('register 201', r.status === 201, `got ${r.status} ${JSON.stringify(r.json)}`)
-    check('register returns token', typeof r.json?.token === 'string')
-    check('register user shape', r.json?.user?.email === 'alice@example.com' && !r.json?.user?.password)
+    check('register creates no session', r.json?.ok === true && !r.json?.token, JSON.stringify(r.json))
+
+    r = await req('POST', '/auth/login', { body: { email: 'alice@example.com', password: 'password123' } })
+    check('unverified login blocked', r.status === 403 && r.json?.error?.code === 'email_not_verified', `got ${r.status}`)
+
+    r = await req('POST', '/auth/verify-email', { body: { email: 'alice@example.com', code: '000000' } })
+    check('verify rejects wrong code', r.status === 400 || r.status === 401, `got ${r.status}`)
+
+    r = await req('POST', '/auth/verify-email', {
+      body: { email: 'alice@example.com', code: await verifyCodeFor('alice@example.com') },
+    })
+    check('verify-email 200', r.status === 200 && typeof r.json?.token === 'string', `got ${r.status} ${JSON.stringify(r.json)}`)
+    check('verified user shape', r.json?.user?.email === 'alice@example.com' && !r.json?.user?.password)
     const alice = r.json?.token
 
     r = await req('POST', '/auth/register', {
@@ -168,7 +185,11 @@ async function main() {
 
     // IDOR: second user cannot touch alice's deck
     r = await req('POST', '/auth/register', { body: { email: 'bob@example.com', password: 'password123', name: 'Bobby' } })
+    r = await req('POST', '/auth/verify-email', {
+      body: { email: 'bob@example.com', code: await verifyCodeFor('bob@example.com') },
+    })
     const bob = r.json?.token
+    await mcAuth.close()
     r = await req('PUT', `/decks/${deckId}`, { token: bob, body: { name: 'hacked' } })
     check('deck IDOR blocked', r.status === 404 || r.status === 403, `got ${r.status}`)
 

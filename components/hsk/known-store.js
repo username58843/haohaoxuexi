@@ -187,6 +187,9 @@ export function useKnownWords(user) {
     setScope(userId)
     setKnown(readKnown(userId))
   }
+  // Deliberate render-phase sync, paired with the render-phase setScope()
+  // above (see comment).
+  // eslint-disable-next-line react-hooks/refs
   scopeRef.current = userId
 
   // Persist locally on every change (mount-time write rewrites what was read).

@@ -118,3 +118,24 @@ export function IconChevron(props) {
     </svg>
   )
 }
+
+/** Книги — читалка: книга с закладкой */
+export function IconReader(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M5 4.5h11.5A1.5 1.5 0 0 1 18 6v14.5H6.5A1.5 1.5 0 0 1 5 19V4.5z" />
+      <path d="M5 17.5A1.5 1.5 0 0 1 6.5 16H18" />
+      <path d="M13.5 4.5v6l-2-1.6-2 1.6v-6" />
+    </svg>
+  )
+}
+
+/** Записи — блокнот с пером */
+export function IconNote(props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="4.5" y="3.5" width="15" height="17" rx="2" />
+      <path d="M8.2 8h7.6M8.2 11.5h7.6M8.2 15h4" />
+    </svg>
+  )
+}

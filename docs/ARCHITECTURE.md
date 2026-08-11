@@ -118,6 +118,51 @@ outlived logout and account deletion.
   updatedAt: Date, updatedBy: ObjectId }
 ```
 
+### notes  (Notes feature — rich-text notes per account, web ⇄ Android sync)
+```js
+{
+  _id: ObjectId,
+  userId: ObjectId,          // index { userId: 1, updatedAt: -1 }
+  title: string,             // ≤ 200
+  content: object|null,      // TipTap/ProseMirror JSON doc, ≤ 300 KB,
+                             // ≤ 20000 nodes, no $/dotted keys anywhere.
+                             // NEVER rendered as raw HTML — clients render it
+                             // exclusively through the TipTap editor.
+  headline: string,          // ≤ 300, plain-text preview extracted SERVER-side
+  notebookId: ObjectId|null, // index { userId: 1, notebookId: 1 }
+  tags: [string],            // ≤ 20 tags, each ≤ 30 chars, deduped (ci)
+  pinned: bool, favorite: bool, archived: bool,
+  trashed: bool, deletedAt: Date|null,  // 30-day retention, lazily purged on
+                                        // list (index { userId, trashed, deletedAt })
+  createdAt, updatedAt       // updatedAt = sync cursor (last-write-wins)
+}
+```
+Caps: ≤ 5000 notes/account. Archive is a flag; trash is soft-delete with
+`deletedAt` + 30-day lazy purge; a second DELETE (or `?permanent=1`) is final.
+
+### notebooks
+```js
+{ _id: ObjectId, userId: ObjectId,   // index { userId: 1, order: 1 }
+  name: string (1..80), description: string (≤ 300), order: int,
+  createdAt, updatedAt }
+```
+≤ 100/account. Deleting a notebook unfiles its notes (notebookId → null) —
+never deletes them.
+
+### book_progress  (Books feature — reading positions; book files stay client-side)
+```js
+{ _id: ObjectId,
+  userId: ObjectId, bookId: string (≤ 120),  // unique { userId, bookId };
+                                             // bookId is client-chosen:
+                                             // 'builtin:<id>' or 'up-<hash>'
+  title: string (≤ 160),                      // display for "continue reading"
+  chapter: int, offset: double (0..1), percent: double (0..100),
+  bookmarks: [{ chapter, offset, note ≤ 200, createdAt }] (≤ 100),
+  createdAt, updatedAt }
+```
+≤ 200 tracked books/account. Book *content* is never uploaded: uploads are
+parsed and stored in the browser's IndexedDB; only this record syncs.
+
 ### feedback
 ```js
 { userId: ObjectId|null, email: string|null, topic: 'bug'|'idea'|'content'|'other',
@@ -187,6 +232,14 @@ Legacy `/api/*` routes are REMOVED except where noted. Web and mobile both use v
 | `/api/v1/srs/difficult` | GET | ✓ | `?limit=20 (1..100)&minLapses=2 (1..20)` → `{items:[card], total, minLapses}` — leech list, sorted lapses desc, ease asc, updatedAt desc |
 | `/api/v1/stats/activity` | GET | ✓ | `?days=42 (1..365)&tzOffset=` → `{days:[{day, reviews, correct}]}` |
 | `/api/v1/feedback` | POST | opt | `{topic, message, email?}`; RL 5/hour + 20/day per verified user (or IP when anonymous) |
+| `/api/v1/dict` | GET | – | reader dictionary for Books: compact `{v, maxLen, words:{simp:[pinyin,en,ru,tk,hsk]}, trad, tradChars}` compiled from the shipped packs (HSK first). Strong ETag + `max-age=86400`; clients cache it in IndexedDB. RL 30/min/IP |
+| `/api/v1/books/progress` | GET/PUT/DELETE | ✓ | reading-progress sync: GET → `{items}`; PUT `{bookId, title?, chapter, offset 0..1, percent 0..100, bookmarks?≤100}` upserts (RL 60/min/user, ≤ 200 books); DELETE `{bookId}` |
+| `/api/v1/translate` | POST | ✓ | `{text 1..1200, to:'en'/'ru'/'tk'}` → `{text, provider}` — sentence-translation proxy for the reader (keyless providers: Google web endpoint → MyMemory fallback; 8s timeout each). RL 40/min/user; both down → 409 `translate_unavailable` |
+| `/api/v1/ai/retell` | GET/POST | ✓ | GET → `{available, provider}` feature probe. POST `{text 50..16000, mode:'retell'/'simple'/'translate', level? 1..7, lang}` → `{text}` — chapter retelling via the first configured provider (GROQ_API_KEY → GEMINI_API_KEY → OPENROUTER_API_KEY, optional `*_MODEL` overrides). RL 15/hour/user; no key → 409 `ai_not_configured` |
+| `/api/v1/notes` | GET/POST | ✓ | GET `?view=notes/favorites/archive/trash/all&notebook=&tag=&q=` → `{notes:[meta]}` (metadata only, no content; pinned first, then updatedAt desc; ≤ 2000; lazily purges 30-day-old trash). POST `{title?, content?, notebookId?, tags?}` → 201 `{note}` (full). RL 60/min/user |
+| `/api/v1/notes/[id]` | GET/PUT/DELETE | ✓ | own-scoped. GET → full note. PUT partial `{title?, content?, notebookId?(null ok), tags?, pinned?, favorite?, archived?, trashed?}` — autosave path, RL 240/min/user; `trashed:true` stamps `deletedAt` + unpins, `trashed:false` restores. DELETE: active → trash; trashed or `?permanent=1` → permanent. RL 60/min/user |
+| `/api/v1/notebooks` | GET/POST | ✓ | GET → `{notebooks}` incl. per-notebook active-note counts. POST `{name 1..80, description?}` → 201. RL 30/min/user |
+| `/api/v1/notebooks/[id]` | PUT/DELETE | ✓ | PUT `{name?, description?, order?}`; DELETE unfiles the notebook's notes then removes it |
 | `/api/v1/content` | GET | – | `?lang=` → `{entries, meta}` — published copy overrides for the docs pages |
 | `/api/v1/health` | GET | – | `{ok, ts}` — uptime probe |
 | `/api/v1/admin/overview` | GET | admin | `{totals:{users,newUsers7d,activeToday,decks,reviews7d}, signupsByDay[14], reviewsByDay[14]}` |
@@ -266,11 +319,16 @@ Goal met: `todayReviews ≥ settings.dailyGoal` (default 20).
   no reactstrap — removed from package.json.
 - Shell: authenticated users get app chrome — bottom dock (mobile) / left rail
   (desktop ≥1024px). Tabs: Home `/`, Learn `/learn`, Decks `/decks`,
-  HSK `/hsk`, More `/more`. Guests see marketing landing on `/`.
+  HSK `/hsk`, Books `/books`, Notes `/notes`, More `/more`. Guests see
+  marketing landing on `/`.
 - Route map: `/` (landing|dashboard), `/auth` (+ `/auth/forgot-password`,
   `/auth/reset-password`), `/learn` (hub) + `/learn/session`, `/hsk` (lexicon
   browse + word sheet) + `/hsk/map` (word map), `/decks` + `/decks/[id]`,
-  `/stats` (6-month review heatmap + difficult-words leech list), `/profile`,
+  `/stats` (6-month review heatmap + difficult-words leech list),
+  `/books` (library: bundled public-domain classics + IndexedDB uploads)
+  + `/books/read` (reader: tap-word dictionary popup, pinyin ruby, chapter
+  TOC, AI retelling drawer; bare shell), `/notes` (three-pane notes app,
+  auth-only), `/profile`,
   `/settings`, `/more`, `/about`, `/privacy`, `/terms`, `/admin` (+ subpages
   users/feedback/audit/content). Per-page `<Head>` titles.
 - i18n: `lib/i18n` — `t('key', 'English default')`; ru/tk/zh in override maps.
@@ -278,6 +336,27 @@ Goal met: `todayReviews ≥ settings.dailyGoal` (default 20).
 - Auth client: cookie is primary; Bearer kept in memory only (NOT localStorage);
   on load, session restored via cookie `/auth/me`.
 - Word audio: browser `speechSynthesis` (zh-CN voice) — no server proxy.
+  Long-form narration (AI retelling) chains sentence utterances via
+  `speakLong` in `lib/speech.js`.
+- Books engine (all client-side, Vercel stays thin): parsers in
+  `lib/books/parse.js` — TXT (chapter-heading detection, 第N章/回/节…), EPUB
+  (JSZip, spine order), PDF (pdf.js text extraction; scanned PDFs are
+  rejected with a friendly error). Uploads and the built-in classics are
+  cached in IndexedDB (`lib/books/store.js`, DB `hhx-books`). Segmentation is
+  greedy longest-match against `/api/v1/dict` (`lib/books/segment.js`), with
+  char-level trad→simp fallback so traditional-script books resolve through
+  the simplified lexicon. The dictionary payload is cached in IndexedDB for
+  7 days. Built-in classics live in `public/books/*.txt` + `index.json`
+  (public-domain works, sourced from open repositories — see
+  `public/books/index.json` for the list).
+- Heavy client libs are vendored same-origin under `public/vendor/`
+  (existing hanzi-writer pattern): `jszip-3.10.1.min.js`, `pdfjs/pdf.min.mjs`
+  + `pdfjs/pdf.worker.min.mjs` (pdfjs-dist 6.2 legacy build) — no third-party
+  CDN in authenticated sessions.
+- Notes editor: TipTap 3 (StarterKit + task lists + highlight), loaded via
+  `next/dynamic` (ssr:false) so it never enters the shared bundle. Content is
+  exchanged and stored as TipTap JSON only — no HTML rendering path exists.
+  Autosave: 800ms debounce + flush on note-switch/unmount/`beforeunload`.
 - Stroke order: hanzi-writer from CDN (existing pattern), lazy-loaded.
 - PWA: `public/manifest.json` + icons + theme color.
 

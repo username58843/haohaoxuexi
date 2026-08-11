@@ -3,13 +3,15 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
-import { IconHome, IconLearn, IconBook, IconGrid, IconUser } from './NavIcons'
+import { IconHome, IconLearn, IconBook, IconGrid, IconReader, IconNote, IconUser } from './NavIcons'
 
 const TABS = [
   { key: 'home', href: '/', Icon: IconHome, labelKey: 'navHome', label: 'Home' },
   { key: 'learn', href: '/learn', Icon: IconLearn, labelKey: 'navLearn', label: 'Learn' },
   { key: 'decks', href: '/decks', Icon: IconBook, labelKey: 'navDecks', label: 'Decks' },
   { key: 'hsk', href: '/hsk', Icon: IconGrid, labelKey: 'navHsk', label: 'HSK' },
+  { key: 'books', href: '/books', Icon: IconReader, labelKey: 'navBooks', label: 'Books' },
+  { key: 'notes', href: '/notes', Icon: IconNote, labelKey: 'navNotes', label: 'Notes' },
   { key: 'more', href: '/more', Icon: IconUser, labelKey: 'navMore', label: 'More' },
 ]
 
@@ -18,6 +20,8 @@ function activeTab(pathname) {
   if (pathname.startsWith('/learn')) return 'learn'
   if (pathname.startsWith('/decks')) return 'decks'
   if (pathname.startsWith('/hsk')) return 'hsk'
+  if (pathname.startsWith('/books')) return 'books'
+  if (pathname.startsWith('/notes')) return 'notes'
   if (
     ['/more', '/profile', '/settings'].includes(pathname) ||
     pathname.startsWith('/admin')

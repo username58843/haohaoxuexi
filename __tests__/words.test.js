@@ -32,7 +32,9 @@ describe('word packs', () => {
   it('reports level sizes matching pack lengths', () => {
     const sizes = getHskLevelSizes()
     expect(sizes[1]).toBe(getPackWords('hsk1').length)
-    expect(Object.keys(sizes)).toEqual(['1', '2', '3', '4', '5', '6'])
+    // 7 = the combined HSK 3.0 band 7-9 pack (ARCHITECTURE §5).
+    expect(Object.keys(sizes)).toEqual(['1', '2', '3', '4', '5', '6', '7'])
+    expect(sizes[7]).toBe(getPackWords('hsk7-9')?.length || 0)
   })
 
   it('search finds 爱 by hanzi', () => {
