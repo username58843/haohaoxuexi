@@ -411,74 +411,7 @@ export default function NotesPage() {
           )}
         </aside>
 
-        {/* ---- note list ---- */}
-        <section className="notes__list">
-          <div className="notes__list-head">
-            <h2>{viewTitle}</h2>
-            {view.kind !== 'trash' && (
-              <Button size="sm" onClick={createNote}>
-                + {t('notesNew', 'New note')}
-              </Button>
-            )}
-          </div>
-          <div className="notes__search">
-            <input
-              type="search"
-              value={q}
-              placeholder={t('notesSearch', 'Search notes…')}
-              onChange={(e) => setQ(e.target.value)}
-            />
-          </div>
-          {notes === null ? (
-            <Spinner />
-          ) : notes.length === 0 ? (
-            <EmptyState
-              title={
-                view.kind === 'trash'
-                  ? t('notesTrashEmpty', 'Trash is empty')
-                  : t('notesEmpty', 'No notes here yet')
-              }
-              hint={
-                view.kind === 'trash'
-                  ? t('notesTrashHint', 'Trashed notes are deleted forever after 30 days.')
-                  : t('notesEmptyHint', 'Create a note — course summaries, vocab lists, anything.')
-              }
-            />
-          ) : (
-            <ul className="notes__items">
-              {notes.map((n) => (
-                <li key={n.id}>
-                  <button
-                    type="button"
-                    className={`notes__item${active?.id === n.id ? ' is-active' : ''}`}
-                    onClick={() => openNote(n.id)}
-                  >
-                    <div className="notes__item-top">
-                      <span className="notes__item-title">
-                        {n.pinned ? <span className="notes__item-pin">📌</span> : null}
-                        {n.title || t('notesUntitled', 'Untitled')}
-                        {n.favorite ? <span className="notes__item-fav">★</span> : null}
-                      </span>
-                      <span className="notes__item-date">{dateLabel(n.updatedAt, language)}</span>
-                    </div>
-                    {n.headline ? <p className="notes__item-headline">{n.headline}</p> : null}
-                    {(n.tags || []).length > 0 && (
-                      <div className="notes__item-tags">
-                        {n.tags.map((tag) => (
-                          <span key={tag} className="notes__tag notes__tag--mini">
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        {/* ---- editor pane ---- */}
+        {/* ---- editor pane (center-left: write here) ---- */}
         <section className="notes__editor">
           {activeLoading ? (
             <PageLoader />
@@ -600,6 +533,73 @@ export default function NotesPage() {
                 </div>
               )}
             </>
+          )}
+        </section>
+
+        {/* ---- note list (right rail) ---- */}
+        <section className="notes__list">
+          <div className="notes__list-head">
+            <h2>{viewTitle}</h2>
+            {view.kind !== 'trash' && (
+              <Button size="sm" onClick={createNote}>
+                + {t('notesNew', 'New note')}
+              </Button>
+            )}
+          </div>
+          <div className="notes__search">
+            <input
+              type="search"
+              value={q}
+              placeholder={t('notesSearch', 'Search notes…')}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
+          {notes === null ? (
+            <Spinner />
+          ) : notes.length === 0 ? (
+            <EmptyState
+              title={
+                view.kind === 'trash'
+                  ? t('notesTrashEmpty', 'Trash is empty')
+                  : t('notesEmpty', 'No notes here yet')
+              }
+              hint={
+                view.kind === 'trash'
+                  ? t('notesTrashHint', 'Trashed notes are deleted forever after 30 days.')
+                  : t('notesEmptyHint', 'Create a note — course summaries, vocab lists, anything.')
+              }
+            />
+          ) : (
+            <ul className="notes__items">
+              {notes.map((n) => (
+                <li key={n.id}>
+                  <button
+                    type="button"
+                    className={`notes__item${active?.id === n.id ? ' is-active' : ''}`}
+                    onClick={() => openNote(n.id)}
+                  >
+                    <div className="notes__item-top">
+                      <span className="notes__item-title">
+                        {n.pinned ? <span className="notes__item-pin">📌</span> : null}
+                        {n.title || t('notesUntitled', 'Untitled')}
+                        {n.favorite ? <span className="notes__item-fav">★</span> : null}
+                      </span>
+                      <span className="notes__item-date">{dateLabel(n.updatedAt, language)}</span>
+                    </div>
+                    {n.headline ? <p className="notes__item-headline">{n.headline}</p> : null}
+                    {(n.tags || []).length > 0 && (
+                      <div className="notes__item-tags">
+                        {n.tags.map((tag) => (
+                          <span key={tag} className="notes__tag notes__tag--mini">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </section>
       </div>

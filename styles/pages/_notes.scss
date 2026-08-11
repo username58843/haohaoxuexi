@@ -3,8 +3,9 @@
    ============================================================ */
 
 .notes {
+  /* sidebar | editor (write) | note list */
   display: grid;
-  grid-template-columns: 220px minmax(260px, 320px) 1fr;
+  grid-template-columns: 220px 1fr minmax(260px, 320px);
   gap: 0;
   min-height: calc(100dvh - 24px);
   max-width: 1280px;
