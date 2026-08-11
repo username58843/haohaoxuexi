@@ -752,6 +752,58 @@ textarea.field__input {
   }
 }
 
+.dock__icon-wrap {
+  position: relative;
+  display: inline-flex;
+  line-height: 0;
+}
+
+.dock__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Small BETA pill for early features (Books, etc.) */
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.nav-badge--dock {
+  padding: 0 3px;
+  font-size: 7.5px;
+  letter-spacing: 0.04em;
+  transform: translateY(-0.5px);
+}
+
+.nav-badge--dot {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--surface-solid);
+  font-size: 0;
+  letter-spacing: 0;
+}
+
 /* Left rail (desktop) */
 .rail {
   display: none;
@@ -823,49 +875,6 @@ textarea.field__input {
     align-items: center;
     gap: 8px;
     min-width: 0;
-  }
-
-  .rail__spacer { flex: 1; }
-}
-
-/* ---------- Keyframes ---------- */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-}
-
-@keyframes pop-in {
-  from { opacity: 0; transform: scale(0.96); }
-}
-
-@keyframes sheet-up {
-  from { transform: translateY(24px); opacity: 0.6; }
-}
-
-@keyframes toast-in {
-  from { transform: translateY(-12px); opacity: 0; }
-}
-  align-items: center;
-    gap: 12px;
-    padding: 11px 12px;
-    border-radius: var(--radius-control);
-    color: var(--text-2);
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: color var(--t-fast), background-color var(--t-fast);
-
-    svg { width: 20px; height: 20px; }
-
-    &:hover { text-decoration: none; color: var(--text); background: var(--surface); }
-
-    &.is-active {
-      color: var(--text);
-      background: var(--surface-3);
-    }
   }
 
   .rail__spacer { flex: 1; }
