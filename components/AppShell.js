@@ -56,7 +56,7 @@ export default function AppShell({ children, bare = false }) {
             好好学习汉语
           </span>
         </Link>
-        {TABS.map(({ key, href, Icon, labelKey, label }) => (
+        {TABS.map(({ key, href, Icon, labelKey, label, badge }) => (
           <Link
             key={key}
             href={href}
@@ -64,7 +64,10 @@ export default function AppShell({ children, bare = false }) {
             aria-current={current === key ? 'page' : undefined}
           >
             <Icon />
-            {t(labelKey, label)}
+            <span className="rail__label">
+              {t(labelKey, label)}
+              {badge ? <span className="nav-badge">{badge}</span> : null}
+            </span>
           </Link>
         ))}
         <div className="rail__spacer" />
@@ -75,15 +78,21 @@ export default function AppShell({ children, bare = false }) {
       </main>
 
       <nav className="dock" aria-label={t('navPrimary', 'Primary')}>
-        {TABS.map(({ key, href, Icon, labelKey, label }) => (
+        {TABS.map(({ key, href, Icon, labelKey, label, badge }) => (
           <Link
             key={key}
             href={href}
             className={`dock__item${current === key ? ' is-active' : ''}`}
             aria-current={current === key ? 'page' : undefined}
           >
-            <Icon />
-            {t(labelKey, label)}
+            <span className="dock__icon-wrap">
+              <Icon />
+              {badge ? <span className="nav-badge nav-badge--dot" aria-hidden /> : null}
+            </span>
+            <span className="dock__label">
+              {t(labelKey, label)}
+              {badge ? <span className="nav-badge nav-badge--dock">{badge}</span> : null}
+            </span>
           </Link>
         ))}
       </nav>

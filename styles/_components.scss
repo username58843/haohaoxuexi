@@ -808,6 +808,56 @@ textarea.field__input {
     text-decoration: none;
     transition: color var(--t-fast), background-color var(--t-fast);
 
+    svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    &:hover { text-decoration: none; color: var(--text); background: var(--surface); }
+
+    &.is-active {
+      color: var(--text);
+      background: var(--surface-3);
+    }
+  }
+
+  .rail__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .rail__spacer { flex: 1; }
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(24px); opacity: 0.6; }
+}
+
+@keyframes toast-in {
+  from { transform: translateY(-12px); opacity: 0; }
+}
+  align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: var(--radius-control);
+    color: var(--text-2);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--t-fast), background-color var(--t-fast);
+
     svg { width: 20px; height: 20px; }
 
     &:hover { text-decoration: none; color: var(--text); background: var(--surface); }
