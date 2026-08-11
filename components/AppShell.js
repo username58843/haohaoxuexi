@@ -10,7 +10,7 @@ const TABS = [
   { key: 'learn', href: '/learn', Icon: IconLearn, labelKey: 'navLearn', label: 'Learn' },
   { key: 'decks', href: '/decks', Icon: IconBook, labelKey: 'navDecks', label: 'Decks' },
   { key: 'hsk', href: '/hsk', Icon: IconGrid, labelKey: 'navHsk', label: 'HSK' },
-  { key: 'books', href: '/books', Icon: IconReader, labelKey: 'navBooks', label: 'Books' },
+  { key: 'books', href: '/books', Icon: IconReader, labelKey: 'navBooks', label: 'Books', badge: 'BETA' },
   { key: 'notes', href: '/notes', Icon: IconNote, labelKey: 'navNotes', label: 'Notes' },
   { key: 'more', href: '/more', Icon: IconUser, labelKey: 'navMore', label: 'More' },
 ]
