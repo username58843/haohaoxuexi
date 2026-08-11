@@ -20,10 +20,19 @@ const AUTHOR_NOTE = {
   traditional: '繁體',
 }
 
+const MAX_BYTES = 80 * 1024 * 1024
+
 function coverHue(id) {
   let h = 0
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 360
   return h
+}
+
+function formatSize(n) {
+  if (!n) return ''
+  if (n < 1024) return `${n} B`
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`
+  return `${(n / (1024 * 1024)).toFixed(1)} MB`
 }
 
 export default function BooksPage() {
@@ -37,6 +46,7 @@ export default function BooksPage() {
   const [mine, setMine] = useState(null)
   const [progress, setProgress] = useState({}) // bookId → {chapter, percent, title, updatedAt}
   const [busy, setBusy] = useState(false)
+  const [parsePct, setParsePct] = useState(0)
 
   useEffect(() => {
     fetch('/books/index.json')
@@ -59,15 +69,12 @@ export default function BooksPage() {
   }, [])
 
   useEffect(() => {
-    // Local progress always; server progress merged on top when signed in.
     let local = {}
     try {
       local = JSON.parse(localStorage.getItem('hhx_book_progress') || '{}')
     } catch {
       local = {}
     }
-    // Hydration-safe localStorage read: must run in an effect (SSR renders
-    // without progress), one extra render on mount is expected here.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(local)
     if (!user) return
@@ -101,39 +108,68 @@ export default function BooksPage() {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
-    if (file.size > 80 * 1024 * 1024) {
+    if (file.size > MAX_BYTES) {
       toast?.error?.(t('booksTooLarge', 'File is too large (80 MB max)'))
       return
     }
     setBusy(true)
+    setParsePct(0)
     try {
-      const [{ parseFile }, { putBook, makeBookId, idbAvailable }] = await Promise.all([
+      const [{ parseFile }, store] = await Promise.all([
         import('~/lib/books/parse'),
         import('~/lib/books/store'),
       ])
-      if (!idbAvailable()) throw new Error('no_idb')
-      const parsed = await parseFile(file)
-      const id = makeBookId(file.name, file.size)
-      const type = /\.epub$/i.test(file.name) ? 'epub' : /\.pdf$/i.test(file.name) ? 'pdf' : 'txt'
-      await putBook({
+      if (!store.idbAvailable()) throw new Error('no_idb')
+      const parsed = await parseFile(file, {
+        onProgress: (done, total) => {
+          if (total > 0) setParsePct(Math.round((done / total) * 100))
+        },
+      })
+      const id = store.makeBookId(file.name, file.size)
+      const type = /\.epub$/i.test(file.name)
+        ? 'epub'
+        : /\.pdf$/i.test(file.name)
+          ? 'pdf'
+          : 'txt'
+      const mode = parsed.mode === 'pdf' ? 'pdf' : 'text'
+      const book = {
         id,
         title: parsed.title,
         author: parsed.author || '',
         script: '',
         type,
-        chapters: parsed.chapters,
+        mode,
+        chapters: mode === 'text' ? parsed.chapters : [],
+        pageCount: parsed.pageCount || (parsed.chapters?.length || 0),
         size: file.size,
         addedAt: Date.now(),
-      })
+      }
+      if (mode === 'pdf') {
+        const bytes = parsed.pdfBytes || (await file.arrayBuffer())
+        await store.putBookWithBlob(book, bytes)
+      } else {
+        await store.putBook(book)
+      }
       router.push(`/books/read?id=${encodeURIComponent(id)}`)
     } catch (err) {
+      const code = err?.message || ''
       const msg =
-        err?.message === 'pdf_no_text'
+        code === 'pdf_no_text'
           ? t('booksPdfNoText', 'This PDF has no text layer (scanned pages can’t be read)')
-          : t('booksParseFailed', 'Could not read this file — try TXT, EPUB or a text-based PDF')
+          : code === 'pdf_encrypted'
+            ? t('booksPdfEncrypted', 'This PDF is password-protected and can’t be opened')
+            : code === 'pdf_open_failed'
+              ? t('booksPdfOpenFailed', 'Could not open this PDF')
+              : code === 'no_idb'
+                ? t('booksNoIdb', 'This browser does not support local book storage.')
+                : t(
+                    'booksParseFailed',
+                    'Could not read this file — try TXT, EPUB or a PDF (text or scan)'
+                  )
       toast?.error?.(msg)
     } finally {
       setBusy(false)
+      setParsePct(0)
     }
   }
 
@@ -160,15 +196,32 @@ export default function BooksPage() {
       <Head>
         <title>{t('booksTitle', 'Books')} — 好好学习汉语</title>
       </Head>
-      <div className="page books">
-        <header className="page__head">
-          <h1>{t('booksTitle', 'Books')}</h1>
-          <p className="page__sub">
-            {t(
-              'booksSubtitle',
-              'Read Chinese in the original — tap any word for an instant translation.'
-            )}
-          </p>
+      <div className="page page--wide books">
+        <header className="page__head books__hero">
+          <div>
+            <p className="eyebrow">{t('booksEyebrow', 'Reading')}</p>
+            <h1>{t('booksTitle', 'Books')}</h1>
+            <p className="page__sub">
+              {t(
+                'booksSubtitle',
+                'Read Chinese in the original — tap any word for an instant translation.'
+              )}
+            </p>
+          </div>
+          <Button onClick={() => fileRef.current?.click()} disabled={busy}>
+            {busy
+              ? parsePct > 0
+                ? `${t('booksParsing', 'Reading file…')} ${parsePct}%`
+                : t('booksParsing', 'Reading file…')
+              : `+ ${t('booksUpload', 'Add a book')}`}
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".txt,.epub,.pdf,.md,.text,text/plain,application/epub+zip,application/pdf"
+            hidden
+            onChange={onUpload}
+          />
         </header>
 
         {continueItems.length > 0 && (
@@ -200,34 +253,36 @@ export default function BooksPage() {
         <section className="books__section">
           <div className="books__section-head">
             <h2>{t('booksMine', 'My books')}</h2>
-            <Button size="sm" onClick={() => fileRef.current?.click()} disabled={busy}>
-              {busy ? t('booksParsing', 'Reading file…') : `+ ${t('booksUpload', 'Add a book')}`}
-            </Button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".txt,.epub,.pdf,text/plain,application/epub+zip,application/pdf"
-              hidden
-              onChange={onUpload}
-            />
           </div>
           <p className="books__hint">
             {t(
               'booksUploadHint',
-              'TXT, EPUB or PDF. Books are stored in this browser only — nothing is uploaded to the server; reading progress syncs with your account.'
+              'TXT, EPUB or PDF (including scans). Books stay in this browser only — nothing is uploaded; reading progress syncs with your account.'
             )}
           </p>
           {mine === null ? (
             <Spinner />
           ) : mine.length === 0 ? (
-            <EmptyState
-              title={t('booksMineEmpty', 'No books yet')}
-              text={t('booksMineEmptyHint', 'Add your own book and read it with the built-in dictionary.')}
-            />
+            <div className="books__empty-card">
+              <EmptyState
+                glyph="书"
+                title={t('booksMineEmpty', 'No books yet')}
+                text={t(
+                  'booksMineEmptyHint',
+                  'Add your own book and read it with the built-in dictionary.'
+                )}
+                action={
+                  <Button size="sm" onClick={() => fileRef.current?.click()} disabled={busy}>
+                    + {t('booksUpload', 'Add a book')}
+                  </Button>
+                }
+              />
+            </div>
           ) : (
             <div className="books__grid">
               {mine.map((b) => {
                 const p = progress[b.id]
+                const chapters = b.chapterCount || b.pageCount || 0
                 return (
                   <div key={b.id} className="books__card" style={{ '--cover-hue': coverHue(b.id) }}>
                     <button
@@ -242,7 +297,9 @@ export default function BooksPage() {
                         {b.title}
                       </span>
                       <span className="books__card-meta">
-                        {b.type.toUpperCase()} · {b.chapterCount} {t('booksChaptersShort', 'ch.')}
+                        {b.type.toUpperCase()}
+                        {b.mode === 'pdf' ? ` · ${t('booksScanBadge', 'scan')}` : ''}
+                        {chapters ? ` · ${chapters} ${t('booksChaptersShort', 'ch.')}` : ''}
                         {p ? ` · ${Math.round(p.percent)}%` : ''}
                       </span>
                     </button>
@@ -287,8 +344,15 @@ export default function BooksPage() {
                       </span>
                       <span className="books__card-meta">
                         {b.author} · {AUTHOR_NOTE[b.script] || ''}
+                        {b.chapters ? ` · ${b.chapters} ${t('booksChaptersShort', 'ch.')}` : ''}
                         {p ? ` · ${Math.round(p.percent)}%` : ''}
+                        {b.size ? ` · ${formatSize(b.size)}` : ''}
                       </span>
+                      {p ? (
+                        <span className="books__progress books__progress--card">
+                          <span style={{ width: `${Math.min(100, p.percent)}%` }} />
+                        </span>
+                      ) : null}
                     </button>
                   </div>
                 )
@@ -299,7 +363,10 @@ export default function BooksPage() {
 
         {!user && !authLoading && (
           <p className="books__signin-hint">
-            {t('booksSignInHint', 'Sign in to sync reading progress, translate sentences and use AI retelling.')}
+            {t(
+              'booksSignInHint',
+              'Sign in to sync reading progress, translate sentences and use AI retelling.'
+            )}
           </p>
         )}
       </div>

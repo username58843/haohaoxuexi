@@ -615,7 +615,7 @@ export default function NotesPage() {
           onChange={(e) => setNewNotebookName(e.target.value)}
           maxLength={80}
         />
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 12 }}>
+        <div className="notes-modal-actions">
           <Button variant="ghost" onClick={() => setNotebookModal(false)}>
             {t('cancel', 'Cancel')}
           </Button>

@@ -96,13 +96,6 @@ export default function Editor({ noteId, content, editable = true, placeholder, 
             <i>I</i>
           </ToolbarButton>
           <ToolbarButton
-            active={editor.isActive('underline')}
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            title="Underline (Ctrl+U)"
-          >
-            <u>U</u>
-          </ToolbarButton>
-          <ToolbarButton
             active={editor.isActive('strike')}
             onClick={() => editor.chain().focus().toggleStrike().run()}
             title="Strikethrough"

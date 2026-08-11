@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
 import Reader from '~/components/books/Reader'
@@ -8,6 +9,11 @@ import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
 import { api } from '~/lib/api-client'
 import { parseTxt } from '~/lib/books/parse'
+
+const PdfViewer = dynamic(() => import('~/components/books/PdfViewer'), {
+  ssr: false,
+  loading: () => <PageLoader />,
+})
 
 /**
  * /books/read?b=<builtinId> | ?id=<localId> — the reading screen.
@@ -38,6 +44,8 @@ export default function ReadPage() {
       try {
         const store = await import('~/lib/books/store')
         let book = null
+        let pdfBytes = null
+
         if (builtinId) {
           if (store.idbAvailable()) {
             book = await store.getBook(`builtin:${builtinId}`).catch(() => null)
@@ -57,6 +65,7 @@ export default function ReadPage() {
               author: meta.author,
               script: meta.script,
               type: 'builtin',
+              mode: 'text',
               chapters: parsed.chapters,
               size: meta.size,
               addedAt: Date.now(),
@@ -67,6 +76,13 @@ export default function ReadPage() {
           if (!store.idbAvailable()) throw new Error('no_idb')
           book = await store.getBook(localId)
           if (!book) throw new Error('not_found')
+          if (book.mode === 'pdf' || (book.type === 'pdf' && (!book.chapters || book.chapters.length === 0))) {
+            pdfBytes = await store.getBookBlob(localId)
+            if (!pdfBytes) throw new Error('pdf_blob_missing')
+            book = { ...book, mode: 'pdf' }
+          } else {
+            book = { ...book, mode: book.mode || 'text' }
+          }
         } else {
           throw new Error('not_found')
         }
@@ -92,7 +108,7 @@ export default function ReadPage() {
             // offline / signed-out — local resume is fine
           }
         }
-        if (alive) setState({ status: 'ready', book, resume })
+        if (alive) setState({ status: 'ready', book, resume, pdfBytes })
       } catch (err) {
         if (alive) setState({ status: 'error', code: err?.message })
       }
@@ -143,6 +159,7 @@ export default function ReadPage() {
   useEffect(() => () => clearTimeout(syncTimer.current), [])
 
   const title = state.book?.title || t('booksTitle', 'Books')
+  const goLibrary = () => router.push('/books')
 
   return (
     <AppShell bare>
@@ -153,19 +170,33 @@ export default function ReadPage() {
       {state.status === 'error' && (
         <div className="page">
           <EmptyState
-            title={t('booksNotFound', 'Book not found')}
-            hint={
+            glyph="书"
+            title={
+              state.code === 'pdf_blob_missing'
+                ? t('booksPdfBlobMissing', 'PDF data is missing — please re-add the book')
+                : t('booksNotFound', 'Book not found')
+            }
+            text={
               state.code === 'no_idb'
                 ? t('booksNoIdb', 'This browser does not support local book storage.')
                 : t('booksNotFoundHint', 'It may have been removed from this browser.')
             }
+            action={
+              <Button onClick={goLibrary}>{t('booksBackToLibrary', 'Back to the library')}</Button>
+            }
           />
-          <div style={{ textAlign: 'center', marginTop: 16 }}>
-            <Button onClick={() => router.push('/books')}>{t('booksBackToLibrary', 'Back to the library')}</Button>
-          </div>
         </div>
       )}
-      {state.status === 'ready' && (
+      {state.status === 'ready' && state.book.mode === 'pdf' && state.pdfBytes && (
+        <PdfViewer
+          arrayBuffer={state.pdfBytes}
+          title={state.book.title}
+          initialPage={state.resume.chapter || 0}
+          onProgress={onProgress}
+          onBack={goLibrary}
+        />
+      )}
+      {state.status === 'ready' && state.book.mode !== 'pdf' && (
         <Reader
           book={state.book}
           initialChapter={state.resume.chapter}

@@ -179,7 +179,18 @@ export default function Reader({ book, initialChapter = 0, initialOffset = 0, on
   return (
     <div className="reader" style={{ '--reader-font': `${fontSize}px` }}>
       <header className="reader__bar">
-        <button type="button" className="reader__bar-btn" onClick={() => history.back()} aria-label={t('back', 'Back')}>
+        <button
+          type="button"
+          className="reader__bar-btn"
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.history.length > 1) {
+              window.history.back()
+            } else {
+              window.location.href = '/books'
+            }
+          }}
+          aria-label={t('back', 'Back')}
+        >
           ←
         </button>
         <div className="reader__bar-title">

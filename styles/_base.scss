@@ -57,13 +57,63 @@ a:hover {
   text-decoration: underline;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
 button {
-  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  margin: 0;
 }
 
 img {
   max-width: 100%;
   display: block;
+}
+
+/* Shared page chrome used by books / notes / account shells */
+.page {
+  width: 100%;
+  max-width: var(--col-app);
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+.page--wide {
+  max-width: var(--col-wide);
+}
+
+.page__head {
+  margin-bottom: 8px;
+}
+
+.page__head h1 {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 32px);
+  letter-spacing: -0.03em;
+}
+
+.page__sub {
+  margin: 8px 0 0;
+  color: var(--text-2);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 52ch;
 }
 
 code, pre {
