@@ -1102,7 +1102,7 @@ number|headword|en|ru|tk
 3101|台灯|desk lamp|настольная лампа|stol çyrasy
 3102|台阶|step; stairs|ступенька; ступени|basgançak; basgançaklar
 3103|太太|Mrs; married woman; wife|госпожа; супруга|hanym; aýal; ýanýoldaş
-3104|谈话|talk; have a conversation|беседовать; разговаривать|gürrüñdeş bolmak; gepleşmek
+3104|谈话|talk; have a conversation|беседовать; разговаривать|gürrüñ etmek; gepleşmek
 3105|桃|peach|персик|şetdaly
 3106|套|set; cover; put over; classifier for sets|комплект; чехол; надевать сверху; счётное слово для наборов|toplum; daşlyk; daşyna geýdirmek; toplumlar üçin san sözi
 3107|特产|local speciality|местный фирменный продукт|ýerli aýratyn önüm
@@ -1154,7 +1154,7 @@ number|headword|en|ru|tk
 3153|土地|land; soil|земля; почва|ýer; toprak
 3154|土豆|potato|картофель|ýeralma
 3155|兔子|rabbit; hare|кролик; заяц|towşan
-3156|团|roll into a ball; group; ball or group classifier|скатывать в шар; группа; клубок; счётное слово|togalaklamak; topar; tokgala; san sözi
+3156|团|roll into a ball; group; ball or group classifier|скатывать в шар; группа; клубок; счётное слово|togalaklamak; topar; tokga; san sözi
 3157|团队|team|команда; коллектив|topar; işdeşler topary
 3158|推动|push forward; promote|продвигать; содействовать|öňe itermek; ýardam etmek
 3159|推广|popularise; extend the use of|распространять; продвигать|ýaýratmak; giňden ornaşdyrmak
@@ -1349,3 +1349,253 @@ number|headword|en|ru|tk
 3348|医疗|provide medical treatment|оказывать медицинскую помощь|lukmançylyk kömegini bermek; bejermek
 3349|依然|still; as before|по-прежнему; всё ещё|öňküsi ýaly; henizem
 3350|医学|medical science; medicine|медицина|lukmançylyk
+3351|移|move; shift|перемещать; переносить|süýşürmek; geçirmek
+3352|一次性|one-off; disposable|одноразовый; единовременный|bir gezeklik; bir wagtda edilýän
+3353|一代|a generation; an era|поколение; эпоха|nesil; döwür
+3354|一旦|once; as soon as|как только; однажды, если|bir gezek; bolan badyna
+3355|移动|move; shift|двигаться; перемещать|hereket etmek; süýşürmek
+3356|遗憾|regret; regrettable|сожаление; досадный|gynanç; gynandyryjy
+3357|一路|the whole way; all along|весь путь; по дороге|tutuş ýol; ýolboýy
+3358|一路顺风|have a good journey!|счастливого пути!|ýoluňyz ak bolsun!
+3359|疑问|question; doubt|вопрос; сомнение|sorag; şübhe
+3360|一致|consistent; unanimous; unanimously|единодушный; согласованный; единогласно|ylalaşykly; birmeňzeş; biragyzdan
+3361|乙|second of the heavenly stems; party B|второй знак десятеричного цикла; сторона Б|on asman nyşanynyň ikinjisi; B tarap
+3362|以|by means of; with; in order to|посредством; с помощью; чтобы|arkaly; bilen; üçin
+3363|以及|as well as; and|а также; и|şeýle hem; we
+3364|以来|since; from a past time until now|с тех пор; начиная с|şondan bäri; bäri
+3365|亿|one hundred million|сто миллионов|ýüz million
+3366|意识|be aware; consciousness|осознавать; сознание|aňlamak; aň
+3367|意外|unexpected; accident|неожиданный; непредвиденный случай|garaşylmadyk; tötän hadysa
+3368|意味着|mean; signify|означать; подразумевать|aňlatmak; manysyny bermek
+3369|义务|duty; obligation; voluntary|обязанность; обязательство; добровольный|borç; meýletin
+3370|意义|meaning; significance|значение; смысл|many; ähmiýet
+3371|因而|therefore; thus|поэтому; вследствие этого|şonuň üçin; şeýlelikde
+3372|音量|sound volume|громкость|sesiň güýji
+3373|因素|factor|фактор; причина|faktor; täsir edýän sebäp
+3374|引进|introduce from outside; bring in|внедрять; привлекать извне|daşardan getirmek; ornaşdyrmak
+3375|饮食|food and drink; diet|питание; пища и напитки|iýmitleniş; iýgi-içgi
+3376|印刷|print|печатать|çap etmek
+3377|应当|should; ought to|следует; должен|gerek; etmeli
+3378|迎|meet; welcome; face towards|встречать; приветствовать; идти навстречу|garşylamak; garşy gitmek
+3379|迎接|welcome; greet|встречать; приветствовать|garşylamak; hoş geldiňiz diýmek
+3380|营养|nutrition; nourishment|питание; питательные вещества|iýmitleniş; ýokumly maddalar
+3381|营业|be open for business; operate a business|работать о торговом заведении; вести торговлю|söwda etmek; hyzmat üçin açyk bolmak
+3382|影片|film; motion picture|кинофильм|film
+3383|影视|film and television|кино и телевидение|kino we telewideniýe
+3384|硬|hard; rigid; forcibly|твёрдый; жёсткий; насильно|gaty; berk; zor bilen
+3385|应对|respond to; cope with|реагировать; справляться|jogap bermek; hötdesinden gelmek
+3386|硬件|hardware|аппаратное обеспечение|enjam üpjünçiligi
+3387|应用|apply; use; applied|применять; прикладной|ulanmak; amaly
+3388|拥抱|hug; embrace|обнимать|gujaklamak
+3389|拥有|possess; own|иметь; владеть|eýe bolmak
+3390|勇气|courage|смелость; мужество|batyrlyk; gaýrat
+3391|用法|usage; method of use|употребление; способ применения|ulanylyş; ulanmagyň usuly
+3392|用户|user; customer|пользователь; абонент|ulanyjy; müşderi
+3393|用力|exert force|прикладывать силу|güýç sarp etmek
+3394|用品|articles for use; supplies|принадлежности; предметы обихода|esbaplar; ulanylýan zatlar
+3395|用途|use; purpose|назначение; применение|niýetlenen iş; ulanylýan ýer
+3396|优惠|preferential; discounted|льготный; выгодный; со скидкой|ýeňillikli; arzanladylan
+3397|悠久|long-standing; time-honoured|давний; многовековой|gadymy; uzak taryhly
+3398|优良|excellent; fine|превосходный; высококачественный|ajaýyp; ýokary hilli
+3399|优美|beautiful; graceful|прекрасный; изящный|owadan; nepis
+3400|优势|advantage; superiority|преимущество; превосходство|artykmaçlyk; üstünlük
+3401|优质|high-quality|высококачественный|ýokary hilli
+3402|由此|from this; consequently|отсюда; вследствие этого|şundan; munuň netijesinde
+3403|邮寄|send by post; mail|отправлять почтой|poçta arkaly ibermek
+3404|邮局|post office|почта; почтовое отделение|poçta bölümi
+3405|游览|sightsee; tour|осматривать достопримечательности|gözel ýerleri aýlanyp görmek
+3406|邮票|postage stamp|почтовая марка|poçta markasy
+3407|油条|youtiao; deep-fried dough stick|ютяо; жареная полоска теста|ýagda gowrulan uzyn hamyr taýajygy
+3408|犹豫|hesitant; undecided|колеблющийся; нерешительный|ikirjiňlenýän; ýaýdanýan
+3409|有害|harmful|вредный|zyýanly
+3410|有力|powerful; forceful|сильный; убедительный|güýçli; ynandyryjy
+3411|有利|favourable; advantageous|благоприятный; выгодный|amatly; bähbitli
+3412|有限|limited; finite|ограниченный; конечный|çäkli
+3413|有益|beneficial; useful|полезный; благотворный|peýdaly; bähbitli
+3414|有助于|help; contribute to|помогать; способствовать|kömek etmek; ýardam bermek
+3415|幼儿园|kindergarten|детский сад|çagalar bagy
+3416|娱乐|entertain; entertainment|развлекаться; развлечение|göwün açmak; güýmenje
+3417|语气|tone of voice; manner of speaking|тон; манера речи|sözleýiş äheňi
+3418|雨水|rainwater; rainfall|дождевая вода; осадки|ýagyş suwy; ýagyn
+3419|语文|language and literature; Chinese as a school subject|язык и литература; китайский язык как предмет|dil we edebiýat; hytaý dili dersi
+3420|语音|speech sounds; pronunciation|звуки речи; произношение|sözleýiş sesleri; aýdylyş
+3421|预报|forecast; give a forecast|прогноз; прогнозировать|öňünden maglumat bermek; çaklama
+3422|预测|predict; forecast|предсказывать; прогнозировать|öňünden çaklamak
+3423|预订|reserve; book in advance|бронировать; заказывать заранее|öňünden sargyt etmek; ýer bellemek
+3424|预防|prevent; take precautions against|предотвращать; предупреждать|öňüni almak
+3425|预计|expect; estimate in advance|предполагать; предварительно рассчитывать|öňünden hasaplamak; garaşmak
+3426|玉米|maize; corn|кукуруза|mekgejöwen
+3427|预约|make an appointment; reserve|записываться на приём; бронировать|öňünden ýazylmak; wagt bellemek
+3428|原|original; former|первоначальный; прежний|asyl; öňki
+3429|圆|circle; round|круг; круглый|tegelek; togalak
+3430|原有|originally existing; already possessed|имевшийся ранее; первоначальный|öňden bar bolan
+3431|元旦|New Year's Day; 1 January|Новый год; 1 января|Täze ýyl güni; 1-nji ýanwar
+3432|员工|employee; staff|работник; персонал|işgär; işgärler
+3433|原则|principle|принцип|ýörelge
+3434|愿|wish; be willing|желать; быть готовым|arzuw etmek; islemek
+3435|愿望|wish; desire|желание; стремление|arzuw; isleg
+3436|约定|agree on; arrange|договариваться; условливаться|ylalaşmak; öňünden şertleşmek
+3437|运|transport; carry|перевозить; транспортировать|daşamak
+3438|运费|freight charge; shipping cost|стоимость перевозки; плата за доставку|daşama tölegi; eltip bermek bahasy
+3439|运气|luck; fortune|удача; везение|bagt; şow
+3440|运输|transport; convey|перевозить; транспортировать|daşamak; ulag bilen eltmek
+3441|运用|apply; put to use|применять; использовать|ulanmak; peýdalanmak
+3442|在场|be present|присутствовать|ýerinde bolmak; gatnaşmak
+3443|在乎|care about; mind|придавать значение; быть небезразличным|üns bermek; ähmiýet bermek
+3444|在内|included; within|включая; внутри|şol sanda; içinde
+3445|在线|be online|быть в сети|onlaýn bolmak; tora birikdirilen bolmak
+3446|在于|lie in; consist in|заключаться в; зависеть от|ybarat bolmak; bagly bolmak
+3447|赞成|approve of; agree with|одобрять; соглашаться|makullamak; goldamak
+3448|糟|bad; terrible; ruined|плохой; скверный; испорченный|erbet; zaýa
+3449|糟糕|awful; terrible|ужасный; скверный|örän erbet; elhenç
+3450|早期|early stage; initial period|ранний этап; начальный период|irki döwür; başlangyç tapgyr
+3451|早晚|morning and evening; sooner or later|утро и вечер; рано или поздно|irden we agşam; iru-giç
+3452|早已|long since; already long ago|давно уже|bireýýäm
+3453|造|make; build; create|создавать; строить; изготавливать|ýasamak; gurmak; döretmek
+3454|造成|cause; bring about|вызывать; приводить к|sebäp bolmak; döretmek
+3455|增|increase; add|увеличивать; прибавлять|artdyrmak; goşmak
+3456|增进|promote; strengthen|укреплять; углублять|güýçlendirmek; ösdürmek
+3457|增强|strengthen; enhance|усиливать; укреплять|güýçlendirmek; berkitmek
+3458|赠|give as a gift|дарить|sowgat bermek
+3459|赠送|present as a gift; give away|дарить; преподносить|sowgat etmek; bagyşlamak
+3460|炸|deep-fry|жарить во фритюре|köp ýagda gowurmak
+3461|摘|pick; take off; extract|срывать; снимать; делать выписки|üzmek; çykarmak; saýlap almak
+3462|窄|narrow|узкий|dar
+3463|展出|exhibit; put on display|выставлять; экспонировать|sergä çykarmak
+3464|展开|unfold; launch; carry out|разворачивать; развёртывать; начинать|ýazmak; açmak; başlamak
+3465|展览|exhibit; display|выставлять; демонстрировать|sergilemek; görkezmek
+3466|展示|show; display|показывать; демонстрировать|görkezmek; sergilemek
+3467|展现|reveal; present|представлять; проявлять|ýüze çykarmak; görkezmek
+3468|占|occupy; account for|занимать; составлять долю|eýelemek; paýyny düzmek
+3469|站台|station platform|платформа; перрон|perron; duralga meýdançasy
+3470|占线|be engaged; be busy (telephone line)|быть занятым о телефонной линии|telefon liniýasynyň boş bolmazlygy
+3471|涨|rise in price or level|повышаться; подниматься|ýokarlanmak; galmak
+3472|涨价|rise in price|дорожать; повышать цену|gymmatlamak; bahasyny ýokarlandyrmak
+3473|掌声|applause|аплодисменты|el çarpyşmalar
+3474|掌握|master; grasp; have command of|овладевать; усваивать; владеть|ele almak; özleşdirmek; erk etmek
+3475|账号|account number; account ID|номер счёта; идентификатор аккаунта|hasap belgisi; ulanyjy hasabynyň belgisi
+3476|账户|account|счёт; учётная запись|hasap; ulanyjy hasaby
+3477|着凉|catch a chill|простудиться|sowuklamak
+3478|召开|convene; hold a meeting|созывать; проводить собрание|ýygnak çagyrmak; geçirmek
+3479|折扣|discount|скидка|arzanladyş
+3480|哲学|philosophy|философия|pelsepe; filosofiýa
+3481|真诚|sincere; genuine|искренний; сердечный|ak ýürekli; çyn ýürekden
+3482|针对|target; be directed at|быть направленным на; учитывать|gönükdirilmek; nazara almak
+3483|珍贵|precious; valuable|драгоценный; ценный|gymmatly; gadyrly
+3484|真实|real; true; authentic|подлинный; правдивый; реальный|hakyky; dogruçyl
+3485|珍惜|cherish; treasure|дорожить; беречь|gadyr bilmek; aýamak
+3486|诊断|diagnose|ставить диагноз|keseli anyklamak; diagnoz goýmak
+3487|阵|classifier for short spells or bursts|счётное слово для кратких приступов, порывов и периодов|gysga wagtlyk hadysalar we tolkunlar üçin san sözi
+3488|争|contend; compete; argue|бороться за; соперничать; спорить|bäsleşmek; göreşmek; jedelleşmek
+3489|争取|strive for; try to obtain|добиваться; бороться за|gazanmaga çalyşmak; ugrunda göreşmek
+3490|整齐|neat; orderly|аккуратный; ровный; упорядоченный|tertipli; düzgünli
+3491|整体|whole; entirety|целое; единое целое|tutuşlyk; bitewilik
+3492|整整|a full; exactly|ровно; целых|doly; tutuş; hut
+3493|挣|earn; make money|зарабатывать|pul gazanmak
+3494|政府|government|правительство|hökümet
+3495|证据|evidence; proof|доказательство; улика|subutnama; delil
+3496|正如|just as; exactly like|как раз как; подобно тому как|edil; hut şonuň ýaly
+3497|证书|certificate|сертификат; свидетельство|şahadatnama; sertifikat
+3498|政治|politics|политика|syýasat
+3499|支1|classifier for rods, teams or songs|счётное слово для палочкообразных предметов, команд и песен|taýak şekilli zatlar, toparlar we aýdymlar üçin san sözi
+3500|知名|well-known; famous|известный; знаменитый|tanymal; meşhur
+3501|直|straight; straighten; directly|прямой; выпрямлять; прямо|göni; göneltmek; göni ýol bilen
+3502|直播|broadcast live; livestream|передавать в прямом эфире|göni ýaýlyma bermek
+3503|职场|workplace; professional world|рабочая среда; профессиональная сфера|iş ýeri; hünär dünýäsi
+3504|职工|staff; employees|работники; служащие|işgärler
+3505|执行|carry out; enforce; executive|исполнять; осуществлять; исполнительный|ýerine ýetirmek; amala aşyrmak; ýerine ýetiriji
+3506|止|stop; cease|останавливать; прекращать|saklamak; bes etmek
+3507|指导|guide; instruct|руководить; наставлять|ýol görkezmek; maslahat bermek
+3508|至|reach; arrive at|доходить; достигать|ýetmek; baryp ýetmek
+3509|治|treat; cure; govern|лечить; управлять|bejermek; dolandyrmak
+3510|制订|draw up; work out a plan|разрабатывать; составлять план|meýilnama işläp düzmek
+3511|制定|formulate; establish a rule|устанавливать; разрабатывать правила|düzgün işläp düzmek; kesgitlemek
+3512|制度|system; regulations|система; порядок; правила|ulgam; düzgünler
+3513|智慧|wisdom; intelligence|мудрость; ум|paýhas; akyl
+3514|至今|up to now; to this day|до сих пор; по сей день|şu güne çenli
+3515|治疗|treat; provide medical treatment|лечить|bejermek; derman etmek
+3516|智能|intelligence; intelligent; smart|интеллект; интеллектуальный; умный|zehin; akylly
+3517|志愿者|volunteer|волонтёр; доброволец|meýletinçi
+3518|制造|manufacture; produce|производить; изготавливать|öndürmek; ýasamak
+3519|制作|make; produce; create|изготавливать; создавать|ýasamak; taýýarlamak
+3520|中华|China; Chinese civilisation|Китай; китайская цивилизация|Hytaý; Hytaý medeniýeti
+3521|中华民族|the Chinese nation|китайская нация|Hytaý halky
+3522|中级|intermediate-level|среднего уровня|orta derejeli
+3523|中介|intermediary; agency|посредник; посредническое агентство|araçy; araçyllyk gullugy
+3524|中期|middle period; medium term|средний период; середина срока|orta döwür; orta möhlet
+3525|中外|China and other countries|Китай и зарубежные страны|Hytaý we daşary ýurtlar
+3526|中心|centre; focus|центр; средоточие|merkez; esasy üns berilýän zat
+3527|中药|traditional Chinese medicine; Chinese medicinal herbs|средства традиционной китайской медицины|adaty hytaý dermanlary
+3528|中医|traditional Chinese medicine; its practitioner|традиционная китайская медицина; её врач|adaty hytaý lukmançylygy; onuň lukmany
+3529|种类|kind; type|вид; разновидность|görnüş; kysym
+3530|种子|seed|семя; семена|tohum
+3531|重大|major; significant|важнейший; значительный|uly ähmiýetli; möhüm
+3532|众多|numerous|многочисленный|köp sanly
+3533|重量|weight|вес|agram
+3534|种植|plant; cultivate|сажать; выращивать|ekmek; ösdürip ýetişdirmek
+3535|周年|anniversary; full year|годовщина; полный год|ýyl dönümi; doly ýyl
+3536|猪|pig|свинья|doňuz
+3537|逐步|step by step|постепенно; шаг за шагом|ädimme-ädim
+3538|逐渐|gradually|постепенно|kem-kemden
+3539|竹子|bamboo|бамбук|bambuk
+3540|煮|boil; cook in water|варить|gaýnatmak; suwda bişirmek
+3541|主持|host; preside over|вести мероприятие; председательствовать|alyp barmak; başlyklyk etmek
+3542|主动|proactive; taking the initiative|инициативный; добровольный|başlangyç görkezýän; öz islegi bilen
+3543|主观|subjective|субъективный|subýektiw
+3544|主人|host; owner|хозяин; владелец|eýe; öý eýesi
+3545|主任|director; head of a department|заведующий; начальник отдела|müdir; bölüm başlygy
+3546|主食|staple food|основной продукт питания|esasy iýmit
+3547|主题|theme; subject|тема; основная мысль|tema; esasy pikir
+3548|主席|chairperson; president|председатель|başlyk
+3549|注册|register; sign up|регистрироваться; регистрировать|hasaba durmak; bellige almak
+3550|住房|housing; accommodation|жильё|ýaşaýyş jaýy
+3551|住宿|stay overnight; lodge|останавливаться на ночлег; проживать|ýatmak; wagtlaýyn ýerleşmek
+3552|住址|residential address|адрес проживания|ýaşaýan salgysy
+3553|注重|attach importance to; pay attention to|придавать значение; уделять внимание|ähmiýet bermek; üns bermek
+3554|抓|grab; grasp; catch|хватать; ловить|tutmak; gapmak
+3555|抓紧|grasp firmly; make the most of time|крепко держать; не терять времени|berk tutmak; wagty peýdalanmak
+3556|专家|expert; specialist|эксперт; специалист|bilermen; hünärmen
+3557|专心|attentive; concentrated|сосредоточенный; внимательный|ünsli; ünsüni jemleýän
+3558|转变|change; transform|менять; преобразовывать|üýtgetmek; özgertmek
+3559|转告|pass on a message|передавать сообщение|habary ýetirmek
+3560|装饰|decorate; decoration|украшать; украшение|bezemek; bezeg
+3561|装修|renovate; fit out|ремонтировать; отделывать помещение|jaýy abatlamak; bezeg işlerini geçirmek
+3562|撞|collide; bump into|сталкиваться; ударяться|çaknyşmak; urulmak
+3563|状况|condition; circumstances|состояние; положение|ýagdaý; şertler
+3564|状态|state; status|состояние; статус|ýagdaý; hal
+3565|追|chase; pursue|догонять; преследовать|kowalamak; yzyndan ýetmek
+3566|追求|pursue; seek|стремиться к; добиваться|ymtylmak; gazanmaga çalyşmak
+3567|资格|qualification; eligibility|квалификация; право на участие|hünär derejesi; gatnaşmaga hukuk
+3568|资金|funds; capital|денежные средства; капитал|serişdeler; maýa
+3569|姿势|posture; pose|поза; положение тела|duruş; beden ýagdaýy
+3570|咨询|consult; ask for information|консультироваться; обращаться за информацией|maslahat almak; maglumat soramak
+3571|资源|resources|ресурсы|serişdeler; baýlyklar
+3572|紫|purple; violet|фиолетовый|benewşe
+3573|子女|sons and daughters; children|дети; сыновья и дочери|ogul-gyzlar; perzentler
+3574|自从|since; ever since|с тех пор как; начиная с|bäri; şondan bäri
+3575|自动|automatically; automatic; of one's own accord|автоматически; автоматический; по собственной инициативе|awtomatik; öz-özünden; öz islegi bilen
+3576|自觉|be aware of; conscientious|осознавать; сознательный|duýmak; aňly; jogapkärli
+3577|字母|letter of the alphabet|буква алфавита|elipbiý harpy
+3578|自身|oneself; one's own person|сам; собственная личность|özi; öz şahsyýeti
+3579|自由|free; freedom|свободный; свобода|erkin; erkinlik
+3580|综合|synthesise; combine|обобщать; объединять|jemlemek; birleşdirmek
+3581|总部|headquarters; head office|штаб-квартира; головной офис|baş edara
+3582|总共|altogether; in total|всего; в общей сложности|jemi; bary-ýogy
+3583|总数|total number|общее число|umumy san
+3584|总体|whole; entirety|совокупность; целое|umumylyk; tutuşlyk
+3585|总统|president of a republic|президент|prezident
+3586|总之|in short; in conclusion|словом; в общем; итак|gysgaça; jemläp aýtsak
+3587|租金|rent; rental payment|арендная плата|kärende tölegi
+3588|族|suffix for an ethnic group, clan or social group|суффикс народа, рода или социальной группы|halky, taýpany ýa-da jemgyýetçilik toparyny aňladýan goşulma
+3589|足够|be enough; suffice|быть достаточным; хватать|ýeterlik bolmak
+3590|组成|form; make up; constitute|составлять; образовывать|düzmek; emele getirmek
+3591|组合|combine; combination|сочетать; комбинация|birleşdirmek; utgaşyk
+3592|阻止|stop; prevent|препятствовать; останавливать|päsgel bermek; saklamak
+3593|组织|organise; organisation; tissue|организовывать; организация; ткань организма|guramak; gurama; beden dokumasy
+3594|嘴巴|mouth|рот|agyz
+3595|醉|be drunk; be intoxicated|опьянеть; быть пьяным|serhoş bolmak
+3596|最初|the beginning; at first|самое начало; сначала|ilki; başlangyç
+3597|最佳|best; optimal|наилучший; оптимальный|iň gowy; iň amatly
+3598|尊敬|respect; respectful; esteemed|уважать; почтительный; уважаемый|hormatlamak; hormat goýýan; hormatly
+3599|遵守|observe; abide by|соблюдать; придерживаться|berjaý etmek; eýermek
+3600|作出|make; produce a decision or response|принимать решение; давать ответ; совершать|karar kabul etmek; jogap bermek; etmek

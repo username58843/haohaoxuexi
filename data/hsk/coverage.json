@@ -41,9 +41,9 @@
     "5": {
       "total": 1600,
       "en": 1600,
-      "ru": 970,
-      "tk": 8,
-      "authoredGlosses": 0,
+      "ru": 1600,
+      "tk": 1600,
+      "authoredGlosses": 1600,
       "examples": 1014,
       "completeExamples": 0
     },
@@ -67,5 +67,5 @@
     }
   },
   "status": "editorial-review-required",
-  "contentSha256": "4201939ceb9af762972585c3a870ebe157ec1b975cd1a4018b6922b1ea3e8379"
+  "contentSha256": "4db5139118cc2ec846cd2841f1a5fb4fa439224932f7ef5ef576347a9fd4d802"
 }
