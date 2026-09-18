@@ -299,3 +299,303 @@ number|headword|en|ru|tk
 3898|点燃|light; ignite|зажигать; воспламенять|ýakmak; otlamak
 3899|典型|typical example; typical|типичный пример; типичный|häsiýetli mysal; adaty
 3900|电饭锅|electric rice cooker|рисоварка|elektrik tüwi bişiriji
+3901|电力|electric power|электроэнергия|elektrik energiýasy
+3902|店铺|shop; store|магазин; лавка|dükan
+3903|电源|power supply; power source|источник питания|elektrik çeşmesi
+3904|吊|hang; suspend; hoist|подвешивать; поднимать на тросе|asmak; asyp galdyrmak
+3905|调动|transfer; mobilise|переводить; мобилизовать|başga ýere geçirmek; herekete getirmek
+3906|钓鱼|fish with a rod; go fishing|удить рыбу|çeňňek bilen balyk tutmak
+3907|跌|fall; drop in price|падать; снижаться о цене|ýykylmak; pese gaçmak
+3908|顶|top; prop up; classifier for hats and tents|верхушка; подпирать; счётное слово для шапок и палаток|depe; diremek; başgaplar we çadyrlar üçin san sözi
+3909|订单|order; purchase order|заказ; бланк заказа|sargyt; sargyt kagyzy
+3910|订婚|get engaged|обручаться|adaglanmak
+3911|定价|set a price; fixed price|назначать цену; установленная цена|baha bellemek; bellenen baha
+3912|定时|set a time; fixed time|назначать время; определённое время|wagt bellemek; bellenen wagt
+3913|定位|locate; position; positioning|определять положение; позиционировать; местоположение|ýerini kesgitlemek; ýerleşdirmek; orun
+3914|定义|definition; define|определение; давать определение|kesgitleme; kesgitlemek
+3915|定制|custom-make; tailor to order|изготавливать на заказ|sargyt boýunça ýasamak
+3916|栋|classifier for buildings|счётное слово для зданий|binalar üçin san sözi
+3917|动机|motive; motivation|мотив; побуждение|sebäp; itergi
+3918|动力|motive power; driving force|движущая сила; стимул|hereketlendiriji güýç; höwes
+3919|动漫|animation and comics|анимация и комиксы|animasiýa we komiksler
+3920|动态|developments; trends; dynamic|динамика; изменения; динамический|üýtgeşmeler; ösüş ýagdaýy; hereketdäki
+3921|动听|pleasant to hear; melodious|приятный на слух; мелодичный|ýakymly eşidilýän; owazly
+3922|逗|tease; amuse; funny|дразнить; забавлять; смешной|degşip gyjyndyrmak; güldürmek; gülkünç
+3923|斗争|struggle; fight|бороться; борьба|göreşmek; göreş
+3924|都市|metropolis; city|большой город; мегаполис|uly şäher
+3925|毒|poison; poison someone; poisonous; vicious|яд; отравлять; ядовитый; жестокий|zäher; zäherlemek; zäherli; zalym
+3926|渡|cross a river; ferry across|переправляться; перевозить через реку|derýadan geçmek; geçirip bermek
+3927|端|carry level in both hands|нести перед собой обеими руками|iki eliň bilen öňüňde tutup götermek
+3928|短缺|be short of; be in short supply|не хватать; быть в дефиците|ýetmezlik; gyt bolmak
+3929|对称|symmetrical|симметричный|simmetrik; deňölçegli
+3930|对接|dock; connect; coordinate|стыковать; соединять; согласовывать|birikdirmek; utgaşdyrmak
+3931|对抗|resist; confront|противостоять; бороться против|garşy durmak; göreşmek
+3932|对立|oppose; stand in opposition|противостоять; быть противоположным|gapma-garşy bolmak
+3933|对应|correspond; corresponding|соответствовать; соответствующий|laýyk gelmek; degişli
+3934|蹲|squat; crouch|сидеть на корточках; приседать|çommallyp oturmak; çökmek
+3935|顿时|immediately; all at once|сразу; тут же|dessine; şol bada
+3936|多才多艺|versatile; multitalented|разносторонне одарённый|köptaraplaýyn zehinli
+3937|多亏|thanks to; owing to someone's help|благодаря; хорошо, что|saýasynda; gowy ki
+3938|多媒体|multimedia|мультимедиа|multimediýa
+3939|多余|be left over; superfluous|оставаться лишним; излишний|artyk galmak; artykmaç
+3940|多元|diverse; pluralistic|многообразный; многокомпонентный|köpdürli; köp düzümli
+3941|夺|seize; take by force; win|захватывать; отнимать; завоёвывать|basyp almak; elinden almak; gazanmak
+3942|夺取|seize; capture; win|захватывать; завоёвывать|basyp almak; gazanmak
+3943|躲避|avoid; evade; hide from|избегать; уклоняться; прятаться от|gaça durmak; gizlenmek
+3944|恶心|disgusting; feel nauseous; disgust|тошнотворный; испытывать тошноту; вызывать отвращение|ýigrenji; ýüregiň bulanmak; ýigrendirmek
+3945|恶劣|bad; harsh; vile|плохой; суровый; скверный|ýaramaz; agyr; erbet
+3946|儿科|paediatrics; children's department|педиатрия; детское отделение|çaga lukmançylygy; çagalar bölümi
+3947|耳环|earring|серьга; серьги|gulakhalkа
+3948|二氧化碳|carbon dioxide|углекислый газ|kömürturşy gazy
+3949|发病|fall ill; develop symptoms|заболевать; проявляться о болезни|kesellemek; kesel alamatlarynyň ýüze çykmagy
+3950|发愁|worry; feel troubled|беспокоиться; горевать|alada etmek; gamlanmak
+3951|发电|generate electricity|вырабатывать электричество|elektrik öndürmek
+3952|发动|start an engine; launch; mobilise|запускать двигатель; начинать; мобилизовать|işe girizmek; başlamak; herekete getirmek
+3953|发放|distribute; issue|выдавать; распределять|paýlamak; bermek
+3954|发光|shine; emit light|светиться; излучать свет|ýagty saçmak
+3955|发票|invoice; official receipt|счёт-фактура; официальный чек|hasap-faktura; resmi töleg kagyzy
+3956|发行|issue; publish; distribute|выпускать; издавать; распространять|çykarmak; neşir etmek; ýaýratmak
+3957|发炎|become inflamed|воспаляться|sowuklamak; alawlanmak
+3958|发育|develop; grow|развиваться; расти|ösüp ýetişmek
+3959|法定|statutory; prescribed by law|установленный законом|kanunda bellenen
+3960|法官|judge|судья|kazy
+3961|法规|laws and regulations|нормативные акты; законы и правила|kanunlar we düzgünler
+3962|番|classifier for bouts or kinds; times in multiplication|счётное слово для случаев и видов; кратность|gezekler we görnüşler üçin san sözi; esse
+3963|繁忙|busy; bustling|занятый; напряжённый|işli; başagaý
+3964|凡是|every; all that; whenever|всякий; все, кто; всякий раз, когда|ähli; her bir; her gezek
+3965|繁殖|reproduce; breed|размножаться; разводить|köpelmek; köpeltmek
+3966|反馈|give feedback; feed back|давать обратную связь|gaýtargy bermek; netije barada habar bermek
+3967|反思|reflect on; rethink|переосмысливать; критически обдумывать|gaýtadan oýlanmak; seljermek
+3968|犯|commit an offence; violate; suffer an attack of illness|совершать проступок; нарушать; испытывать приступ|düzgüni bozmak; jenaýat etmek; kesel tutmak
+3969|方方面面|all aspects; every respect|все стороны; все аспекты|ähli taraplar
+3970|方位|direction; position|направление; положение|ugur; ýerleşiş
+3971|方言|dialect|диалект; говор|şiwе; dialekt
+3972|妨碍|hinder; obstruct|мешать; препятствовать|päsgel bermek
+3973|房价|housing price; room rate|цена жилья; стоимость номера|jaýyň bahasy; otag tölegi
+3974|防治|prevent and treat; prevent and control|предупреждать и лечить; предотвращать и устранять|öňüni almak we bejermek
+3975|访谈|interview; talk with|брать интервью; беседовать|söhbetdeşlik geçirmek
+3976|放大|enlarge; magnify|увеличивать; усиливать|ulaltmak; güýçlendirmek
+3977|放飞|release into flight; set free|выпускать в полёт; отпускать на волю|uçurmaga goýbermek; erkinlige goýbermek
+3978|飞速|at great speed; rapidly|стремительно; очень быстро|örän çalt
+3979|肥|fat; fertile; fatten; fertiliser|жирный; плодородный; откармливать; удобрение|semiz; hasylly; semretmek; dökün
+3980|肥胖|obese; overweight|тучный; страдающий ожирением|semiz; aşa agramly
+3981|肥沃|fertile|плодородный|hasylly; mes
+3982|肺|lung|лёгкое|öýken
+3983|肺炎|pneumonia|пневмония|öýken sowuklamasy; pnewmoniýa
+3984|分工|divide up the work|распределять обязанности|işi paýlaşmak; zähmeti bölüşmek
+3985|分级|classify by grade; grade|делить на уровни; классифицировать|derejelere bölmek
+3986|分期|divide into periods or instalments|делить на этапы или взносы|döwürlere ýa-da bölek töleglere bölmek
+3987|分散|scattered; disperse|рассеянный; рассеивать; распределять|dagynyk; dargatmak; paýlamak
+3988|氛围|atmosphere; ambience|атмосфера; обстановка|ýagdaý; ruhy gurşaw
+3989|粉|powder; flour; pink|порошок; мука; розовый|poroşok; un; gülgüne
+3990|愤怒|angry; furious|разгневанный; возмущённый|gaharly; gazaply
+3991|封闭|seal off; close|закрывать; изолировать|ýapmak; üzňeleşdirmek
+3992|风光|scenery; landscape|пейзаж; виды|tebigat görnüşi; peýzaž
+3993|风力|wind force; wind power|сила ветра; энергия ветра|ýeliň güýji; ýel energiýasy
+3994|丰收|have a bumper harvest|получать богатый урожай|bol hasyl almak
+3995|风雨|wind and rain; hardships|ветер и дождь; невзгоды|ýel we ýagyş; kynçylyklar
+3996|奉献|dedicate; contribute|посвящать; отдавать на общее благо|bagyşlamak; goşant goşmak
+3997|夫人|madam; wife (formal)|госпожа; супруга|hanym; aýaly
+3998|服|obey; be convinced; take medicine|подчиняться; признавать правоту; принимать лекарство|boýun bolmak; ynanmak; derman içmek
+3999|浮|float; rise to the surface|плавать на поверхности; всплывать|suwuň ýüzünde ýüzmek; ýüzüne çykmak
+4000|服从|obey; submit to|подчиняться; повиноваться|boýun bolmak; tabyn bolmak
+4001|幅度|extent; range; amplitude|размах; диапазон; амплитуда|gerim; aralyk; amplituda
+4002|符号|symbol; sign|символ; знак|nyşan; belgi
+4003|福利|welfare; benefits; benefit others|благосостояние; льготы; приносить благо|abadançylyk; ýeňillikler; bähbit getirmek
+4004|服用|take medicine|принимать лекарство|derman kabul etmek
+4005|辅导|tutor; coach; guide|консультировать; помогать в учёбе|okuwda kömek etmek; ugrukdyrmak
+4006|辅助|assist; auxiliary|помогать; вспомогательный|kömek etmek; kömekçi
+4007|副2|deputy; secondary; auxiliary|заместительский; второстепенный; вспомогательный|orunbasar; ikinji derejeli; goşmaça
+4008|覆盖|cover; encompass|покрывать; охватывать|örtmek; gurşap almak
+4009|附件|attachment; enclosure; accessory|приложение; вложение; принадлежность|goşundy; goşmaça enjam
+4010|负面|negative; adverse|негативный; отрицательный|ýaramaz; oňaýsyz
+4011|富裕|wealthy; make prosperous|зажиточный; обогащать|gurply; baýlaşdyrmak
+4012|赋予|endow; grant|наделять; придавать|bermek; bagyşlamak
+4013|该2|the said; that; the aforesaid|данный; упомянутый|şol; agzalan
+4014|改编|adapt; rearrange|адаптировать; переделывать произведение|uýgunlaşdyrmak; täzeden işlemek
+4015|改造|transform; remodel|преобразовывать; перестраивать|özgertmek; täzeden gurmak
+4016|概率|probability|вероятность|ähtimallyk
+4017|肝|liver|печень|bagyr
+4018|干脆|straightforward; simply; might as well|решительный; прямой; попросту; уж лучше|aýgytly; göni; gowusy
+4019|尴尬|awkward; embarrassed|неловкий; смущённый|oňaýsyz; müýnli
+4020|干旱|arid; drought-stricken|засушливый|gurak
+4021|干扰|interfere with; disturb|мешать; создавать помехи|päsgel bermek; biynjalyk etmek
+4022|干燥|dry; arid|сухой; засушливый|gury; gurak
+4023|感激|feel grateful; appreciate|быть благодарным|minnetdar bolmak
+4024|赶忙|hurriedly; at once|поспешно; немедленно|howlukmaç; derrew
+4025|感染|infect; be infected; move emotionally|заражать; заражаться; эмоционально воздействовать|ýokuşdyrmak; ýokuşmak; täsir etmek
+4026|感想|impressions; reflections|впечатления; размышления|täsirler; pikirler
+4027|钢笔|fountain pen|перьевая ручка|syýaly ruçka
+4028|港口|port; harbour|порт; гавань|gämi duralgasy; port
+4029|岗位|post; job position|рабочее место; должность|iş orny; wezipe
+4030|高层|senior leadership; high-rise|высшее руководство; высотный|ýokary ýolbaşçylar; köp gatly
+4031|高超|superb; highly skilled|виртуозный; превосходный|ussat; ýokary derejeli
+4032|高等|higher; advanced|высший; повышенного уровня|ýokary; ýokary derejeli
+4033|高端|high-end; upper end|высококлассный; верхний сегмент|ýokary derejeli; ýokary segment
+4034|高峰|peak; high point|пик; вершина|iň ýokary dereje; depe
+4035|高尚|noble; lofty|благородный; возвышенный|asylly; belent
+4036|高手|expert; master|мастер; знаток|ussat; ökde hünärmen
+4037|高新技术|high and new technology|высокие и новейшие технологии|ýokary we täze tehnologiýalar
+4038|高原|plateau; highland|плато; нагорье|belent tekizlik; daglyk
+4039|稿件|manuscript; submitted article|рукопись; материал для публикации|golýazma; çap ediljek makala
+4040|稿子|draft; manuscript|черновик; рукопись|garalama; golýazma
+4041|割|cut; sever|резать; отрезать|kesmek; kesip aýyrmak
+4042|歌唱|sing; praise in song|петь; воспевать|aýdym aýtmak; wasp etmek
+4043|隔壁|next door; neighbouring room|соседняя комната; по соседству|goňşy otag; gapdaldaky jaý
+4044|革命|make a revolution; revolutionary|совершать революцию; революционный|rewolýusiýa etmek; rewolýusion
+4045|个体|individual; individual entity|индивид; отдельный организм или единица|aýratyn şahs; aýratyn birlik
+4046|给予|give; provide|давать; предоставлять|bermek; üpjün etmek
+4047|跟前|nearby; in front of someone|рядом; перед кем-либо|ýany; öňi
+4048|跟随|follow; accompany|следовать; сопровождать|yzyna düşmek; ýoldaş bolmak
+4049|跟踪|track; follow; monitor|отслеживать; следить за|yzarlamak; gözegçilik etmek
+4050|公|public; common; male (animal)|общественный; общий; самец|jemgyýetçilik; umumy; erkek jynsly
+4051|宫|palace|дворец|köşk
+4052|公安|public security; police|общественная безопасность; полиция|jemgyýetçilik howpsuzlygy; polisiýa
+4053|工地|construction site|строительная площадка|gurluşyk meýdançasy
+4054|工夫|time; spare time; effort|время; свободное время; усилия|wagt; boş wagt; tagalla
+4055|公告|announce publicly; public notice|официально объявлять; объявление|resmi yglan etmek; bildiriş
+4056|供给|supply; provide|снабжать; обеспечивать|ü üpjün etmek; ýetirmek
+4057|攻击|attack; assault|атаковать; нападать|hüjüm etmek
+4058|公开|open; public; make public|открытый; публичный; обнародовать|açyk; köpçülige aýan etmek
+4059|公民|citizen|гражданин|raýat
+4060|公认|be generally acknowledged|быть общепризнанным|hemmeler tarapyndan ykrar edilmek
+4061|功效|efficacy; effect|эффективность; действие|netijelilik; täsir
+4062|工序|production step; work procedure|технологическая операция; этап работы|önümçilik amaly; iş tapgyry
+4063|公益|public welfare; the public good|общественное благо; благотворительность|jemgyýetçilik bähbidi; haýyr-sahawat
+4064|供应|supply; provide|поставлять; снабжать|ü üpjün etmek; eltip bermek
+4065|公元|Common Era; CE|наша эра|biziň eýýamymyz
+4066|公正|fair; impartial|справедливый; беспристрастный|adalatly; bitarap
+4067|公众|the public|общественность; публика|köpçülik; jemgyýet
+4068|公主|princess|принцесса|şazada gyz
+4069|巩固|solid; consolidate|прочный; укреплять|berk; berkitmek
+4070|共计|total; amount to|составлять в общей сложности|jemi bolmak
+4071|沟|ditch; channel; gully|канава; канал; овраг|ýap; kanal; jar
+4072|构造|construct; form|конструировать; создавать|gurmak; emele getirmek
+4073|孤独|lonely; solitary|одинокий|ýalňyz
+4074|姑姑|paternal aunt|тётя по отцу|kakaň uýasy; eje
+4075|古典|classical|классический|nusgawy
+4076|古迹|historic site; ancient remains|памятник старины; историческое место|gadymy ýadygärlik; taryhy ýer
+4077|股票|share; stock|акция|paýnama
+4078|古人|people of ancient times|люди древности|gadymy adamlar
+4079|股市|stock market|фондовый рынок|paýnama bazary
+4080|骨头|bone|кость|süňk
+4081|鼓舞|inspire; encourage; inspired|воодушевлять; вдохновлённый|ruhlandyrmak; höweslendirmek; ruhubelent
+4082|顾|care for; consider; look back|заботиться; учитывать; оглядываться|aladalanmak; nazara almak; yzyna seretmek
+4083|固体|solid matter; solid|твёрдое тело|gaty jisim
+4084|顾问|adviser; consultant|советник; консультант|maslahatçy
+4085|故障|fault; malfunction|неисправность; сбой|näsazlyk; bozulma
+4086|拐|turn; abduct; limp|сворачивать; похищать; хромать|öwrülmek; alyp gaçmak; agsamak
+4087|拐弯|turn a corner|сворачивать; поворачивать|öwrülmek
+4088|官|official; government officer|чиновник; должностное лицо|emeldar; wezipeli adam
+4089|关爱|care for; show affection|заботиться; проявлять любовь|aladalanmak; mähir görkezmek
+4090|官方|the authorities; official side|официальные круги; власти|resmi edaralar; häkimiýet
+4091|观光|go sightseeing|осматривать достопримечательности|syýahat edip gözel ýerleri görmek
+4092|关怀|care for; show concern|проявлять заботу|alada etmek; alada bildirmek
+4093|关联|be related; connect|быть связанным; связывать|baglanyşykly bolmak; baglanyşdyrmak
+4094|观赏|view and enjoy; admire|смотреть с удовольствием; любоваться|synlap lezzet almak
+4095|官员|government official|государственный чиновник|döwlet emeldary
+4096|管道|pipe; pipeline|трубопровод; труба|turba; turbageçiriji
+4097|罐|jar; can; tank|банка; бидон; бак|gap; banka; çelek
+4098|广阔|vast; broad|обширный; широкий|giň; çäksiz
+4099|归|return; belong to; be handled by|возвращаться; принадлежать; относиться к ведению|gaýdyp gelmek; degişli bolmak; tabynlykda bolmak
+4100|规范|norm; standard; standardise|норма; нормативный; стандартизировать|kada; kadaly; kadalaşdyrmak
+4101|规划|plan; planning; draw up a plan|план; планировка; планировать|meýilnama; meýilleşdirmek
+4102|归还|return something borrowed|возвращать взятое|yzyna gaýtarmak
+4103|规矩|rule; convention; well-behaved|правило; обычай; благовоспитанный|düzgün; kada; edepli
+4104|轨道|track; orbit|колея; орбита|rels ýoly; orbita
+4105|跪|kneel|стоять на коленях|dyza çökmek
+4106|贵重|valuable; precious|ценный; драгоценный|gymmatly; gymmat bahaly
+4107|棍|stick; rod|палка; прут|taýak; çybyk
+4108|国宝|national treasure|национальное сокровище|milli hazyna
+4109|国产|domestically produced|отечественного производства|ýurtda öndürilen
+4110|国歌|national anthem|государственный гимн|döwlet senasy
+4111|国旗|national flag|государственный флаг|döwlet baýdagy
+4112|国情|national conditions|положение и особенности страны|ýurtdaky ýagdaý; ýurduň aýratynlyklary
+4113|国王|king|король|patyşa
+4114|过渡|make a transition; shift to|переходить; осуществлять переход|geçiş etmek; başga tapgyra geçmek
+4115|过后|afterwards; after an event|после; по окончании|soň; gutarandan soň
+4116|过时|become outdated; out of date|устаревать; устарелый|könelmek; könelişen
+4117|海内外|at home and abroad|в стране и за рубежом|ýurtda we daşary ýurtda
+4118|海岸|coast; seashore|морской берег; побережье|deňiz kenary
+4119|海拔|altitude above sea level|высота над уровнем моря|deňiz derejesinden beýiklik
+4120|海面|sea surface|поверхность моря|deňziň ýüzi
+4121|海域|sea area; maritime waters|морская акватория|deňiz giňişligi; deňiz çägi
+4122|害|harm; disaster; harm someone|вред; бедствие; вредить|zyýan; betbagtçylyk; zyýan bermek
+4123|寒冬|severe winter; cold winter|суровая зима|sowuk gyş
+4124|含义|meaning; implication|значение; смысл|many; mazmun
+4125|罕见|rare; seldom seen|редкий; редко встречающийся|seýrek duş gelýän
+4126|旱灾|drought disaster|засуха как стихийное бедствие|gurakçylyk betbagtçylygy
+4127|航空|navigate or travel through the air|совершать полёты; осуществлять воздушное сообщение|howa gatnawyny amala aşyrmak
+4128|毫不|not in the least|нисколько не; ничуть не|asla; hiç
+4129|毫无|have absolutely no|совершенно не иметь; ни малейшего|asla ýok; hiç hili ýok
+4130|毫米|millimetre|миллиметр|millimetr
+4131|毫升|millilitre|миллилитр|millilitr
+4132|好不|very; exceedingly|очень; чрезвычайно|örän; juda
+4133|好感|favourable impression; liking|симпатия; хорошее впечатление|ýakymly täsir; halama
+4134|好容易|only with great difficulty; finally|с большим трудом; наконец-то|zordan; ahyrsoňy
+4135|好客|hospitable|гостеприимный|myhmansöýer
+4136|好学|love learning; be eager to study|любить учиться|okamagy söýmek; bilime höwesli bolmak
+4137|号召|call upon; appeal to|призывать; обращаться с призывом|çagyryş etmek; ündemek
+4138|合并|merge; combine|сливать; объединять|birleşdirmek
+4139|合成|synthesise; combine|синтезировать; составлять|sintezlemek; birleşdirmek
+4140|和平|peace|мир|parahatçylyk
+4141|和谐|harmonious|гармоничный; согласованный|sazlaşykly; agzybir
+4142|核心|core; heart of a matter|ядро; суть|özen; esasy mazmun
+4143|嘿|hey!; aha!|эй!; ага!|eý!; hä!
+4144|黑暗|dark; gloomy|тёмный; мрачный|garaňky; tukat
+4145|痕迹|trace; mark|след; отметина|yz; alamat
+4146|狠|fierce; cruel; be ruthless; fiercely|жестокий; решительный; ожесточаться; свирепо|zalym; berk; rehimsiz bolmak; gazaply
+4147|恨|hate; resent|ненавидеть; испытывать неприязнь|ýigrenmek; kine saklamak
+4148|横|horizontal; crosswise; lay across; horizontal stroke|горизонтальный; поперечный; класть поперёк; горизонтальная черта|kese; keseligine; kese goýmak; kese çyzyk
+4149|衡量|weigh up; assess|оценивать; взвешивать|ölçerip görmek; baha bermek
+4150|宏大|grand; vast|грандиозный; масштабный|äpet; giň gerimli
+4151|洪水|flood; floodwater|наводнение; паводковые воды|suw joşguny; sil
+4152|后代|descendants; later generations|потомки; последующие поколения|nesiller; soňky nesiller
+4153|后期|later stage; final period|поздний этап; заключительный период|soňky tapgyr
+4154|后人|posterity; descendants|потомки; люди будущего|soňky nesiller
+4155|后退|retreat; move backwards|отступать; двигаться назад|yza çekilmek; yza gitmek
+4156|后者|the latter|последний из двух; второй|soňky agzalan; ikinjisi
+4157|忽略|overlook; neglect|упускать из виду; игнорировать|ünsden düşürmek; äsgermezlik etmek
+4158|壶|pot; kettle|чайник; кувшин|çäýnek; kündük
+4159|胡子|beard; moustache|борода; усы|sakgal; murt
+4160|户|classifier for households|счётное слово для семей и дворов|maşgalalar we hojalyklar üçin san sözi
+4161|互助|help one another|помогать друг другу|birek-birege kömek etmek
+4162|花朵|flower; blossom|цветок; цветы|gül; gül açmasy
+4163|花生|peanut|арахис|arahis; ýer hozy
+4164|滑冰|ice-skate|кататься на коньках|buzda konkili typmak
+4165|滑行|glide; taxi (aircraft)|скользить; рулить о самолёте|typyp hereket etmek; uçaryň ýerde ýöremegi
+4166|滑雪|ski|кататься на лыжах|lyža typmak
+4167|划|draw a line; divide; allocate|проводить черту; делить; выделять|çyzyk çekmek; bölmek; bölüp bermek
+4168|划分|divide; demarcate|разделять; разграничивать|bölmek; araçäk kesgitlemek
+4169|化石|fossil|окаменелость|daşlaşan galyndy
+4170|话筒|microphone; telephone receiver|микрофон; телефонная трубка|mikrofon; telefon trubkasy
+4171|化妆|put on makeup|делать макияж|bezenmek; makiýaž etmek
+4172|怀|bosom; mind; harbour; carry a child|грудь; душа; питать чувство; носить ребёнка|gursak; göwün; duýgy saklamak; göwreli bolmak
+4173|怀念|cherish the memory of; miss|с теплом вспоминать; тосковать по|ýagşylykda ýatlamak; küýsemek
+4174|怀孕|be pregnant|быть беременной|göwreli bolmak
+4175|欢乐|joyful; merry|радостный; весёлый|şat; şadyýan
+4176|环|ring; loop; surround; ring classifier|кольцо; окружать; счётное слово для колец и кругов|halka; gurşamak; halkalar üçin san sözi
+4177|还原|restore to the original state; reconstruct|восстанавливать исходное состояние|asyl ýagdaýyna getirmek; dikeltmek
+4178|患|suffer from a disease|страдать болезнью|kesellemek
+4179|幻想|fantasise; fantasy|фантазировать; фантазия; мечта|hyýal etmek; hyýal
+4180|患者|patient; person with an illness|пациент; больной|näsag
+4181|黄|yellow colour; egg yolk|жёлтый цвет; желток|sary reňk; ýumurtga sarysy
+4182|皇帝|emperor|император|imperator
+4183|灰尘|dust|пыль|tozan
+4184|灰心|discouraged; disheartened|павший духом; разочарованный|ruhdan düşen; göwnüçökgün
+4185|回报|repay; reciprocate; report back|отплачивать; отвечать взаимностью; докладывать|öwezini gaýtarmak; jogap bermek; hasabat bermek
+4186|回顾|look back; review|оглядываться; обозревать прошлое|yzyna seretmek; geçmişi gözden geçirmek
+4187|回头|turn one's head; later; otherwise|оборачиваться; позже; иначе|yzyna öwrülmek; soň; bolmasa
+4188|汇|converge; collect; remit money|сливаться; собирать; переводить деньги|birleşmek; jemlemek; pul geçirmek
+4189|汇报|report; give an account|докладывать; отчитываться|hasabat bermek
+4190|绘画|draw; paint|рисовать; писать картины|surat çekmek
+4191|会见|meet formally; receive|встречаться официально; принимать|resmi duşuşmak; kabul etmek
+4192|汇款|remit money; money transfer|переводить деньги; денежный перевод|pul geçirmek; pul geçirmesi
+4193|婚姻|marriage|брак; супружество|nika; är-aýallyk
+4194|混|mix; muddle through; indiscriminately|смешивать; кое-как перебиваться; беспорядочно|garyşdyrmak; oňşuk etmek; bulaşyk
+4195|混合|mix; blend|смешивать; соединять|garyşdyrmak
+4196|混乱|chaotic; confused|хаотичный; беспорядочный|bulaşyk; tertipsiz
+4197|活力|vitality; vigour|жизненная сила; энергия|gujur; ýaşaýyş güýji
+4198|活跃|active; lively; liven up|активный; оживлённый; оживлять|işjeň; janly; janlandyrmak
+4199|火柴|match; matches|спичка; спички|otluçöp
+4200|火灾|fire disaster|пожар|ýangyn
