@@ -50,9 +50,9 @@
     "6": {
       "total": 1800,
       "en": 1800,
-      "ru": 892,
-      "tk": 1,
-      "authoredGlosses": 0,
+      "ru": 1800,
+      "tk": 1800,
+      "authoredGlosses": 1800,
       "examples": 953,
       "completeExamples": 0
     },
@@ -67,5 +67,5 @@
     }
   },
   "status": "editorial-review-required",
-  "contentSha256": "4db5139118cc2ec846cd2841f1a5fb4fa439224932f7ef5ef576347a9fd4d802"
+  "contentSha256": "86e6fae8d21094cf2e9f044d75a377af2d55c618c10effc6807c41886735bd39"
 }
