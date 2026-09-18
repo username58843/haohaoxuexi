@@ -385,16 +385,16 @@
       "title": {"zh": "一起吃饭", "en": "Lunch together", "ru": "Обед вместе", "tk": "Bilelikde günortanlyk"},
       "sentences": [
         {
-          "tokens": "画 画 的 课 结束 后 ， 大家 都 饿 了 。 校长 说 要 请客 ， 带 我们 去 街 上 的 饭馆 。 经理 给 我们 菜单 ， 说 米饭 、 鸡肉 和 青菜 都 是 今天 新 做 的 。",
+          "tokens": "画 画 的 课 结束 后 ， 大家 都 饿 了 。 校长 说 要 请客 ， 带 我们 去 街 上 的 饭馆 。 经理 给 我们 菜单 ， 说 米饭 、 鸡 肉 和 菜 都 是 今天 新 做 的 。",
           "en": "When the drawing lesson ends, everyone is hungry. The head teacher offers to treat us and takes us to a restaurant down the street. The manager gives us menus and says the rice, chicken and vegetables have all been freshly prepared today.",
           "ru": "После урока рисования все проголодались. Директор приглашает нас на обед и ведёт в ресторан на улице. Управляющий приносит меню и говорит, что рис, курицу и овощи приготовили сегодня.",
           "tk": "Surat sapagy gutaranda hemmämiz ajygýarys. Müdir bizi nahara myhman edip, köçedäki naharhana alyp barýar. Dolandyryjy menýu berip, tüwiniň, towuk etiniň we gök önümleriň şu gün taýýarlanandygyny aýdýar."
         },
         {
-          "tokens": "桌子 上 有 盘子 、 碗 、 筷子 和 勺子 。 女孩儿 渴 了 ， 我 给 她 一 瓶 矿泉水 。 她 看 着 我 的 饮料 问 ： “ 这个 甜 吗 ？ ” 我 说 ， 里面 没有 糖 。",
-          "en": "There are plates, bowls, chopsticks and spoons on the table. The girl is thirsty, so I give her a bottle of mineral water. She looks at my drink and asks whether it is sweet. I tell her it has no sugar.",
-          "ru": "На столе тарелки, миски, палочки и ложки. Девочка хочет пить, и я даю ей бутылку минеральной воды. Она смотрит на мой напиток и спрашивает, сладкий ли он. Я отвечаю, что в нём нет сахара.",
-          "tk": "Stoluň üstünde tabaklar, jamlar, taýajyklar we çemçeler bar. Gyzjagaz suwsansoň, oňa bir çüýşe mineral suw berýärin. Ol meniň içgime seredip, süýjüdigini soraýar. Içinde şeker ýokdugyny aýdýaryn."
+          "tokens": "桌子 上 有 盘子 、 碗 、 筷子 和 勺子 。 女孩儿 渴 了 ， 我 给 她 一点儿 矿泉水 。 她 看 着 我 的 饮料 问 ： “ 这个 甜 吗 ？ ” 我 说 ， 里面 没有 糖 。",
+          "en": "There are plates, bowls, chopsticks and spoons on the table. The girl is thirsty, so I give her some mineral water. She looks at my drink and asks whether it is sweet. I tell her it has no sugar.",
+          "ru": "На столе тарелки, миски, палочки и ложки. Девочка хочет пить, и я даю ей немного минеральной воды. Она смотрит на мой напиток и спрашивает, сладкий ли он. Я отвечаю, что в нём нет сахара.",
+          "tk": "Stoluň üstünde tabaklar, jamlar, taýajyklar we çemçeler bar. Gyzjagaz suwsansoň, oňa biraz mineral suw berýärin. Ol meniň içgime seredip, süýjüdigini soraýar. Içinde şeker ýokdugyny aýdýaryn."
         },
         {
           "tokens": "爷爷 想 要 啤酒 ， 但 下午 还@67 要 给 孩子 读书 ， 所以 没有 喝 酒 。 他 尝 了 一 口 菜 ， 说 比 外卖 好吃 。 妈妈 笑 着 说 ， 也 比 方便面 好 多 了 。",
@@ -403,10 +403,10 @@
           "tk": "Atamyň piwo içesi gelýär, ýöne öýlän çagalara kitap okap berjekdigi üçin alkogol içenok. Nahary dadyp, eltip berilýän nahardan tagamlydygyny aýdýar. Ejem gülüp, tiz taýýarlanýan unaşdan hem has gowudygyny aýdýar."
         },
         {
-          "tokens": "大家 吃 饱 以后 ， 经理 又 送 来 香蕉 和 西瓜 。 弟弟 还@67 想 吃 冰箱 里 的 冰激凌 ， 妈妈 说 最好 明天 再 吃 。 我 把 空 瓶子 放 好 ， 不让 桌子 太 乱 。",
-          "en": "After everyone has eaten their fill, the manager brings bananas and watermelon. My brother still wants ice cream from the freezer, but Mum says it would be better to leave it until tomorrow. I gather the empty bottles to keep the table tidy.",
-          "ru": "Когда все наелись, управляющий приносит бананы и арбуз. Брат ещё хочет мороженое из холодильника, но мама советует оставить его на завтра. Я собираю пустые бутылки, чтобы не загромождать стол.",
-          "tk": "Hemmämiz doýanymyzdan soň dolandyryjy banan we garpyz getirýär. Jigim sowadyjydaky doňdurmany hem isleýär, emma ejem ertire goýsa gowy boljakdygyny aýdýar. Stol tertipli bolar ýaly boş çüýşeleri ýygnaýaryn."
+          "tokens": "大家 吃 饱 以后 ， 经理 又 送 来 香蕉 和 西瓜 。 弟弟 还@67 想 吃 冰箱 里 的 冰激凌 ， 妈妈 说 最好 明天 再 吃 。 我 把 瓶子 放 好 ， 再 把 桌子 打扫 干净 。",
+          "en": "After everyone has eaten their fill, the manager brings bananas and watermelon. My brother still wants ice cream from the freezer, but Mum says it would be better to leave it until tomorrow. I put the bottles away, then clean the table.",
+          "ru": "Когда все наелись, управляющий приносит бананы и арбуз. Брат ещё хочет мороженое из холодильника, но мама советует оставить его на завтра. Я убираю бутылки, а затем привожу стол в порядок.",
+          "tk": "Hemmämiz doýanymyzdan soň dolandyryjy banan we garpyz getirýär. Jigim sowadyjydaky doňdurmany hem isleýär, emma ejem ertire goýsa gowy boljakdygyny aýdýar. Çüýşeleri ýerli-ýerinde goýup, soň stoly arassalaýaryn."
         }
       ]
     },
@@ -433,7 +433,7 @@
           "tk": "Otagda kondisioner bar. Maňa biraz yssy bolup, ony öçürýärin. Gyzjagaz ýüzüni ýuwup, öýlän hekaýasyny ýene-de öwrenmek isleýändigini aýdýar. Men ilki dişini ýuwup, biraz dynç almagyny maslahat berýärin."
         },
         {
-          "tokens": "我 看 了 一下 今天 的 笔记 ， 发现 事情 差不多 都 做 好 了 。 这 一 次 来 外地 ， 我们 不 是 游客 ， 而 是 来 干 一 件 大家 都 关心 的 事 。 心里 真 高兴 。",
+          "tokens": "我 看 了 一下 今天 的 笔记 ， 发现 事情 差不多 都 做 好 了 。 这 一 次 来 外地 ， 我们 不 是 游客 ， 是 来 干 一 件 大家 都 关心 的 事 。 心里 真 高兴 。",
           "en": "I look over today's notes and find that almost everything is done. This time, away from home, we are not tourists: we have come to work on something everyone cares about. I feel truly happy.",
           "ru": "Я просматриваю сегодняшние записи: почти всё сделано. В этот раз мы приехали в другой город не туристами, а ради общего важного дела. На душе очень радостно.",
           "tk": "Şu günki belliklerime seredip, işleriň tas hemmesiniň edilendigini görýärin. Bu gezek başga ýere syýahatçy bolup däl-de, hemmämiziň alada edýän işimizi etmäge geldik. Ýüregim şatlykdan doly."
@@ -475,25 +475,25 @@
       "title": {"zh": "四季都能读书", "en": "Reading in every season", "ru": "Чтение в любое время года", "tk": "Her pasylda kitap okamak"},
       "sentences": [
         {
-          "tokens": "雨 不 下 了 ， 太阳 出来 了 。 我们 走 到 花园 ， 草地 上 的 小 花@358 刚 开 。 老师 说 ， 这里 一年 四季 都 好看 ， 每 一 季 都 有 不同 的 颜色 。",
+          "tokens": "雨 不 下 了 ， 太阳 出来 了 。 我们 走 到 花园 ， 草地 上 的 小 花@358 刚 开 。 老师 说 ， 这里 一 年 四季 都 好看 ， 每 一 季 都 有 不同 的 颜色 。",
           "en": "The rain stops and the sun comes out. We walk to the garden, where little flowers have just opened on the lawn. The teacher says it is beautiful throughout the year, with different colours in each of the four seasons.",
           "ru": "Дождь прекращается, выходит солнце. Мы идём в сад, где на траве только что распустились цветы. Учитель говорит, что здесь красиво круглый год: у каждого из четырёх времён года свои цвета.",
           "tk": "Ýagyş kesilip, gün çykýar. Otlukda kiçijik gülleriň ýaňy açylan bagyna barýarys. Mugallym bu ýeriň ýylyň dört paslynda-da owadandygyny, her paslyň öz reňkiniň bardygyny aýdýar."
         },
         {
-          "tokens": "春天 开花 ， 夏天 树 下 凉快 ， 秋天 可以 看 黄色 的 叶子 ， 冬天 河 上 有 冰 。 “ 什么 季节 来 都 行 。 ” 老师 说 ， “ 不同 的 天气 ， 可以 读 不同 的 书 。 ”",
-          "en": "Flowers bloom in spring, shade under the trees is cool in summer, leaves turn yellow in autumn, and there is ice on the river in winter. “Any season is a good time to come,” says the teacher. “Different weather can go with different books.”",
-          "ru": "Весной цветут цветы, летом прохладно под деревьями, осенью можно любоваться жёлтыми листьями, зимой на реке лёд. «Приходить можно в любой сезон, — говорит учитель. — Для разной погоды найдутся разные книги».",
-          "tk": "Baharda güller açylýar, tomus agaçlaryň aşagy salkyn bolýar, güýz sary ýapraklary görüp bolýar, gyş derýada buz bolýar. Mugallym: «Islendik pasylda gelip bolýar. Dürli howada dürli kitap okap bolýar» diýýär."
+          "tokens": "春天 开花 ， 夏天 树 下 凉快 ， 秋天 可以 看 黄色 的 山 ， 冬天 河 上 有 冰 。 “ 什么 季节 来 都 行 。 ” 老师 说 ， “ 不同 的 天气 ， 可以 读 不同 的 书 。 ”",
+          "en": "Flowers bloom in spring, shade under the trees is cool in summer, the hills turn yellow in autumn, and there is ice on the river in winter. “Any season is a good time to come,” says the teacher. “Different weather can go with different books.”",
+          "ru": "Весной цветут цветы, летом прохладно под деревьями, осенью можно любоваться жёлтыми склонами гор, зимой на реке лёд. «Приходить можно в любой сезон, — говорит учитель. — Для разной погоды найдутся разные книги».",
+          "tk": "Baharda güller açylýar, tomus agaçlaryň aşagy salkyn bolýar, güýz sary daglary görüp bolýar, gyş derýada buz bolýar. Mugallym: «Islendik pasylda gelip bolýar. Dürli howada dürli kitap okap bolýar» diýýär."
         },
         {
-          "tokens": "一 个 学生 说 ， 他 前年 开始 养 小 猫 ， 猫 现在 已经 长@968 大 了 ， 身上 的 毛 很 好看 。 他 想 给 猫 拍照 ， 放 在 自己 的 故事 里 。 我 把 相机 借 给 他 。",
+          "tokens": "一 个 学生 说 ， 他 前年 开始 养 小 猫 ， 猫 现在 已经 长@968 大 了 ， 它 的 毛 很 好看 。 他 想 给 猫 拍照 ， 放 在 自己 的 故事 里 。 我 把 相机 借 给 他 。",
           "en": "A student says he began looking after a kitten the year before last. It has now grown up and has lovely fur. He wants to photograph it for his story, so I lend him my camera.",
           "ru": "Один ученик рассказывает, что позапрошлым годом завёл котёнка. Теперь тот вырос, у него красивая шерсть. Мальчик хочет сфотографировать его для своего рассказа, и я одалживаю камеру.",
           "tk": "Bir okuwçy iki ýyl öň pişik saklap başlandygyny aýdýar. Pişigi indi ulalypdyr, tüýleri örän owadan. Ol hekaýasyna goýmak üçin pişigini surata düşürmek isleýär, men fotoapparatymy karz berýärin."
         },
         {
-          "tokens": "女孩儿 看 着 ‘ 园 ’ 字 问 ， 公园 和 动物园 是不是 都 像 花园 ？ 老师 说 不 完全 一样 ， 但 都 是 可以 走走 看看 的 地方 。 她 说 鱼 的 故事 里 也 要 有 一个 园 。",
+          "tokens": "女孩儿 看 着 ‘ 园 ’ 字 问 ， 公园 和 动物园 是 不 是 都 像 花园 ？ 老师 说 不 太 一样 ， 但 都 是 可以 走 走 看 看 的 地方 。 她 说 鱼 的 故事 里 也 要 有 一 个 园 。",
           "en": "Looking at the character yuan, the girl asks whether a park and a zoo are both like a garden. The teacher says they are not exactly the same, but all are places to walk around and look at things. The girl wants a garden in her fish story too.",
           "ru": "Девочка смотрит на иероглиф 园 и спрашивает, похожи ли парк и зоопарк на сад. Учитель отвечает: не совсем, но везде можно гулять и осматриваться. Девочка решает добавить сад и в историю своей рыбы.",
           "tk": "Gyzjagaz 园 ieroglifine seredip, seýilgähiň we haýwanat bagynyň gül bagyna meňzeýändigini soraýar. Mugallym olaryň doly birmeňzeş däldigini, ýöne hemmesinde aýlanyp synlap bolýandygyny aýdýar. Gyzjagaz balygyň hekaýasynda-da bag bolmagyny isleýär."
@@ -505,25 +505,25 @@
       "title": {"zh": "晚会开始以前", "en": "Before the evening gathering", "ru": "Перед вечерней встречей", "tk": "Agşamky duşuşykdan öň"},
       "sentences": [
         {
-          "tokens": "今晚 的 晚会 有 三 个 节目 ： 孩子 读 故事 ， 老师 唱歌 ， 最后 大家 一起 聊 今天 最 开心 的 事 。 为了 让 每 个 人 都 能 听见 ， 我们 先 试 了 电脑 的 声音 。",
+          "tokens": "今天 晚上 的 晚会 有 三 个 节目 ： 孩子 读 故事 ， 老师 唱 歌 ， 最后 大家 一起 聊 今天 最 开心 的 事 。 为了 让 每 个 人 都 能 听见 ， 我们 先 试 了 电脑 的 声音 。",
           "en": "Tonight's gathering has three parts: children reading stories, teachers singing, and everyone sharing the happiest part of their day. To make sure everyone can hear, we first test the sound on the computer.",
           "ru": "У вечерней встречи три части: дети читают истории, учителя поют, а в конце все рассказывают о самом радостном за день. Чтобы каждый мог услышать, сначала проверяем звук компьютера.",
           "tk": "Şu agşamky duşuşygyň üç bölegi bar: çagalar hekaýa okaýar, mugallymlar aýdym aýdýar, ahyrynda hemmeler günüň iň şat pursadyny gürrüň berýär. Hemmeleriň eşitmegi üçin ilki kompýuteriň sesini barlaýarys."
         },
         {
-          "tokens": "我 找 了 半天 耳机 ， 才 想 起来 放 在 包 里 。 这是 我 常用 的 ， 不 是 什么 有名 的 东西 ， 但 一直 很 好用 。 哥哥 说 ， 今天 不 需要 它 ， 大家 要 一起 听 。",
+          "tokens": "我 找 了 半天 耳机 ， 才 想 起来 放 在 包 里 。 这 是 我 常用 的 ， 不 是 什么 有名 的 东西 ， 但 一直 很 好 用 。 哥哥 说 ， 今天 不 需要 它 ， 大家 要 一起 听 。",
           "en": "I search for my headphones for ages before remembering they are in my bag. I use them often; they are nothing famous, but they have always worked well. My brother says we do not need them today because everyone will listen together.",
           "ru": "Я долго ищу наушники и наконец вспоминаю, что они в сумке. Я часто ими пользуюсь: ничего знаменитого, но всегда работают хорошо. Брат говорит, что сегодня они не нужны — все будут слушать вместе.",
           "tk": "Gulaklygymy esli gözläp, sumkamdadygyny ýadyma salýaryn. Ony köp ulanýaryn, meşhur zat däl, ýöne hemişe gowy işleýär. Agam bu gün gerek däldigini, hemmeleriň bile diňlejekdigini aýdýar."
         },
         {
-          "tokens": "女孩儿 复习 自己 写 的 故事 ， 有 两 个 字 念 得@332 不 太 清楚 。 我 让 她 再 读 一 遍 。 “ 你 不用 说 得@332 跟 别人 一样 。 每 个 人 的 语言 都 有 自己 的 颜色 。 ”",
+          "tokens": "女孩儿 复习 自己 写 的 故事 ， 有 两 个 字 读 得@332 不 太 清楚 。 我 让 她 再 读 一 遍 。 “ 你 不用 说 得@332 跟 别人 一样 。 每 个 人 的 语言 都 有 自己 的 颜色 。 ”",
           "en": "The girl goes over the story she wrote. Two characters are not quite clear when she reads them, so I ask her to try again. “You don't have to sound exactly like everyone else. Everyone's language has its own colour.”",
           "ru": "Девочка повторяет свой рассказ. Два иероглифа звучат не очень чётко, и я прошу прочитать ещё раз. «Не нужно говорить точь-в-точь как другие. У языка каждого человека свой цвет».",
           "tk": "Gyzjagaz ýazan hekaýasyny gaýtalaýar. Iki ieroglifi biraz düşnüksiz okaýar, men ýene bir gezek okamagyny soraýaryn. «Edil beýlekiler ýaly gürlemek hökman däl. Her adamyň diliniň öz reňki bar»."
         },
         {
-          "tokens": "校长 刚才 在 门口 遇见 了 报纸 上 写 我们 故事 的 人 。 他 想 把 今天 的 事 写 成 新闻 ， 让 更 多 人 关注 这里 。 校长 说 ， 请 他 先 听 孩子 读书 ， 不要 只@975 看 大人 。",
+          "tokens": "校长 刚才 在 门口 遇见 了 报纸 上 写 我们 故事 的 人 。 他 想 写 今天 的 新闻 ， 让 更 多 人 关注 这里 。 校长 说 ， 请 他 先 听 孩子 读书 ， 不要 只@975 看 大人 。",
           "en": "The head teacher has just met the person who wrote about us in the newspaper. He wants to report on today so that more people notice this place. The head teacher asks him to listen to the children read first, not just look at the adults.",
           "ru": "Директор только что встретил у входа автора газетной истории о нас. Тот хочет написать о сегодняшнем дне, чтобы привлечь к этому месту больше внимания. Директор просит сначала послушать детей, а не смотреть только на взрослых.",
           "tk": "Müdir ýaňy gapyda gazetde biz hakda ýazan adama duşupdyr. Ol bu günki wakany habar edip, has köp adamyň bu ýere üns bermegini isleýär. Müdir diňe ululara seretmän, ilki çagalaryň okaýşyny diňlemegini haýyş edýär."
@@ -535,19 +535,19 @@
       "title": {"zh": "出了什么事", "en": "What has happened?", "ru": "Что случилось?", "tk": "Näme boldy?"},
       "sentences": [
         {
-          "tokens": "晚会 快 开始 时 ， 灯 突然 不 亮 了 。 大家 问 发生 了 什么 事 。 我们 遇到 的 不是 电脑 问题 ， 是 整个 学校 都 没有 电 了 。",
+          "tokens": "晚会 快 开始 时 ， 灯 突然 都 关 了 。 大家 问 发生 了 什么 事 。 我们 遇到 的 不 是 电脑 问题 ， 是 学校 里 都 没有 电 了 。",
           "en": "Just before the gathering begins, the lights suddenly go out. Everyone asks what has happened. This is not a computer problem: the whole school has lost power.",
           "ru": "Перед самым началом встречи гаснет свет. Все спрашивают, что случилось. Дело не в компьютере: электричества нет во всей школе.",
           "tk": "Duşuşyk başlanmanka çyralar birden öçýär. Hemmeler näme bolandygyny soraýar. Bu kompýuteriň meselesi däl, tutuş mekdepde elektrik ýok."
         },
         {
-          "tokens": "有人 觉得 今天 运气 很 差 ， 表演 可能 要 等 明天 。 哥哥 说 ， 这个 问题 没有 那么 难 解决 。 “ 外面 还@67 没有 黑 ， 我们 到 花园 读 ， 怎么样 ？ ”",
-          "en": "Someone feels we have had terrible luck and may have to wait until tomorrow for the performances. My brother says the problem is not so difficult to solve. “It isn't dark outside yet. How about reading in the garden?”",
-          "ru": "Кто-то считает, что нам ужасно не повезло и выступления придётся отложить до завтра. Брат говорит, что решить проблему не так сложно: «На улице ещё светло. Может, почитаем в саду?»",
-          "tk": "Biri şu gün bagtymyzyň ýatmandygyny, çykyşlary ertire goýmaly bolmagymyzy aýdýar. Agam meseläni çözmegiň beýle kyn däldigini aýdýar: «Daşarda heniz garaňky däl. Bagda okasak nähili?»"
+          "tokens": "有 人 觉得 没有 电 太 差 了 ， 表演 可能 要 等 明天 。 哥哥 说 ， 这个 问题 没有 那么 难 解决 。 “ 外面 还@67 看 得@332 清楚 ， 我们 到 花园 读 ， 怎么样 ？ ”",
+          "en": "Someone thinks it is awful to have no electricity and that we may have to wait until tomorrow for the performances. My brother says the problem is not so difficult to solve. “We can still see clearly outside. How about reading in the garden?”",
+          "ru": "Кто-то расстраивается из-за отсутствия света: возможно, выступления придётся отложить до завтра. Брат говорит, что решить проблему не так сложно: «На улице ещё всё хорошо видно. Может, почитаем в саду?»",
+          "tk": "Biri elektrigiň ýokdugynyň örän erbetdigini, çykyşlary ertire goýmaly bolmagymyzy aýdýar. Agam meseläni çözmegiň beýle kyn däldigini aýdýar: «Daşarda heniz hemme zat gowy görünýär. Bagda okasak nähili?»"
         },
         {
-          "tokens": "有人 问 会@82 不 会@82 受 天气 影响 。 校长 看 看 天 ， 说 可以 试试 。 女孩儿 问 我 是不是 相信 她 能 读 好 ， 我 说 当然 ， 她 已经 得到 了 大家 的 帮助 。",
+          "tokens": "有 人 问 会@82 不 会@82 受 天气 影响 。 校长 看 看 天 ， 说 可以 试 试 。 女孩儿 问 我 是 不 是 相信 她 能 读 好 ， 我 说 当然 ， 她 已经 得到 了 大家 的 帮助 。",
           "en": "Someone asks whether the weather will affect us. The head teacher looks at the sky and says we can try. The girl asks whether I believe she can read well. Of course I do: everyone has already helped her prepare.",
           "ru": "Кто-то спрашивает, не помешает ли погода. Директор смотрит на небо: можно попробовать. Девочка спрашивает, верю ли я, что она хорошо прочитает. Конечно: ведь все уже помогли ей подготовиться.",
           "tk": "Biri howanyň bize täsir etjekdigini soraýar. Müdir asmana seredip, synap boljakdygyny aýdýar. Gyzjagaz gowy okap biljekdigine ynanýandygymy soraýar. Elbetde ynanýaryn: taýýarlanmagyna hemmeler kömek etdi."
@@ -565,19 +565,19 @@
       "title": {"zh": "鱼找到朋友了", "en": "The fish finds its friends", "ru": "Рыба находит друзей", "tk": "Balyk dostlaryny tapýar"},
       "sentences": [
         {
-          "tokens": "女孩儿 读 的 时候 ， 大家 都 很 安静 。 故事 中 的 鱼 走 到 一个 又 一个 地方 ， 到处 都 看见 新鲜 的 东西 。 有的 东西 很 奇怪 ， 但 它 越 看 越 想 了解 。",
+          "tokens": "女孩儿 读 的 时候 ， 大家 都 很 安静 。 故事 中 的 鱼 走 到 一 个 又 一 个 地方 ， 到处 都 看见 新鲜 的 东西 。 有的 东西 很 奇怪 ， 但 它 越 看 越 想 了解 。",
           "en": "Everyone is quiet while the girl reads. The fish in her story visits one place after another and sees new things everywhere. Some are strange, but the more it sees, the more it wants to understand.",
           "ru": "Пока девочка читает, все сидят тихо. Рыба в её истории путешествует с места на место и всюду видит новое. Некоторые вещи странные, но чем больше она видит, тем больше хочет понять.",
           "tk": "Gyzjagaz okaýarka hemmeler ümsüm. Hekaýadaky balyk bir ýerden beýlekisine baryp, hemme ýerde täze zatlary görýär. Käbir zatlar geň, ýöne näçe köp görse, şonça köp düşünmek isleýär."
         },
         {
-          "tokens": "“ 最后 ， 鱼 回到 家 ， 给 其他 鱼 讲 外面 的 事 。 它 受到 大家 的 欢迎 ， 也 明白 了 ， 旅行 不 是 为了 离开 家 ， 是 为了 带 回 新 的 故事 。 ”",
+          "tokens": "“ 最后 ， 鱼 回 到 家 ， 给 其他 鱼 讲 外面 的 事 。 它 受到 大家 的 欢迎 ， 也 明白 了 ， 旅游 不 是 为了 离开 家 ， 是 为了 带 回 新 的 故事 。 ”",
           "en": "“At last the fish comes home and tells the other fish about the world outside. They welcome it warmly, and it understands: travelling is not about leaving home, but bringing new stories back.”",
           "ru": "«Наконец рыба возвращается домой и рассказывает другим рыбам о внешнем мире. Её тепло встречают, и она понимает: путешествуешь не для того, чтобы покинуть дом, а чтобы привезти новые истории».",
           "tk": "«Ahyrynda balyk öýüne dolanyp, beýleki balyklara daşarky dünýä barada gürrüň berýär. Ony mähirli garşylaýarlar. Şonda syýahatyň öýüňi terk etmek üçin däl-de, täze hekaýalary getirmek üçindigine düşünýär»."
         },
         {
-          "tokens": "她 读 完 ， 脸 上 都 是 笑 。 爷爷 说 ， 这个 故事 让 他 好像 又 回到 年轻 的 时候 。 “ 我 在 里面 听见 了 自己 。 ” 女孩儿 说 ， 这 是 她 得到 的 最 好 的 礼物 。",
+          "tokens": "她 读 完 ， 脸 上 都 是 笑 。 爷爷 说 ， 这个 故事 让 他 好像 又 回 到 年轻 的 时候 。 “ 我 在 里面 听见 了 自己 。 ” 女孩儿 说 ， 这 是 她 得到 的 最 好 的 礼物 。",
           "en": "She finishes with a smile all over her face. Grandpa says the story makes him feel young again. “I heard something of myself in it.” The girl says this is the best gift she could receive.",
           "ru": "Она заканчивает читать и вся сияет. Дедушка говорит, что история словно вернула его в молодость: «Я услышал в ней себя». Девочка отвечает, что это лучший подарок для неё.",
           "tk": "Ol ýylgyryp okamagyny tamamlaýar. Atam hekaýanyň özüni ýene ýaşlyk ýyllaryna alyp giden ýaly bolandygyny aýdýar: «Onda özümi eşitdim». Gyzjagaz munuň alan iň gowy sowgadydygyny aýdýar."
@@ -587,6 +587,66 @@
           "en": "We keep listening until the moon appears and do not go indoors until every child has finished. The head teacher is very pleased. “You have done more than finish a library: you have given the children a chance to tell their own stories.”",
           "ru": "Мы слушаем до появления луны и возвращаемся в дом, только когда прочитал каждый ребёнок. Директор очень доволен: «Вы не просто закончили библиотеку, вы дали детям возможность рассказать свои истории».",
           "tk": "Aý çykýança diňleýäris, her çaga okap bolandan soň içeri girýäris. Müdir bu günki işden örän hoşal: «Siz diňe kitaphanany tamamlamadyňyz, çagalara öz hekaýalaryny gürrüň bermäge-de mümkinçilik berdiňiz»."
+        }
+      ]
+    },
+    {
+      "id": "the-last-page-of-the-notebook", "level": 3,
+      "title": {"zh": "本子的最后一页", "en": "The notebook's last page", "ru": "Последняя страница блокнота", "tk": "Depderiň soňky sahypasy"},
+      "sentences": [
+        {
+          "tokens": "第 二 天 早上 ， 太阳 照 进 房间 。 我 打开 本子 ， 在 最后 一 页 写 下 ： ‘ 注意 ， 要 记得 每 个 帮忙 的 人 。 ’ 女孩儿 说 ， 其实 她 昨天 最 害怕 的 不 是 读 错 字 ， 是 没有 人 听 。",
+          "en": "The next morning, sunlight shines into the room. I open the notebook and write on its last page: 'Remember everyone who helped.' The girl says that yesterday her greatest fear was not misreading a character, but having nobody listen.",
+          "ru": "На следующее утро солнце светит в комнату. Я открываю блокнот и пишу на последней странице: «Внимание: надо запомнить каждого, кто помог». Девочка признаётся: вчера она больше всего боялась не ошибиться при чтении, а того, что никто не будет слушать.",
+          "tk": "Ertesi irden gün otagyň içine düşýär. Depderi açyp, soňky sahypasyna: «Üns ber: kömek eden her adamy ýatda sakla» diýip ýazýaryn. Gyzjagaz düýn iň gorkýan zadynyň ieroglifi ýalňyş okamak däl-de, hiç kimiň diňlemezligi bolandygyny aýdýar."
+        },
+        {
+          "tokens": "早饭 后 ， 老师 带 来 一 个 蛋糕 。 这 种 蛋糕 在 这个 市 很 常见 ， 上面 有 一 条 鱼 。 大家 都 笑 了 。 女孩儿 说 ， 这 次 鱼 真 的 来 到 了 桌子 上 。",
+          "en": "After breakfast, the teacher brings a cake. This kind of cake is common in the city, and there is a fish on top. Everyone laughs. The girl says that this time the fish really has come to our table.",
+          "ru": "После завтрака учитель приносит торт. Такие торты часто встречаются в этом городе, а сверху на нём — рыба. Все смеются. Девочка говорит, что на этот раз рыба и правда пришла к нам на стол.",
+          "tk": "Ertirlikden soň mugallym tort getirýär. Bu şäherde şeýle tort köp duş gelýär, onuň üstünde bolsa balyk bar. Hemmeler gülýär. Gyzjagaz bu gezek balygyň hakykatdan hem stolumyza gelendigini aýdýar."
+        },
+        {
+          "tokens": "哥哥 说 ， 前天 去 银行 的 时候 ， 他 忘 了 带 银行卡 ， 又 回 家 去 拿 。 饭馆 可以 用 信用卡 ， 但 买 小 东西 的 店 不 一定 可以 。 他 让 我 把 花@357 的 钱 写 清楚 ， 一 角 也 不要 忘 。",
+          "en": "My brother says he forgot his bank card when he went to the bank the day before yesterday and had to go home to get it. The restaurant accepts credit cards, but a shop selling small things may not. He asks me to write down our spending clearly, without forgetting even one jiao.",
+          "ru": "Брат рассказывает, что позавчера забыл банковскую карту, когда шёл в банк, и вернулся домой за ней. В ресторане принимают кредитные карты, а в маленьком магазине — не обязательно. Он просит меня точно записать расходы, не забыв даже об одном цзяо.",
+          "tk": "Agam öňňin banka baranda bank kartyny almagy ýatdan çykaryp, ony almak üçin öýüne dolanandygyny aýdýar. Naharhanada kredit kartyny ulanyp bolýar, ýöne ownuk zatlar satylýan dükanda bolmazlygy mümkin. Ol çykdajylarymyzy bir sýaony hem ýatdan çykarman, anyk ýazmagymy soraýar."
+        },
+        {
+          "tokens": "一 辆 车 已经 来 到 学校 门口 。 我们 把 箱子 搬 过去@660 ， 只@975 走 了 二 十 米 就 觉得 很 热 。 爸爸 打 来 电话 ， 说 他 的 飞机 快 要 起飞 了 。 他 问 ， 有 没有 给 他 带 一 本 孩子 写 的 书 。",
+          "en": "A vehicle has arrived at the school gate. We carry the boxes over; after just twenty metres, we feel very hot. Dad calls to say his plane will take off soon. He asks whether we have brought him a book written by the children.",
+          "ru": "К школьным воротам подъехала машина. Мы несём к ней коробки, и уже через двадцать метров нам становится жарко. Папа звонит: его самолёт скоро взлетит. Он спрашивает, взяли ли мы для него книгу, написанную детьми.",
+          "tk": "Mekdebiň derwezesine bir ulag gelipdir. Gutulary şoňa alyp barýarys; bary-ýogy ýigrimi metr ýöräp, bize yssy bolýar. Kakam jaň edip, uçarynyň tizden uçjakdygyny aýdýar. Çagalaryň ýazan kitabyndan oňa-da alandygymyzy soraýar."
+        }
+      ]
+    },
+    {
+      "id": "a-story-with-an-open-door", "level": 3,
+      "title": {"zh": "故事没有关门", "en": "A story with an open door", "ru": "История с открытой дверью", "tk": "Gapysy açyk hekaýa"},
+      "sentences": [
+        {
+          "tokens": "回 家 的 路 上 ， 妹妹 问 ， 下 一 次 什么 时候 来 。 我 说 ， 可以 等 假期 ， 也 可以 在 新年 来 。 她 说 ， 每 个 节日 都 想 和 这里 的 朋友 一起 过节 。",
+          "en": "On the way home, my sister asks when we will come again. I say we can wait for the holidays or come at New Year. She says she would like to celebrate any festival with her friends here.",
+          "ru": "По дороге домой сестра спрашивает, когда мы приедем снова. Я предлагаю дождаться каникул или приехать на Новый год. Она говорит, что хотела бы отмечать любой праздник вместе с друзьями отсюда.",
+          "tk": "Öýe barýarkak, uýam indiki gezek haçan geljegimizi soraýar. Men dynç alyşa garaşyp ýa-da Täze ýylda gelip biljekdigimizi aýdýaryn. Ol haýsy baýram bolsa-da, şu ýerdäki dostlary bilen bellemegi isleýär."
+        },
+        {
+          "tokens": "爷爷 说 ， 我们 不 应该 只@975 想 下 一 次 。 明年 、 后年 ， 孩子 都 会@82 长@968 大 ， 他们 需要 的 书 也 会@82 不同 。 在 这 间 小 图书馆 ， 大家 要 一直 听 孩子 说 ， 不 能 只@975 听 大人 说 。",
+          "en": "Grandpa says we should not think only about our next visit. Next year and the year after, the children will grow, and the books they need will change. This little library must keep listening to their ideas, not just to the adults.",
+          "ru": "Дедушка говорит, что нельзя думать только о следующем приезде. Через год и через два дети подрастут, им понадобятся другие книги. Маленькая библиотека должна всегда прислушиваться к их идеям, а не только ко взрослым.",
+          "tk": "Atam diňe indiki gezek barada pikir etmeli däldigimizi aýdýar. Geljek ýyl we ondan soňky ýyl çagalar ulalar, olara gerek kitaplar hem üýtgär. Bu kiçijik kitaphana diňe ululary däl, çagalaryň pikirlerini-de hemişe diňlemeli."
+        },
+        {
+          "tokens": "女孩儿 拿 出 自己 的 本子 ， 在 鱼 的 故事 后面 又 写 了 几 个 字 。 她 没有 给 我 看 ， 只@975 说 ： ‘ 还@67 没有 写 完 呢 。 ’ 我 没有 问 。 我 知道 ， 有的 故事 要 先 给 自己 读 。",
+          "en": "The girl takes out her notebook and adds a few words after the fish's story. She does not show them to me, only says, 'It isn't finished yet.' I do not ask. I know that some stories need to be read to oneself first.",
+          "ru": "Девочка достаёт блокнот и дописывает несколько слов после истории о рыбе. Мне не показывает, только говорит: «Ещё не закончено». Я не спрашиваю. Я знаю: некоторые истории сначала нужно прочитать самому себе.",
+          "tk": "Gyzjagaz depderini çykaryp, balygyň hekaýasynyň yzyna ýene birnäçe söz ýazýar. Maňa görkezmän, diňe: «Entek gutarmady» diýýär. Men soramaýaryn. Käbir hekaýalary ilki özüňe okap bermelidigini bilýärin."
+        },
+        {
+          "tokens": "到 家 时 ， 书店 的 门 开 着 。 桌子 上 有 茶 ， 还@67 有 一 本 没有 写 字 的 本子 。 妈妈 问 我 ， 今天 带 回 了 什么 。 我 说 ： ‘ 不 只@975 是 书 。 还@67 有 下 一 个 星期天 。 ’",
+          "en": "When we get home, the bookshop door is open. There is tea on the table, beside a notebook with nothing written in it yet. Mum asks what I have brought back today. I say, 'Not just books. Next Sunday too.'",
+          "ru": "Когда мы приезжаем домой, дверь книжного магазина открыта. На столе чай и блокнот, в котором ещё ничего не написано. Мама спрашивает, что я сегодня привёз. Я отвечаю: «Не только книги. Ещё и следующее воскресенье».",
+          "tk": "Öýe gelenimizde kitap dükanynyň gapysy açyk. Stoluň üstünde çaý we entek hiç zat ýazylmadyk depder bar. Ejem şu gün näme getirendigimi soraýar. Men: «Diňe kitap däl. Indiki ýekşenbäni hem» diýýärin."
         }
       ]
     }
