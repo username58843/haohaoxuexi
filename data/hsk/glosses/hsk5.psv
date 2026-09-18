@@ -499,3 +499,253 @@ number|headword|en|ru|tk
 2498|话费|phone charges|плата за телефонную связь|telefon tölegi
 2499|画面|picture; scene; image on a screen|изображение; кадр; картина|şekil; kadr; görnüş
 2500|话题|topic of conversation|тема разговора|gürrüniň temasy
+2501|化学|chemistry|химия|himiýa
+2502|环节|link; stage in a process|звено; этап|halka; işiň tapgyry
+2503|缓解|ease; alleviate|облегчать; ослаблять|ýeňilleşdirmek; gowşatmak
+2504|缓慢|slow; sluggish|медленный; неторопливый|haýal; haýal hereket edýän
+2505|黄瓜|cucumber|огурец|hyýar
+2506|黄金|gold|золото|altyn
+2507|灰|ash; dust; grey|пепел; зола; серый|kül; tozan; çal
+2508|挥|wave; wield|махать; размахивать|salgamak; galgatmak
+2509|恢复|restore; recover|восстанавливать; восстанавливаться|dikeltmek; dikelmek
+2510|灰色|grey|серый цвет; серый|çal reňk; çal
+2511|回收|recover; collect for recycling|собирать для переработки; возвращать в оборот|gaýtadan işlemek üçin ýygnamak
+2512|汇率|exchange rate|обменный курс|walýuta hümmeti
+2513|婚礼|wedding ceremony|свадьба; свадебная церемония|nika toýy
+2514|伙|group; gang (classifier)|счётное слово для групп людей|adamlar topary üçin san sözi
+2515|伙伴|partner; companion|партнёр; товарищ|ýoldaş; hyzmatdaş
+2516|火锅|hotpot|хого: блюдо, которое варят за столом в общем котле|stoluň başynda umumy gazanda bişirilýän hytaý nahary
+2517|或是|or; perhaps|или; возможно|ýa-da; belki
+2518|货物|goods; cargo|товары; груз|harytlar; ýük
+2519|或许|perhaps; maybe|возможно; быть может|belki; mümkin
+2520|机构|organisation; institution|организация; учреждение|gurama; edara
+2521|激烈|intense; fierce|интенсивный; ожесточённый|güýçli; ýiti; gazaply
+2522|机器|machine|машина; механизм|maşyn; enjam
+2523|机器人|robot|робот|robot
+2524|肌肉|muscle|мышца; мускулатура|myşsa
+2525|及|and; as well as|и; а также|we; şeýle hem
+2526|级|level; grade; class (classifier)|уровень; разряд; счётное слово для ступеней|dereje; basgançak; derejeler üçin san sözi
+2527|集|collection; episode; volume (classifier)|сборник; серия; том|ýygyndy; bölüm; jilt
+2528|疾病|disease; illness|заболевание; болезнь|kesel
+2529|及格|pass an examination; reach the required standard|сдать экзамен; получить проходную оценку|synagdan geçmek; talap edilýän baha ýetmek
+2530|集合|gather; assemble|собираться; созывать|ýygnanmak; ýygnamak
+2531|即将|be about to; soon|вот-вот; вскоре|basym; indi boljak
+2532|急忙|hurriedly; hastily|поспешно; торопливо|howlukmaç; gyssanmaç
+2533|极其|extremely|чрезвычайно; крайне|örän; juda
+2534|集体|collective; group|коллектив; группа|köpçülik; topar
+2535|急需|need urgently|срочно нуждаться|gyssagly mätäç bolmak
+2536|急诊|emergency medical care; emergency department|неотложная помощь; отделение неотложной помощи|gyssagly lukmançylyk kömegi; gyssagly kömek bölümi
+2537|集中|concentrate; centralised|сосредоточивать; концентрированный|jemlemek; jemlenen
+2538|挤|squeeze; crowd; crowded|сжимать; протискиваться; тесный|gysmak; gysylyp geçmek; dyknyşykly
+2539|系|tie; fasten|завязывать; пристёгивать|daňmak; berkitmek
+2540|季度|quarter of a year|квартал года|ýylyň çärýegi
+2541|记录|record; make a record|записывать; запись|ýazga geçirmek; ýazgy
+2542|纪录|record; best achievement|рекорд|rekord
+2543|纪录片|documentary film|документальный фильм|dokumental film
+2544|技能|skill; practical ability|навык; умение|başarnyk; hünär ukyby
+2545|纪念|commemorate; remembrance|отмечать памятную дату; память о ком-либо|ýatlamak; hatyralamak; ýadygärlik
+2546|纪念日|anniversary; commemorative day|годовщина; памятная дата|ýyl dönümi; ýatlama güni
+2547|计算|calculate; compute|считать; вычислять|hasaplamak
+2548|计算机|computer|компьютер|kompýuter
+2549|记忆|remember; memory|запоминать; память|ýatda saklamak; ýat
+2550|记载|record in writing|записывать; документировать|ýazga geçirmek; ýazyp beýan etmek
+2551|嘉宾|honoured guest|почётный гость|hormatly myhman
+2552|家电|household electrical appliances|бытовая электротехника|öý hojalyk elektrik enjamlary
+2553|加工|process; manufacture|обрабатывать; перерабатывать|işläp bejermek; gaýtadan işlemek
+2554|加热|heat; warm up|нагревать; подогревать|gyzdyrmak; ýylatmak
+2555|加深|deepen; intensify|углублять; усиливать|çuňlaşdyrmak; güýçlendirmek
+2556|加速|accelerate; speed up|ускорять; ускоряться|tizleşdirmek; tizleşmek
+2557|家务|housework|домашние дела|öý işleri
+2558|甲|first of the heavenly stems; party A; armour|первый знак десятеричного цикла; сторона А; панцирь|on asman nyşanynyň birinjisi; A tarap; sowut
+2559|假如|if; supposing|если; предположим, что|eger; eger-de
+2560|架|frame; rack; erect; classifier for machines|рама; стойка; устанавливать; счётное слово для машин|çarçuwa; tekje; gurmak; enjamlar üçin san sözi
+2561|驾驶|drive; pilot|управлять транспортным средством|ulag sürmek; dolandyrmak
+2562|驾照|driving licence|водительское удостоверение|sürüjilik şahadatnamasy
+2563|价值|value; worth|ценность; стоимость|gymmat; baha
+2564|艰苦|hard; arduous|тяжёлый; трудный|agyr; kyn
+2565|坚强|strong; resolute|стойкий; сильный духом|berk; erjelli
+2566|捡|pick up; collect|подбирать; собирать|ýerden almak; ýygnamak
+2567|剪|cut with scissors|резать ножницами; стричь|gaýçy bilen kesmek; gyrkmak
+2568|剪刀|scissors|ножницы|gaýçy
+2569|减肥|lose weight; slim down|худеть; снижать вес|horlanmak; agramyny azaltmak
+2570|简历|CV; résumé|резюме; краткая биография|gysgaça terjimehal
+2571|简直|simply; downright|просто; прямо-таки|göni; diýseň; edil
+2572|建|build; establish|строить; учреждать|gurmak; döretmek
+2573|键|key on a keyboard|клавиша|klawiş; düwme
+2574|渐渐|gradually|постепенно|kem-kemden
+2575|建立|establish; set up|создавать; устанавливать|döretmek; gurmak
+2576|键盘|keyboard|клавиатура|klawiatura
+2577|建设|construct; develop|строить; развивать|gurmak; ösdürmek
+2578|建造|build; construct|сооружать; строить|gurmak; bina etmek
+2579|建筑|architecture; building; construct|архитектура; здание; строить|binagärlik; bina; gurmak
+2580|将近|nearly; almost|почти; около|tas; golaý
+2581|讲话|speech; address|речь; выступление|çykyş; söz
+2582|讲究|pay attention to; be particular about; refined|уделять внимание; быть требовательным; изысканный|üns bermek; saýlap-seçmek; nepis
+2583|奖励|reward; encourage|награждать; поощрять|sylaglamak; höweslendirmek
+2584|讲述|narrate; recount|рассказывать; излагать|gürrüň bermek; beýan etmek
+2585|讲座|lecture; lecture course|лекция; цикл лекций|leksiýa; leksiýalar toplumy
+2586|降水|precipitate; rain or snow|выпадать об осадках|ýagyş ýa-da gar ýagmak
+2587|浇|water; pour liquid on|поливать; обливать|suwarmak; suw guýmak
+2588|交换|exchange; swap|обмениваться; обменивать|alyşmak; çalyşmak
+2589|交往|associate; have dealings with|общаться; поддерживать отношения|gatnaşyk saklamak; gatnaşmak
+2590|交易|trade; transaction|торговать; сделка|söwda etmek; geleşik
+2591|脚步|footstep; pace|шаги; поступь|ädim; ýöreýiş
+2592|角度|angle; point of view|угол; точка зрения|burç; nukdaýnazar
+2593|较|compared with; relatively|по сравнению с; сравнительно|bilen deňeşdirilende; birneme
+2594|教材|teaching material; textbook|учебный материал; учебник|okuw serişdesi; okuw kitaby
+2595|接触|come into contact with|соприкасаться; контактировать|galtaşmak; aragatnaşykda bolmak
+2596|接待|receive guests; host|принимать посетителей или гостей|myhmanlary kabul etmek
+2597|阶段|stage; phase|этап; стадия|tapgyr
+2598|接近|approach; be close to|приближаться; быть близким|ýakynlaşmak; ýakyn bolmak
+2599|接收|receive; accept delivery|получать; принимать|kabul etmek; almak
+2600|结|tie; form; knot|завязывать; образовывать; узел|daňmak; emele getirmek; düwün
+2601|结构|structure; composition|структура; устройство|gurluş; düzüm
+2602|结合|combine; integrate|сочетать; объединять|birleşdirmek; utgaşdyrmak
+2603|结论|conclusion|вывод; заключение|netije
+2604|节省|save; economise|экономить; сберегать|tygşytlamak
+2605|届|classifier for recurring events or graduating classes|счётное слово для созывов, выпусков и очередных мероприятий|nobatdaky çäreler we uçurymlar toparlary üçin san sözi
+2606|今日|today|сегодня; сегодняшний день|şu gün
+2607|紧|tight; tense; tighten|тугой; напряжённый; затягивать|berk; dartgynly; gysmak
+2608|紧急|urgent; emergency|срочный; экстренный|gyssagly; gaýragoýulmasyz
+2609|尽快|as soon as possible|как можно скорее|mümkin boldugyça basym
+2610|尽量|as much as possible|по возможности; максимально|mümkin boldugyça
+2611|紧密|close; tightly connected|тесный; плотный|jebis; berk baglanyşykly
+2612|谨慎|cautious; prudent|осторожный; осмотрительный|seresap; oýlanyşykly
+2613|进步|make progress; progressive|прогрессировать; передовой|ösüş gazanmak; öňdebaryjy
+2614|近代|modern historical period|новое время; период новой истории|täze taryhy döwür
+2615|进口|import|импортировать|daşary ýurtdan getirmek; import etmek
+2616|尽力|do one's best|прилагать все усилия|bar güýjüni sarp etmek
+2617|近年来|in recent years|в последние годы|soňky ýyllarda
+2618|近期|the near future; recent period|ближайшее время; недавний период|ýakyn wagt; soňky döwür
+2619|近日|these days; in the last few days|в эти дни; на днях|şu günlerde; soňky günlerde
+2620|进一步|further; one step further|дальше; в ещё большей степени|has-da; ýene bir ädim öňe
+2621|经典|classic; authoritative work|классика; классический|nusgawy eser; nusgawy
+2622|精力|energy; vigour|энергия; силы|güýç-gaýrat; gujur
+2623|精神|vigour; lively; energetic|бодрость; энергичный; бодрый|gujur; gujurly; ruhubelent
+2624|惊喜|pleasantly surprised|приятно удивлённый|ýakymly geň galan; begenen
+2625|经营|operate a business; manage|вести дело; управлять предприятием|işletmek; telekeçilik işini ýöretmek
+2626|静|quiet; still; calm down|тихий; неподвижный; успокаиваться|ümsüm; hereketsiz; köşeşmek
+2627|酒吧|bar; pub|бар; паб|bar; içgi içilýän ýer
+2628|久远|long ago; lasting a long time|давний; отдалённый во времени|gadymy; uzak wagtlyk
+2629|救|save; rescue|спасать; выручать|halas etmek; kömege ýetişmek
+2630|救护车|ambulance|машина скорой помощи|tiz kömek ulagy
+2631|就业|find employment; be employed|трудоустраиваться; работать по найму|işe ýerleşmek; işlemek
+2632|居民|resident; inhabitant|житель|ýaşaýjy
+2633|居然|unexpectedly; to one's surprise|неожиданно; как ни странно|garaşylmadyk ýagdaýda; geň bolsa-da
+2634|居住|reside; live|проживать; обитать|ýaşamak
+2635|橘子|mandarin orange; tangerine|мандарин|mandarin
+2636|据|according to; on the basis of|согласно; на основании|laýyklykda; esasynda
+2637|距|be at a distance from|отстоять от; находиться на расстоянии|aralykda ýerleşmek; uzaklykda bolmak
+2638|具备|possess; have the necessary qualities|обладать; иметь необходимые условия|eýe bolmak; zerur şertleri bolmak
+2639|剧场|theatre; performance venue|театр; театральный зал|teatr; tomaşa zaly
+2640|巨大|huge; enormous|огромный; громадный|ägirt uly; äpet
+2641|据说|it is said that|говорят, что; по слухам|aýtmaklaryna görä
+2642|具体|specific; concrete; make concrete|конкретный; подробный; конкретизировать|anyk; jikme-jik; anyklaşdyrmak
+2643|具有|have; possess|иметь; обладать|eýe bolmak
+2644|捐|donate; contribute|жертвовать; вносить пожертвование|haýyr-sahawat etmek; bagyşlamak
+2645|绝对|absolute; absolutely|абсолютный; совершенно|düýbünden; hökmany; absolýut
+2646|决赛|final; compete in a final|финал; участвовать в финале|final; finalda ýaryşmak
+2647|角色|role; character|роль; персонаж|rol; gahryman
+2648|决心|determination; resolve|решимость; принимать твёрдое решение|aýgytlylyk; berk karar etmek
+2649|开发|develop; exploit a resource|разрабатывать; осваивать|işläp düzmek; özleşdirmek
+2650|开放|open; open-minded; come into bloom|открывать; открытый; распускаться о цветах|açmak; açyk; gül açmak
+2651|开幕|open an event; begin a performance|открываться о мероприятии; поднимать занавес|çäräni açmak; tomaşa başlamak
+2652|开幕式|opening ceremony|церемония открытия|açylyş dabarasy
+2653|开水|boiled water; boiling water|кипячёная вода; кипяток|gaýnadylan suw; gaýnag suw
+2654|开通|open to traffic; activate a service|открывать движение; подключать услугу|gatnawy açmak; hyzmaty işe girizmek
+2655|开业|open for business|открываться о предприятии|işe başlamak; söwda açmak
+2656|开展|carry out; launch|развёртывать; проводить|amala aşyrmak; başlamak
+2657|看|watch over; guard|присматривать; охранять|gözegçilik etmek; goramak
+2658|看望|visit; call on|навещать; посещать|halyndan habar almak; baryp görmek
+2659|看作|regard as; consider to be|считать; рассматривать как|hasaplamak; hökmünde görmek
+2660|靠|lean on; rely on; be close to|опираться; полагаться; находиться у|daýamak; bil baglamak; ýakyn bolmak
+2661|靠近|approach; be near|приближаться; находиться рядом|ýakynlaşmak; golaý bolmak
+2662|颗|classifier for small round objects|счётное слово для небольших круглых предметов|ownuk togalak zatlar üçin san sözi
+2663|科研|conduct scientific research|заниматься научными исследованиями|ylmy barlag geçirmek
+2664|可见|it follows that; evidently|следовательно; отсюда видно|diýmek; şundan görnüşi ýaly
+2665|可靠|reliable; dependable|надёжный; достоверный|ygtybarly; ynamdar
+2666|可怕|frightening; terrible|страшный; ужасный|gorkunç; elhenç
+2667|克服|overcome; conquer|преодолевать|ýeňip geçmek
+2668|客服|customer service|служба поддержки клиентов|müşderi hyzmaty
+2669|客观|objective; impartial|объективный; беспристрастный|obýektiw; bitarap
+2670|客户|client; customer|клиент; заказчик|müşderi; sargytçy
+2671|空间|space; room|пространство; место|giňişlik; orun
+2672|空中|in the air; aerial|в воздухе; воздушный|howada; howa bilen bagly
+2673|控制|control; restrain|контролировать; сдерживать|gözegçilik etmek; çäklendirmek
+2674|口袋|pocket; bag|карман; мешок|jübi; halta
+2675|口味|taste; flavour preference|вкус; вкусовые предпочтения|tagam; tagam islegi
+2676|库|storehouse; repository|склад; хранилище|ammar; saklanylýan ýer
+2677|宽|wide; width; relax a restriction|широкий; ширина; ослаблять ограничение|giň; in; çäklendirmäni gowşatmak
+2678|宽度|width; breadth|ширина|in; giňlik
+2679|亏|lose money; suffer a loss; owe|терпеть убыток; быть в долгу|zyýan çekmek; bergili bolmak
+2680|昆虫|insect|насекомое|mör-möjek
+2681|扩大|expand; enlarge|расширять; увеличивать|giňeltmek; ulaltmak
+2682|来源|source; originate from|источник; происходить из|çeşme; gelip çykmak
+2683|劳动|labour; work|труд; трудиться|zähmet; zähmet çekmek
+2684|老百姓|ordinary people; the general public|простой народ; обычные люди|ýönekeý halk; ilat
+2685|老板|boss; business owner|начальник; хозяин предприятия|başlyk; kärhananyň eýesi
+2686|老公|husband (informal)|муж (разговорное)|är (gepleşikde)
+2687|姥姥|maternal grandmother|бабушка по матери|ene tarapdan mama
+2688|老婆|wife (informal)|жена (разговорное)|aýal; ýanýoldaş aýal
+2689|姥爷|maternal grandfather|дедушка по матери|ene tarapdan baba
+2690|乐观|optimistic|оптимистичный|ruhubelent; ýagşylyga ynanýan
+2691|乐趣|pleasure; enjoyment|радость; удовольствие|lezzet; şatlyk
+2692|泪|tear; tears|слеза; слёзы|gözýaş
+2693|类|kind; category; classifier for categories|вид; категория; разряд|görnüş; topar; kysym
+2694|泪水|tears|слёзы|gözýaş
+2695|类似|be similar to; resemble|быть похожим; напоминать|meňzemek; çalym etmek
+2696|类型|type; category|тип; разновидность|görnüş; kysym
+2697|梨|pear|груша|armyt
+2698|离婚|divorce; get divorced|разводиться|aýrylyşmak
+2699|厘米|centimetre|сантиметр|santimetr
+2700|离职|leave a job; resign|уходить с работы; увольняться|işden gitmek; wezipesinden çekilmek
+2701|理论|theory; argue one's case|теория; спорить, доказывая свою правоту|nazaryýet; öz mamladygyny jedelleşip subut etmek
+2702|里头|inside; within|внутри; внутренняя часть|içinde; içki bölek
+2703|理由|reason; grounds|причина; основание; довод|sebäp; esas
+2704|力|strength; force; ability suffix|сила; суффикс способности|güýç; ukyp aňladýan goşulma
+2705|立即|immediately|немедленно|dessine; derrew
+2706|立刻|at once; immediately|тотчас; сразу|derrew; şol bada
+2707|力量|strength; power|сила; мощь|güýç; kuwwat
+2708|利润|profit|прибыль|peýda
+2709|利益|interest; benefit|интересы; выгода|bähbit; peýda
+2710|利用|make use of; utilise|использовать; пользоваться|peýdalanmak; ulanmak
+2711|联合|unite; joint|объединять; совместный|birleşmek; birleşdirmek; bilelikdäki
+2712|连接|connect; link|соединять; связывать|birikdirmek; baglanyşdyrmak
+2713|连忙|promptly; in a hurry|поспешно; немедленно|howlukmaç; derrew
+2714|连续|continue without interruption|продолжаться непрерывно; следовать подряд|üznüksiz dowam etmek; yzly-yzyna bolmak
+2715|脸色|complexion; facial expression|цвет лица; выражение лица|ýüzüň reňki; ýüz keşbi
+2716|恋爱|be in love; romantic relationship|влюбляться; любовные отношения|aşyk bolmak; söýgi gatnaşygy
+2717|良好|good; favourable|хороший; благоприятный|gowy; amatly
+2718|粮食|grain; staple food|зерно; продовольствие|galla; azyk
+2719|量|quantity; amount; capacity|количество; объём; вместимость|mukdar; göwrüm; sygym
+2720|了不起|remarkable; amazing|выдающийся; замечательный|ajaýyp; haýran galdyryjy
+2721|列车|train|поезд; железнодорожный состав|otly
+2722|临时|temporary; at short notice|временный; в последний момент|wagtlaýyn; birden
+2723|铃|bell|колокольчик; звонок|jaň; jaňjagaz
+2724|灵活|flexible; agile|гибкий; ловкий|çeýe; çalasyn
+2725|领|collar; lead; receive|воротник; вести; получать|ýaka; alyp gitmek; almak
+2726|领带|necktie|галстук|galstuk
+2727|领导|lead; leader|руководить; руководитель|ýolbaşçylyk etmek; ýolbaşçy
+2728|领取|collect; receive something issued|получать; забирать выданное|almak; berilýän zady almak
+2729|领先|be in the lead; lead the way|опережать; лидировать|öňde bolmak; öňe saýlanmak
+2730|领域|field; domain|область; сфера|ugur; ulgam
+2731|令|order; make someone do something|приказывать; заставлять; приказ|buýurmak; mejbur etmek; buýruk
+2732|流传|spread; be handed down|распространяться; передаваться из поколения в поколение|ýaýramak; nesilden-nesle geçmek
+2733|流感|influenza; flu|грипп|dümew
+2734|浏览|browse; skim|просматривать; бегло читать|gözden geçirmek; çalt okap çykmak
+2735|留言|leave a message; message|оставлять сообщение; сообщение|habar galdyrmak; habar
+2736|龙|dragon|дракон|aždarha
+2737|漏|leak; omit; let slip|протекать; пропускать; упускать|syzmak; taşlap gitmek; sypdyrmak
+2738|录|record; copy down|записывать; переписывать|ýazga geçirmek; göçürip ýazmak
+2739|陆地|land; dry land|суша|gury ýer
+2740|录取|admit; accept an applicant|зачислять; принимать по результатам отбора|okuwa ýa-da işe kabul etmek
+2741|路人|passer-by|прохожий|ýoldan geçýän adam
+2742|路线|route; course|маршрут; путь; курс|ugur; ýörelýän ýol
+2743|陆续|one after another; in succession|один за другим; постепенно|yzly-yzyna; kem-kemden
+2744|录音|record sound; sound recording|записывать звук; аудиозапись|ses ýazmak; ses ýazgysy
+2745|旅行社|travel agency|туристическое агентство|syýahatçylyk agentligi
+2746|论文|academic paper; thesis|научная статья; диссертация|ylmy makala; dissertasiýa
+2747|逻辑|logic|логика|logika; mantyk
+2748|骂|scold; curse; abuse|ругать; бранить; оскорблять|käýemek; sögmek; dil ýetirmek
+2749|买卖|business; trade; transaction|торговля; сделка; дело|söwda; geleşik; iş
+2750|满足|satisfy; be satisfied|удовлетворять; быть довольным|kanagatlandyrmak; kanagatlanmak
