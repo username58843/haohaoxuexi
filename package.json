@@ -10,7 +10,10 @@
     "lint": "eslint pages components lib",
     "test": "jest",
     "test:watch": "jest --watch",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "preview": "node scripts/preview.mjs",
+    "data:build": "node scripts/build-hsk.mjs && node scripts/sync-learning-content.mjs && node scripts/build-memorize.mjs",
+    "data:release-check": "node scripts/build-hsk.mjs --strict && node scripts/build-memorize.mjs --strict"
   },
   "dependencies": {
     "@tiptap/extension-highlight": "^3.29.2",

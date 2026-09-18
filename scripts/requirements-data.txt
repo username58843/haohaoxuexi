@@ -1,0 +1,5 @@
+pypinyin==0.55.0
+pypdf==6.10.2
+pypdfium2==5.13.0
+Pillow==12.3.0
+fonttools==4.63.0

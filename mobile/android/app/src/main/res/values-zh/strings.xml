@@ -1,0 +1,5 @@
+<resources>
+    <string name="incomplete_install_title">应用安装不完整</string>
+    <string name="incomplete_install_message">当前安装缺少 Flutter 引擎。请通过 Google Play 更新应用，或安装完整的通用 APK。仅安装应用包中的 base.apk 不够。请先尝试直接更新，不要卸载，以保留本地设置。您的账号数据没有被重置。</string>
+    <string name="incomplete_install_store">打开 Google Play</string>
+</resources>

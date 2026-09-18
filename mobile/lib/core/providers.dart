@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui' as ui show PlatformDispatcher;
 
 import 'package:flutter/material.dart' show ThemeMode;
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +13,8 @@ import 'i18n.dart';
 import 'models.dart';
 import 'reminders.dart';
 import 'theme.dart';
+import 'typography.dart';
+import 'word_catalog.dart';
 
 /// Overridden with the real instance in main() before runApp.
 final sharedPreferencesProvider = Provider<SharedPreferences>(
@@ -37,6 +39,8 @@ class AppSettings {
     this.onboardingDone = false,
     this.reminderEnabled = false,
     this.reminderMinutes = 20 * 60,
+    this.hanziFont = 'songti',
+    this.interfaceFont = 'manrope',
   });
 
   final ThemeMode themeMode;
@@ -58,6 +62,8 @@ class AppSettings {
   /// opt-in flag + time as minutes after local midnight (0..1439).
   final bool reminderEnabled;
   final int reminderMinutes;
+  final String hanziFont;
+  final String interfaceFont;
 
   AppSettings copyWith({
     ThemeMode? themeMode,
@@ -68,6 +74,8 @@ class AppSettings {
     bool? onboardingDone,
     bool? reminderEnabled,
     int? reminderMinutes,
+    String? hanziFont,
+    String? interfaceFont,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -78,6 +86,8 @@ class AppSettings {
       onboardingDone: onboardingDone ?? this.onboardingDone,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
       reminderMinutes: reminderMinutes ?? this.reminderMinutes,
+      hanziFont: hanziFont ?? this.hanziFont,
+      interfaceFont: interfaceFont ?? this.interfaceFont,
     );
   }
 }
@@ -105,7 +115,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
     // is flipped to 'system' once — the OS theme is then auto-detected on
     // every launch. Picking dark/light in settings afterwards sticks.
     if (!(p.getBool(_kThemeMigratedV3) ?? false)) {
-      if (p.getString(_kTheme) == 'dark') p.setString(_kTheme, ThemeMode.system.name);
+      if (p.getString(_kTheme) == 'dark')
+        p.setString(_kTheme, ThemeMode.system.name);
       p.setBool(_kThemeMigratedV3, true);
     }
 
@@ -123,22 +134,33 @@ class SettingsNotifier extends Notifier<AppSettings> {
 
     final settings = AppSettings(
       themeMode: _themeModeFrom(p.getString(_kTheme)),
-      accent:
-          accentColors.containsKey(accentRaw) ? accentRaw! : defaultAccentKey,
+      accent: accentColors.containsKey(accentRaw)
+          ? accentRaw!
+          : defaultAccentKey,
       language: language,
       dailyGoal: p.getInt(_kDailyGoal) ?? 20,
       quizSpeakOnCorrect: p.getBool(_kQuizSpeakOnCorrect) ?? false,
       onboardingDone: p.getBool(_kOnboardingDone) ?? false,
       reminderEnabled: p.getBool(_kReminderEnabled) ?? false,
       reminderMinutes: p.getInt(_kReminderMinutes) ?? 20 * 60,
+      hanziFont: hanziFonts.containsKey(p.getString('hanziFont'))
+          ? p.getString('hanziFont')!
+          : 'songti',
+      interfaceFont: interfaceFonts.containsKey(p.getString('interfaceFont'))
+          ? p.getString('interfaceFont')!
+          : 'manrope',
     );
     I18n.setLanguage(settings.language);
     // Re-arm the daily reminder on every launch: inexact alarms don't
     // survive force-stop/reinstall reliably, and re-arming also refreshes
     // the notification text after a language change.
     if (settings.reminderEnabled) {
-      unawaited(Reminders.scheduleDaily(
-          settings.reminderMinutes ~/ 60, settings.reminderMinutes % 60));
+      unawaited(
+        Reminders.scheduleDaily(
+          settings.reminderMinutes ~/ 60,
+          settings.reminderMinutes % 60,
+        ),
+      );
     }
     return settings;
   }
@@ -191,6 +213,18 @@ class SettingsNotifier extends Notifier<AppSettings> {
     _mirror({'language': valid});
   }
 
+  void setHanziFont(String key) {
+    if (!hanziFonts.containsKey(key)) return;
+    state = state.copyWith(hanziFont: key);
+    _prefs.setString('hanziFont', key);
+  }
+
+  void setInterfaceFont(String key) {
+    if (!interfaceFonts.containsKey(key)) return;
+    state = state.copyWith(interfaceFont: key);
+    _prefs.setString('interfaceFont', key);
+  }
+
   void setDailyGoal(int goal) {
     // Server contract: PUT /user/settings validates dailyGoal as 5..500.
     final clamped = goal.clamp(5, 500);
@@ -218,8 +252,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(reminderEnabled: enabled);
     _prefs.setBool(_kReminderEnabled, enabled);
     if (enabled) {
-      unawaited(Reminders.scheduleDaily(
-          state.reminderMinutes ~/ 60, state.reminderMinutes % 60));
+      unawaited(
+        Reminders.scheduleDaily(
+          state.reminderMinutes ~/ 60,
+          state.reminderMinutes % 60,
+        ),
+      );
     } else {
       unawaited(Reminders.cancel());
     }
@@ -302,7 +340,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
     if (!authed) return;
     final api = ref.read(apiProvider);
     unawaited(
-      api.put('/user/settings', body: patch).catchError(
+      api
+          .put('/user/settings', body: patch)
+          .catchError(
             // Best-effort: local state is the source of truth for the device.
             (Object _) => <String, dynamic>{},
           ),
@@ -352,8 +392,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
   }
 }
 
-final settingsProvider =
-    NotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);
+final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(
+  SettingsNotifier.new,
+);
 
 // ---------------------------------------------------------------------------
 // Auth
@@ -380,8 +421,9 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     }
     try {
       final data = await api.get('/auth/me');
-      final user =
-          UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
+      final user = UserProfile.fromJson(
+        Map<String, dynamic>.from(data['user'] as Map),
+      );
       ref.read(settingsProvider.notifier).applyServerSettings(user.settings);
       // Segment analytics/crash reports per account (no-op without Firebase).
       FirebaseBootstrap.setUserId(user.id);
@@ -396,30 +438,52 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
 
   bool get isAuthed => state.value != null;
 
-  Future<void> login(String email, String password, {String captchaToken = ''}) async {
-    await _authenticate(
-      '/auth/login',
-      {'email': email.trim(), 'password': password, 'captchaToken': captchaToken},
-    );
+  Future<void> login(
+    String email,
+    String password, {
+    String captchaToken = '',
+  }) async {
+    await _authenticate('/auth/login', {
+      'email': email.trim(),
+      'password': password,
+      'captchaToken': captchaToken,
+    });
   }
 
-  Future<void> register(String name, String email, String password, {String captchaToken = '', String lang = 'en'}) async {
+  Future<void> register(
+    String name,
+    String email,
+    String password, {
+    String captchaToken = '',
+    String lang = 'en',
+  }) async {
     final api = ref.read(apiProvider);
-    await api.post('/auth/register',
-        body: {'name': name.trim(), 'email': email.trim(), 'password': password, 'captchaToken': captchaToken, 'lang': lang});
+    await api.post(
+      '/auth/register',
+      body: {
+        'name': name.trim(),
+        'email': email.trim(),
+        'password': password,
+        'captchaToken': captchaToken,
+        'lang': lang,
+      },
+    );
     // Email verification required — user is NOT logged in.
   }
 
   Future<void> verifyEmail(String email, String code) async {
     final api = ref.read(apiProvider);
-    final data = await api.post('/auth/verify-email',
-        body: {'email': email.trim(), 'code': code.trim()});
+    final data = await api.post(
+      '/auth/verify-email',
+      body: {'email': email.trim(), 'code': code.trim()},
+    );
     final token = data['token']?.toString();
     if (token != null && token.isNotEmpty) {
       await api.saveToken(token);
     }
-    final user =
-        UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
+    final user = UserProfile.fromJson(
+      Map<String, dynamic>.from(data['user'] as Map),
+    );
     // Verification is the first real sign-in of a FRESH account: the server
     // still carries DEFAULT_SETTINGS (dark theme, jade, goal 20; only the
     // language was seeded at register). Adopting them would clobber the
@@ -443,8 +507,9 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
       if (token != null && token.isNotEmpty) {
         await api.saveToken(token);
       }
-      final user =
-          UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
+      final user = UserProfile.fromJson(
+        Map<String, dynamic>.from(data['user'] as Map),
+      );
       // Login: server settings win once, for cross-device sync.
       // (Fresh accounts never reach this path — registration goes through
       // register() + verifyEmail(), which seeds the account with the local
@@ -453,7 +518,9 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
       state = AsyncData(user);
       FirebaseBootstrap.setUserId(user.id);
     } on ApiException {
-      state = previous.hasValue ? AsyncData(previous.value) : const AsyncData(null);
+      state = previous.hasValue
+          ? AsyncData(previous.value)
+          : const AsyncData(null);
       rethrow;
     }
   }
@@ -485,15 +552,19 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
   /// email enumeration — the server returns 200 regardless.
   Future<void> forgotPassword(String email, {String captchaToken = ''}) async {
     final api = ref.read(apiProvider);
-    await api.post('/auth/forgot-password',
-        body: {'email': email.trim(), 'captchaToken': captchaToken});
+    await api.post(
+      '/auth/forgot-password',
+      body: {'email': email.trim(), 'captchaToken': captchaToken},
+    );
   }
 
   /// Resets the password using a token from the email link.
   Future<void> resetPassword(String token, String password) async {
     final api = ref.read(apiProvider);
-    await api.post('/auth/reset-password',
-        body: {'token': token, 'password': password});
+    await api.post(
+      '/auth/reset-password',
+      body: {'token': token, 'password': password},
+    );
   }
 
   /// Requests a verification email to be sent.
@@ -501,8 +572,7 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     final api = ref.read(apiProvider);
     email ??= state.value?.email;
     if (email == null) return;
-    await api.post('/auth/send-verification',
-        body: {'email': email});
+    await api.post('/auth/send-verification', body: {'email': email});
   }
 
   /// Re-fetches the profile (e.g. after a name change).
@@ -516,8 +586,9 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
     }
     try {
       final data = await api.get('/auth/me');
-      final user =
-          UserProfile.fromJson(Map<String, dynamic>.from(data['user'] as Map));
+      final user = UserProfile.fromJson(
+        Map<String, dynamic>.from(data['user'] as Map),
+      );
       state = AsyncData(user);
     } on ApiException catch (e) {
       if (e.isNetwork) return; // keep current state while offline
@@ -528,8 +599,9 @@ class AuthNotifier extends AsyncNotifier<UserProfile?> {
   }
 }
 
-final authProvider =
-    AsyncNotifierProvider<AuthNotifier, UserProfile?>(AuthNotifier.new);
+final authProvider = AsyncNotifierProvider<AuthNotifier, UserProfile?>(
+  AuthNotifier.new,
+);
 
 // ---------------------------------------------------------------------------
 // Bundled word packs
@@ -543,14 +615,14 @@ const List<String> bundledHskPackIds = [
 
 /// Lazily loads a bundled HSK word pack from assets, e.g.
 /// `ref.watch(wordPacksProvider('hsk1'))`.
-final wordPacksProvider =
-    FutureProvider.family<List<Word>, String>((ref, packId) async {
+final wordPacksProvider = FutureProvider.family<List<Word>, String>((
+  ref,
+  packId,
+) async {
   final id = packId.toLowerCase();
-  final raw = await rootBundle.loadString('assets/words/$id.json');
-  final decoded = jsonDecode(raw);
-  if (decoded is! List) return const [];
-  return [
-    for (final entry in decoded)
-      if (entry is Map) Word.fromJson(Map<String, dynamic>.from(entry)),
-  ];
+  final raw = await rootBundle.loadString(
+    'assets/words/$id.json',
+    cache: false,
+  );
+  return compute(decodeWordPack, raw);
 });

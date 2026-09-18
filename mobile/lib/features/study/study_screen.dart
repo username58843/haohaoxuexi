@@ -4,7 +4,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/firebase_bootstrap.dart';
@@ -567,7 +566,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         ),
         Text(
           tr(context, 'study.tapToReveal', 'Tap to reveal'),
-          style: GoogleFonts.manrope(fontSize: 12, color: text3Of(context)),
+          style: TextStyle(fontSize: 12, color: text3Of(context)),
         ),
       ],
     );
@@ -595,7 +594,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             Text(
               word.pinyin,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: accentOf(context),
@@ -610,7 +609,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 child: Text(
                   def,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.manrope(fontSize: 15.5, height: 1.4),
+                  style: TextStyle(fontSize: 15.5, height: 1.4),
                 ),
               ),
             if (extra.isNotEmpty) ...[
@@ -621,7 +620,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                   child: Text(
                     t,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 14,
                       height: 1.4,
                       color: text2Of(context),
@@ -722,7 +721,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         return Text(
           q.prompt,
           textAlign: TextAlign.center,
-          style: GoogleFonts.manrope(
+          style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.w600,
             color: accentOf(context),
@@ -732,7 +731,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         return Text(
           q.prompt,
           textAlign: TextAlign.center,
-          style: GoogleFonts.manrope(
+          style: TextStyle(
             fontSize: 19,
             fontWeight: FontWeight.w600,
             height: 1.35,
@@ -769,9 +768,9 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
     final answerStyle = switch (q.answerType) {
       QuizField.hanzi => hanziStyle(context, size: 22),
       QuizField.pinyin =>
-        GoogleFonts.manrope(fontSize: 16.5, fontWeight: FontWeight.w600),
+        TextStyle(fontSize: 16.5, fontWeight: FontWeight.w600),
       QuizField.meaning =>
-        GoogleFonts.manrope(fontSize: 14.5, fontWeight: FontWeight.w600),
+        TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600),
     };
 
     return AnimatedOpacity(
@@ -854,7 +853,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
               child: Center(
                 child: Text(
                   '${(accuracy * 100).round()}%',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                       fontSize: 24, fontWeight: FontWeight.w800),
                 ),
               ),
@@ -865,7 +864,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
         Center(
           child: Text(
             tr(context, 'study.accuracy', 'Accuracy'),
-            style: GoogleFonts.manrope(fontSize: 12, color: text3Of(context)),
+            style: TextStyle(fontSize: 12, color: text3Of(context)),
           ),
         ),
         const SizedBox(height: 14),
@@ -873,7 +872,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
           child: Text(
             tr(context, 'study.sessionComplete', 'Session complete'),
             style:
-                GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.w800),
+                TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: 18),
@@ -911,7 +910,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 ),
                 child: Text(
                   '🔥 ${_trN(context, 'study.dayStreak', '{n}-day streak', streak)}',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                     color: accentOf(context),
@@ -927,7 +926,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
             child: Text(
               _trN(context, 'study.syncFailed',
                   '{n} reviews failed to sync', _syncFailed),
-              style: GoogleFonts.manrope(fontSize: 12.5, color: warnColor),
+              style: TextStyle(fontSize: 12.5, color: warnColor),
             ),
           ),
         ],
@@ -988,7 +987,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                 children: [
                   Text(
                     word.pinyin,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w700,
                       color: accentOf(context),
@@ -999,7 +998,7 @@ class _StudyScreenState extends ConsumerState<StudyScreen> {
                       meaning,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(
                           fontSize: 13, color: text2Of(context)),
                     ),
                 ],
@@ -1047,7 +1046,7 @@ class _GradeButton extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.manrope(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
                   color: foreground,
@@ -1056,7 +1055,7 @@ class _GradeButton extends StatelessWidget {
               const SizedBox(height: 1),
               Text(
                 hint,
-                style: GoogleFonts.manrope(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: foreground.withValues(alpha: 0.75),
@@ -1085,7 +1084,7 @@ class _ResultStat extends StatelessWidget {
           children: [
             Text(
               value,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                   fontSize: 18, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 2),
@@ -1093,7 +1092,7 @@ class _ResultStat extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                   fontSize: 11.5, color: text2Of(context)),
             ),
           ],

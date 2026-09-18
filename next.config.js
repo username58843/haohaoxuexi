@@ -11,7 +11,7 @@ const nextConfig = {
   // can't see the dynamic path, so force-include the packs in the serverless
   // bundle (without this, word packs 500 on Vercel).
   outputFileTracingIncludes: {
-    '/api/**/*': ['./words/*.json'],
+    '/api/**/*': ['./words/**/*.json'],
   },
   // Prevent Next/Turbopack from picking a parent lockfile as workspace root
   turbopack: {

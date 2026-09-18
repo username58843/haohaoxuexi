@@ -2,6 +2,7 @@ import { createApiHandler } from '~/lib/server/api'
 import { int, optStr } from '~/lib/server/validate'
 import { getQueue } from '~/lib/server/srs'
 import { getPackWords, isTextbookPack } from '~/lib/server/words'
+import { isLegacyCatalogRequest } from '~/lib/hsk-catalog'
 
 export default createApiHandler({
   GET: {
@@ -21,7 +22,7 @@ export default createApiHandler({
           )
         : []
 
-      const result = await getQueue({ userId: req.userId, packs, limit })
+      const result = await getQueue({ userId: req.userId, packs, limit, legacy: isLegacyCatalogRequest(req) })
       res.status(200).json(result)
     },
   },

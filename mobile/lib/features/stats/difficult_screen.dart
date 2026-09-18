@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
@@ -101,7 +100,7 @@ class DifficultScreen extends ConsumerWidget {
                   child: Text(
                     tr(context, 'difficult.hint',
                         'These words keep slipping away. Tap one to open it and add it to a deck for extra practice.'),
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 13.5,
                       height: 1.45,
                       color: text2Of(context),
@@ -139,7 +138,7 @@ class _LapsesBadge extends StatelessWidget {
       ),
       child: Text(
         '×$lapses',
-        style: GoogleFonts.manrope(
+        style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           color: dangerColor,

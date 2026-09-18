@@ -209,25 +209,10 @@ List<QuizQuestion> buildQuiz(
   return questions;
 }
 
-/// What to pronounce after a correct quiz answer, when the account's
-/// "speak on correct answer" setting is on (web `speechForQuestion`).
-///
-/// The prompt side decides, so the audio always reinforces what was just asked:
-///  - 汉字 or Pinyin prompt (cp / pc / ct) → the word itself, in Mandarin.
-///    A pinyin prompt speaks the hanzi rather than the latin spelling: same
-///    pronunciation, and Chinese voices mangle romanized text.
-///  - Meaning prompt (tc / tp) → the meaning line, in the UI language.
-///
-/// Returns (text, lang) — `lang` is a UI language code, 'zh' for Mandarin — or
-/// null when there is nothing usable to say.
+/// Reinforce the Chinese word, including meaning-to-hanzi question modes.
 ({String text, String lang})? speechForQuestion(
     QuizQuestion question, String language) {
-  final def = kQmodeDefs[question.qmode];
-  if (def == null) return null;
-  if (def.prompt == QuizField.meaning) {
-    final text = quizMeaning(question.word, language);
-    return text.isEmpty ? null : (text: text, lang: language);
-  }
+  if (!kQmodeDefs.containsKey(question.qmode)) return null;
   final text = question.word.simplified;
   return text.isEmpty ? null : (text: text, lang: 'zh');
 }

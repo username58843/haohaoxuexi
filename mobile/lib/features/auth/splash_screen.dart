@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/i18n.dart';
 import '../../core/providers.dart';
@@ -106,7 +105,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                   const SizedBox(height: 10),
                   Text(
                     tr(context, 'splash.tagline', 'Learn Chinese every day'),
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w500,
                       color: text2Of(context),

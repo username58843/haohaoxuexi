@@ -18,7 +18,7 @@ export default function App({ Component, pageProps }) {
             <title>好好学习汉语 — Learn Chinese</title>
             <meta
               name="description"
-              content="好好学习汉语 — HSK 1–6 vocabulary with spaced repetition, personal decks and progress tracking."
+              content="好好学习汉语 — HSK 3.0 vocabulary, contextual reading, spaced repetition and personal decks."
             />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Head>

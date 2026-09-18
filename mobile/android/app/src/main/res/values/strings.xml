@@ -1,0 +1,5 @@
+<resources>
+    <string name="incomplete_install_title">Incomplete installation</string>
+    <string name="incomplete_install_message">The Chinese learning app is missing its Flutter engine. Update or reinstall it from Google Play, or install the complete universal APK. Do not install only base.apk from an app bundle. Try updating without uninstalling first to preserve local settings. Your account data has not been reset.</string>
+    <string name="incomplete_install_store">Open Google Play</string>
+</resources>

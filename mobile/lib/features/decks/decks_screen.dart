@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/firebase_bootstrap.dart';
@@ -334,7 +333,7 @@ class _DeckCard extends StatelessWidget {
                   deck.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -356,7 +355,7 @@ class _DeckCard extends StatelessWidget {
                 child: preview.isEmpty
                     ? Text(
                         tr(context, 'decks.emptyDeck', 'Empty deck'),
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                           fontSize: 13.5,
                           color: text3Of(context),
                         ),

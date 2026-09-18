@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/i18n.dart';
 import '../../core/providers.dart';
@@ -229,7 +228,7 @@ class _OnboardPage extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.w800,
                 height: 1.2,
@@ -240,7 +239,7 @@ class _OnboardPage extends StatelessWidget {
             Text(
               text,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 15,
                 height: 1.5,
                 color: text2Of(context),

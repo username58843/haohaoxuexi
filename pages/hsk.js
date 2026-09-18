@@ -3,9 +3,10 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import AppShell from '~/components/AppShell'
 import WordSheet from '~/components/WordSheet'
+import HskGuide from '~/components/HskGuide'
 import WordRow from '~/components/hsk/WordRow'
 import AddToDeck from '~/components/hsk/AddToDeck'
-import { useKnownWords, migrateLegacyLevel } from '~/components/hsk/known-store'
+import { useKnownWords, loadLegacyKnownIds } from '~/components/hsk/known-store'
 import {
   Button,
   Field,
@@ -140,7 +141,7 @@ export default function HskPage() {
 
       // One-time legacy known-map migration for this level (also pushed to
       // the account via the store).
-      const migratedIds = migrateLegacyLevel(lvl, words)
+      const migratedIds = await loadLegacyKnownIds(lvl)
       if (migratedIds && migratedIds.length > 0) addKnownIds(migratedIds)
     } catch (err) {
       const e = apiError(err)
@@ -483,7 +484,7 @@ export default function HskPage() {
   return (
     <AppShell>
       <Head>
-        <title>HSK · 好好学习汉语</title>
+        <title>HSK 3.0 · 好好学习汉语</title>
       </Head>
 
       <div className="hsk">
@@ -546,6 +547,7 @@ export default function HskPage() {
         </div>
 
         <div className="col-app">
+          <HskGuide compact />
           {statsLine && <p className="hsk__stats">{statsLine}</p>}
 
           <div className="hsk__list">{searching ? renderSearch() : renderBrowse()}</div>

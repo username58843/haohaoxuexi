@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/api.dart';
@@ -32,7 +31,7 @@ const List<int> _levels = [1, 2, 3, 4, 5, 6, 7];
 /// Account-synced "known words" set (canonical [Word.id]s) — the word map's
 /// mastery store, shared with the web via `GET/PUT/DELETE /api/v1/words/known`.
 ///
-/// - The local cache is scoped per account ('known_words_v1:<userId>' in
+/// - The local cache is scoped per account (`known_words_v1:<userId>` in
 ///   SharedPreferences, plain 'known_words_v1' while signed out). It used to be
 ///   one shared bucket, which leaked marks between accounts on the same device:
 ///   the bucket outlived logout and account deletion, and the login merge then
@@ -40,7 +39,7 @@ const List<int> _levels = [1, 2, 3, 4, 5, 6, 7];
 ///   bucket is *consumed* — merged once into the account that claims it, then
 ///   deleted — so a second account can never inherit it.
 /// - Toggles apply instantly to the cache, keeping the map usable offline.
-/// - Every toggle is queued as a delta ('known_words_pending_v1:<userId>') and
+/// - Every toggle is queued as a delta (`known_words_pending_v1:<userId>`) and
 ///   flushed (debounced) as `PUT { add, remove }`. Pending deltas survive
 ///   restarts, so changes made offline sync on the next launch.
 /// - When a signed-in session is (re)established, the server set is merged in
@@ -528,7 +527,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 'Tip: press and hold a tile to mark the word as known — '
                     'hold it again to unmark.',
               ),
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 12,
                 height: 1.35,
                 color: text3Of(context),
@@ -653,7 +652,7 @@ class _StatsCard extends StatelessWidget {
                   children: [
                     Text(
                       tr(context, 'wmap.mastery', 'Mastery'),
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(
                         fontSize: 13.5,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface,

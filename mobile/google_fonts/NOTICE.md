@@ -19,9 +19,17 @@ Bundled cuts (keep in sync with `tool/fetch_fonts.py` and `lib/core/theme.dart`)
 | Manrope        | 400, 500, 600, 700, 800 | UI text (`manropeTextTheme`) |
 | Noto Serif SC  | 600 only           | hanzi (`hanziStyle` / `HanziText`) |
 | JetBrains Mono | 600, 700           | eyebrows / numbers (`monoStyle`)  |
+| ZCOOL XiaoWei  | 400               | default Song-style hanzi         |
+| Ma Shan Zheng | 400               | calligraphic hanzi option        |
+| Noto Sans SC  | 400               | sans-serif hanzi option          |
+| Inter         | 400, 700          | interface option                 |
+| Lora          | 400, 700          | interface option                 |
 
-All three families are licensed under the
+All families are licensed under the
 [SIL Open Font License 1.1](https://openfontlicense.org/).
+The full copyright and license notices are bundled as `OFL-*.txt`.
+`pubspec.yaml` registers offline families directly; Settings switches the
+hanzi and interface families independently. No font is fetched at runtime.
 
 This file also keeps the directory non-empty so `flutter build` succeeds on a
 fresh checkout made before the workflow has committed the fonts.

@@ -22,7 +22,9 @@ import 'features/browse/map_screen.dart';
 import 'features/decks/deck_detail_screen.dart';
 import 'features/decks/decks_screen.dart';
 import 'features/home/home_screen.dart';
+import 'features/home/hsk_syllabus_screen.dart';
 import 'features/learn/learn_screen.dart';
+import 'features/memorize/memorize_screen.dart';
 import 'features/stats/difficult_screen.dart';
 import 'features/study/study_logic.dart';
 import 'features/study/study_screen.dart';
@@ -121,6 +123,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MapScreen(),
       ),
       GoRoute(
+        path: '/hsk/syllabus',
+        builder: (context, state) => const HskSyllabusScreen(),
+      ),
+      GoRoute(
+        path: '/memorize',
+        builder: (context, state) => const MemorizeScreen(),
+      ),
+      GoRoute(
         path: '/decks/:id',
         builder: (context, state) =>
             DeckDetailScreen(id: state.pathParameters['id']!),
@@ -181,8 +191,10 @@ class HaoHaoApp extends ConsumerWidget {
     return MaterialApp.router(
       title: '好好学习汉语',
       debugShowCheckedModeBanner: false,
-      theme: buildTheme(Brightness.light, accent),
-      darkTheme: buildTheme(Brightness.dark, accent),
+      theme: buildTheme(Brightness.light, accent,
+          hanziFont: settings.hanziFont, interfaceFont: settings.interfaceFont),
+      darkTheme: buildTheme(Brightness.dark, accent,
+          hanziFont: settings.hanziFont, interfaceFont: settings.interfaceFont),
       themeMode: settings.themeMode,
       routerConfig: router,
     );

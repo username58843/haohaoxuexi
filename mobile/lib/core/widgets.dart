@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'i18n.dart';
 import 'models.dart' show WordExample;
@@ -133,7 +132,7 @@ class PillButton extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.manrope(
+            style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.w700,
               color: foreground,
@@ -216,7 +215,7 @@ class SwitchRow extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: GoogleFonts.manrope(
+                style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.onSurface,
@@ -226,7 +225,7 @@ class SwitchRow extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   hint!,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 12.5,
                     height: 1.35,
                     color: text2Of(context),
@@ -305,7 +304,7 @@ class EmptyView extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
                 color: Theme.of(context).colorScheme.onSurface,
@@ -315,7 +314,7 @@ class EmptyView extends StatelessWidget {
             Text(
               text,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 14,
                 height: 1.45,
                 color: text2Of(context),
@@ -352,7 +351,7 @@ class ErrorView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 14.5,
                 height: 1.45,
                 color: text2Of(context),
@@ -422,7 +421,7 @@ class ExampleSentenceCard extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Text(
                     example.py,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 12.5,
                       color: text2Of(context),
                     ),
@@ -432,7 +431,7 @@ class ExampleSentenceCard extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     translation,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 13,
                       height: 1.35,
                       color: text2Of(context),

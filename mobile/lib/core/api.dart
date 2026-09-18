@@ -55,6 +55,10 @@ class Api {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          if (options.method == 'GET' &&
+              RegExp(r'^/(words|srs|dict)(/|$)').hasMatch(options.path)) {
+            options.queryParameters['catalog'] = '2026-07';
+          }
           final token = await readToken();
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';

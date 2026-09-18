@@ -1,6 +1,7 @@
 import { createApiHandler } from '~/lib/server/api'
 import { optStr, int } from '~/lib/server/validate'
 import { searchWords } from '~/lib/server/words'
+import { isLegacyCatalogRequest } from '~/lib/hsk-catalog'
 
 export default createApiHandler({
   GET: {
@@ -18,7 +19,7 @@ export default createApiHandler({
       const page = int(req.query.page, { field: 'page', def: 1, min: 1, max: 500 })
       const limit = int(req.query.limit, { field: 'limit', def: 40, min: 1, max: 100 })
 
-      res.status(200).json(searchWords({ q, level, page, limit }))
+      res.status(200).json(searchWords({ q, level, page, limit, legacy: isLegacyCatalogRequest(req) }))
     },
   },
 })

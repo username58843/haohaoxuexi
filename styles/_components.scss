@@ -720,8 +720,11 @@ textarea.field__input {
   border-radius: var(--radius-pill);
   padding: 6px;
   box-shadow: var(--shadow-pop);
-  max-width: min(96vw, 480px);
+  max-width: min(96vw, 640px);
   width: max-content;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
 }
 
 .dock__item {
@@ -729,11 +732,10 @@ textarea.field__input {
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  /* 7 tabs now — items shrink evenly instead of overflowing small screens */
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 0 0 auto;
+  min-width: 54px;
   white-space: nowrap;
-  padding: 8px 6px;
+  padding: 8px 10px;
   border-radius: var(--radius-pill);
   color: var(--text-2);
   font-size: 10.5px;
@@ -762,8 +764,7 @@ textarea.field__input {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  max-width: 100%;
-  overflow: hidden;
+  white-space: nowrap;
 }
 
 /* Small BETA pill for early features (Books, etc.) */

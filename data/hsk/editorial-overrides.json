@@ -1,0 +1,32 @@
+{
+  "139": {
+    "simplified": "那里",
+    "translations": {"en": ["there; in that place"], "ru": ["там; в том месте"], "tk": ["şol ýerde"]},
+    "example": {"zh": "我的书在那里。", "py": "Wǒ de shū zài nàlǐ.", "en": "My book is over there.", "ru": "Моя книга там.", "tk": "Meniň kitabym şol ýerde."}
+  },
+  "1534": {
+    "simplified": "嗯",
+    "translations": {"en": ["mhm; yes (an interjection of acknowledgement)"], "ru": ["угу; да (междометие согласия)"], "tk": ["hawa (razylygy bildirýän ses)"]},
+    "example": {"zh": "嗯，我明白了。", "py": "Ǹg, wǒ míngbai le.", "en": "Mhm, I understand.", "ru": "Угу, я понял.", "tk": "Hawa, men düşündim."}
+  },
+  "7556": {
+    "simplified": "精彩纷呈",
+    "translations": {"en": ["to present a wealth of wonderful highlights"], "ru": ["изобиловать яркими, замечательными моментами"], "tk": ["ajaýyp pursatlara baý bolmak"]},
+    "example": {"zh": "晚会的节目精彩纷呈。", "py": "Wǎnhuì de jiémù jīngcǎi-fēnchéng.", "en": "The evening show was full of wonderful performances.", "ru": "Вечернее представление изобиловало замечательными номерами.", "tk": "Agşamky tomaşa ajaýyp çykyşlara baý boldy."}
+  },
+  "7793": {
+    "simplified": "口哨儿",
+    "translations": {"en": ["a whistle; a whistling sound"], "ru": ["свист"], "tk": ["sykylyk"]},
+    "example": {"zh": "他吹了一声口哨儿。", "py": "Tā chuī le yì shēng kǒushàor.", "en": "He gave a whistle.", "ru": "Он свистнул.", "tk": "Ol bir gezek sykylyk çaldy."}
+  },
+  "10216": {
+    "simplified": "一并",
+    "translations": {"en": ["together; all at the same time"], "ru": ["вместе; заодно; одновременно"], "tk": ["bilelikde; hemmesini bir wagtda"]},
+    "example": {"zh": "请把这些文件一并发给我。", "py": "Qǐng bǎ zhèxiē wénjiàn yíbìng fā gěi wǒ.", "en": "Please send me all these documents together.", "ru": "Пожалуйста, пришлите мне все эти документы вместе.", "tk": "Haýyş, şu resminamalaryň hemmesini maňa bilelikde iberiň."}
+  },
+  "10230": {
+    "simplified": "一目了然",
+    "translations": {"en": ["clear at a glance"], "ru": ["понятный с первого взгляда; очевидный"], "tk": ["bir seredeniňde düşnükli"]},
+    "example": {"zh": "地图上的路线一目了然。", "py": "Dìtú shàng de lùxiàn yímù-liǎorán.", "en": "The route on the map is clear at a glance.", "ru": "Маршрут на карте понятен с первого взгляда.", "tk": "Kartadaky ugur bir seredeniňde düşnükli."}
+  }
+}

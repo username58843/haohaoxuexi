@@ -74,6 +74,8 @@ export function writeKnown(userId, map) {
 export function migrateLegacyLevel(level, words) {
   if (typeof window === 'undefined') return null
   if (!ALL_LEVELS.includes(level) || !Array.isArray(words)) return null
+  // v1 saved positions, not identities. Never resolve them against the new list.
+  if (words.some((word) => word.sourceNumber != null)) return null
 
   const legacyRaw = localStorage.getItem(LEGACY_KEY)
   if (!legacyRaw) return null
@@ -102,6 +104,21 @@ export function migrateLegacyLevel(level, words) {
     /* best effort */
   }
   return ids
+}
+
+export async function loadLegacyKnownIds(level) {
+  if (typeof window === 'undefined' || !ALL_LEVELS.includes(level)) return null
+  try {
+    if (!localStorage.getItem(LEGACY_KEY)) return null
+    const migrated = safeParse(localStorage.getItem(MIGRATED_KEY), {})
+    if (migrated[level]) return null
+    const { data } = await api.get('/words', { params: { pack: `hsk${level}`, catalog: 'legacy' } })
+    if (data.catalog !== 'legacy') return null
+    return migrateLegacyLevel(level, data.items)
+  } catch {
+    // Retain the source marks for an offline retry; browsing need not fail.
+    return null
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -3,13 +3,13 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../core/theme.dart';
+import 'hsk_syllabus_screen.dart';
 import '../../core/widgets.dart';
 
 /// SharedPreferences key remembering the last packs picked for learning.
@@ -166,6 +166,8 @@ class HomeScreen extends ConsumerWidget {
                   label: tr(context, 'home.difficultWords', 'Difficult words'),
                   onTap: () => context.push('/difficult'),
                 ),
+                const SizedBox(height: 20),
+                const HskGuideCard(),
               ],
             ),
           ),
@@ -211,7 +213,7 @@ class HomeScreen extends ConsumerWidget {
                       Text(
                         _trN(context, 'home.reviewCards',
                             'Review {n} cards', math.min(s.dueCount, 500)),
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w800,
                           color: accent,
@@ -220,7 +222,7 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 3),
                       Text(
                         tr(context, 'home.keepStreak', 'Keep your streak going'),
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                             fontSize: 13, color: text2Of(context)),
                       ),
                     ],
@@ -257,7 +259,7 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text(
                   tr(context, 'home.learnNew', 'Learn new words'),
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
                     color: accent,
@@ -268,7 +270,7 @@ class HomeScreen extends ConsumerWidget {
                   tr(context, 'home.learnNewSub',
                       'New words from your chosen packs'),
                   style:
-                      GoogleFonts.manrope(fontSize: 13, color: text2Of(context)),
+                      TextStyle(fontSize: 13, color: text2Of(context)),
                 ),
               ],
             ),
@@ -314,7 +316,7 @@ class HomeScreen extends ConsumerWidget {
                     children: [
                       Text(
                         tr(context, 'home.choosePacks', 'Choose packs'),
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                             fontSize: 17, fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 14),
@@ -466,7 +468,7 @@ class _Header extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           firstName.isEmpty ? greeting : '$greeting, $firstName',
-          style: GoogleFonts.manrope(fontSize: 24, fontWeight: FontWeight.w800),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
         ),
       ],
     );
@@ -523,7 +525,7 @@ class _StatChip extends StatelessWidget {
               '$emoji $value',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                   fontSize: 17, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 2),
@@ -531,7 +533,7 @@ class _StatChip extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                   fontSize: 11.5, color: text2Of(context)),
             ),
           ],
@@ -565,7 +567,7 @@ class _GoalCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   '${(pct * 100).round()}%',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w800),
                 ),
               ),
@@ -580,14 +582,14 @@ class _GoalCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   '${summary.todayReviews} / ${summary.goal}',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                       fontSize: 18, fontWeight: FontWeight.w800),
                 ),
                 if (summary.goalMet) ...[
                   const SizedBox(height: 2),
                   Text(
                     tr(context, 'home.goalDone', 'Goal reached!'),
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w700,
                       color: okColor,
@@ -738,7 +740,7 @@ class _LevelBars extends StatelessWidget {
             child: Text(
               '${p.seen}/${p.total}',
               textAlign: TextAlign.right,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w600,
                 color: text3Of(context),
@@ -781,7 +783,7 @@ class _QuickLink extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                   fontSize: 14, fontWeight: FontWeight.w700),
             ),
           ),

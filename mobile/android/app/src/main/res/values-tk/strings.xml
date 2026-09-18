@@ -1,0 +1,5 @@
+<resources>
+    <string name="incomplete_install_title">Programma doly gurulmady</string>
+    <string name="incomplete_install_message">Gurnamada Flutter hereketlendirijisi ýok. Programmany Google Play arkaly täzeläň ýa-da doly uniwersal APK faýlyny guruň. Diňe base.apk faýly ýeterlik däl. Ýerli sazlamalary saklamak üçin ilki programmany pozmazdan täzeläň. Hasabyňyzyň maglumatlary pozulmady.</string>
+    <string name="incomplete_install_store">Google Play aç</string>
+</resources>

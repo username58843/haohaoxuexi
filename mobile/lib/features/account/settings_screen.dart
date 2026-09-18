@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/providers.dart';
 import '../../core/reminders.dart';
 import '../../core/theme.dart';
+import '../../core/typography.dart';
 import '../../core/widgets.dart';
 import '../browse/map_screen.dart' show knownWordsProvider;
 
@@ -32,6 +32,50 @@ class SettingsScreen extends ConsumerWidget {
             16, 4, 16, 32 + MediaQuery.paddingOf(context).bottom),
         children: [
           SectionLabel(tr(context, 'settings.appearance', 'Appearance')),
+          const SizedBox(height: 10),
+          InkCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                DropdownButtonFormField<String>(
+                  initialValue: settings.hanziFont,
+                  isExpanded: true,
+                  decoration: InputDecoration(labelText:
+                      tr(context, 'settings.hanziFont', 'Chinese character font')),
+                  items: [for (final entry in hanziFonts.entries)
+                    DropdownMenuItem(value: entry.key, child: Text(
+                      entry.key == 'system'
+                          ? tr(context, 'settings.font.system', 'System font')
+                          : entry.value,
+                    )),
+                  ],
+                  onChanged: (key) { if (key != null) notifier.setHanziFont(key); },
+                ),
+                const SizedBox(height: 16),
+                Text('好好学习，天天向上。', style: hanziStyle(context, size: 28)),
+                const SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  initialValue: settings.interfaceFont,
+                  isExpanded: true,
+                  decoration: InputDecoration(labelText:
+                      tr(context, 'settings.interfaceFont', 'Interface font')),
+                  items: [for (final entry in interfaceFonts.entries)
+                    DropdownMenuItem(value: entry.key, child: Text(
+                      entry.key == 'system'
+                          ? tr(context, 'settings.font.system', 'System font')
+                          : entry.value,
+                    )),
+                  ],
+                  onChanged: (key) { if (key != null) notifier.setInterfaceFont(key); },
+                ),
+                const SizedBox(height: 12),
+                const Text('Learn · Учиться · Öwrenmek'),
+                const SizedBox(height: 8),
+                Text(tr(context, 'settings.font.offline',
+                    'Fonts are stored on your device and work offline.')),
+              ],
+            ),
+          ),
           const SizedBox(height: 10),
           InkCard(
             child: Column(
@@ -63,7 +107,7 @@ class SettingsScreen extends ConsumerWidget {
                     foregroundColor: text2Of(context),
                     selectedBackgroundColor: accentSoftOf(context),
                     selectedForegroundColor: accentOf(context),
-                    textStyle: GoogleFonts.manrope(
+                    textStyle: TextStyle(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w600,
                     ),
@@ -125,7 +169,7 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           Text(
                             tr(context, 'settings.dailyGoal', 'Daily goal'),
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context).colorScheme.onSurface,
@@ -135,7 +179,7 @@ class SettingsScreen extends ConsumerWidget {
                           Text(
                             tr(context, 'settings.dailyGoal.hint',
                                 'Reviews per day'),
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(
                               fontSize: 12.5,
                               color: text2Of(context),
                             ),
@@ -184,7 +228,7 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           Text(
                             tr(context, 'settings.reminder', 'Daily reminder'),
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context).colorScheme.onSurface,
@@ -194,7 +238,7 @@ class SettingsScreen extends ConsumerWidget {
                           Text(
                             tr(context, 'settings.reminder.hint',
                                 'A nudge to review your due cards'),
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(
                               fontSize: 12.5,
                               color: text2Of(context),
                             ),
@@ -217,7 +261,7 @@ class SettingsScreen extends ConsumerWidget {
                         child: Text(
                           tr(context, 'settings.reminder.time',
                               'Reminder time'),
-                          style: GoogleFonts.manrope(
+                          style: TextStyle(
                             fontSize: 14.5,
                             fontWeight: FontWeight.w600,
                             color: Theme.of(context).colorScheme.onSurface,
@@ -476,7 +520,7 @@ class _KnownWordsCardState extends ConsumerState<_KnownWordsCard> {
               'Words you marked as known in the HSK list and word map. They are '
                   'stored on your account and shared with the web app.',
             ),
-            style: GoogleFonts.manrope(
+            style: TextStyle(
               fontSize: 12.5,
               height: 1.35,
               color: text2Of(context),
@@ -519,7 +563,7 @@ class _FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.manrope(
+      style: TextStyle(
         fontSize: 13.5,
         fontWeight: FontWeight.w600,
         color: text2Of(context),
@@ -635,7 +679,7 @@ class _AccountRow extends StatelessWidget {
                     label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w600,
                       color: danger
@@ -649,7 +693,7 @@ class _AccountRow extends StatelessWidget {
                       subtitle!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(
                         fontSize: 12.5,
                         color: text2Of(context),
                       ),
@@ -768,7 +812,7 @@ class _FeedbackDialogState extends ConsumerState<_FeedbackDialog> {
               const SizedBox(height: 10),
               Text(
                 _error!,
-                style: GoogleFonts.manrope(fontSize: 13, color: dangerColor),
+                style: TextStyle(fontSize: 13, color: dangerColor),
               ),
             ],
           ],

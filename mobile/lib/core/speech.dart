@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -46,6 +47,7 @@ class Speech {
   /// Language the engine is currently configured for — avoids re-issuing
   /// setLanguage/setVoice/setSpeechRate for consecutive utterances.
   static String? _currentLang;
+  static int _sequence = 0;
 
   /// One-time engine selection. Resolves to false when the platform has no
   /// usable TTS engine (speak then no-ops, mirroring the web `canSpeak()`).
@@ -176,11 +178,16 @@ class Speech {
   /// ongoing utterance. Returns false when the device cannot speak it.
   static Future<bool> speak(String text, {String lang = 'zh'}) async {
     if (text.isEmpty) return false;
+    final sequence = ++_sequence;
     if (!await _ensureEngine()) return false;
+    if (sequence != _sequence) return false;
     final target = _localesByLang.containsKey(lang) ? lang : 'en';
     if (!await _applyLanguage(target)) return false;
+    if (sequence != _sequence) return false;
     try {
       await _tts.stop();
+      if (sequence != _sequence) return false;
+      await _tts.awaitSpeakCompletion(false);
       await _tts.speak(text);
       return true;
     } catch (_) {
@@ -191,4 +198,74 @@ class Speech {
   /// Speak [text] with the Mandarin voice (same contract as the web
   /// `speakChinese`).
   static Future<bool> speakChinese(String text) => speak(text, lang: 'zh');
+
+  static Future<void> stop() async {
+    _sequence++;
+    try {
+      await _tts.stop();
+    } catch (_) {
+      /* No installed speech engine. */
+    }
+  }
+
+  static SpeechNarration narrate(String text) {
+    final sequence = ++_sequence;
+    var cancelled = false;
+    final done = () async {
+      if (!await _ensureEngine() || cancelled || sequence != _sequence) {
+        return false;
+      }
+      if (!await _applyLanguage('zh') || cancelled || sequence != _sequence) {
+        return false;
+      }
+      try {
+        await _tts.stop();
+        if (cancelled || sequence != _sequence) return false;
+        await _tts.awaitSpeakCompletion(true);
+        for (final part in splitForSpeech(text)) {
+          if (cancelled || sequence != _sequence) return false;
+          final result = await _tts.speak(part);
+          if (result != 1) return false;
+        }
+        return !cancelled && sequence == _sequence;
+      } catch (_) {
+        return false;
+      } finally {
+        if (sequence == _sequence) {
+          try { await _tts.awaitSpeakCompletion(false); } catch (_) { /* Engine stopped. */ }
+        }
+      }
+    }();
+    return SpeechNarration(done, () {
+      cancelled = true;
+      if (sequence == _sequence) unawaited(stop());
+    });
+  }
+}
+
+class SpeechNarration {
+  const SpeechNarration(this.done, this.stop);
+  final Future<bool> done;
+  final void Function() stop;
+}
+
+List<String> splitForSpeech(String text, {int maxLength = 180}) {
+  final limit = maxLength.clamp(1, 1000);
+  final parts = <String>[];
+  final sentence = <int>[];
+  const endings = '。！？；!?;\n';
+  void flush() {
+    final part = String.fromCharCodes(sentence).trim();
+    if (part.isNotEmpty) parts.add(part);
+    sentence.clear();
+  }
+
+  for (final rune in text.runes) {
+    sentence.add(rune);
+    if (sentence.length >= limit || endings.contains(String.fromCharCode(rune))) {
+      flush();
+    }
+  }
+  flush();
+  return parts;
 }

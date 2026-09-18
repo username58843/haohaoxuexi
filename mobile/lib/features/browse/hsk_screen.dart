@@ -69,6 +69,9 @@ class _HskScreenState extends ConsumerState<HskScreen> {
     for (final t in w.ru) {
       if (t.toLowerCase().contains(q)) return true;
     }
+    for (final t in w.tk) {
+      if (t.toLowerCase().contains(q)) return true;
+    }
     return false;
   }
 
@@ -106,8 +109,13 @@ class _HskScreenState extends ConsumerState<HskScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr(context, 'hsk.title', 'HSK')),
+        title: const Text('HSK 3.0'),
         actions: [
+          IconButton(
+            tooltip: tr(context, 'memorize.title', 'Memorize'),
+            icon: const Icon(Icons.menu_book),
+            onPressed: () => context.push('/memorize'),
+          ),
           IconButton(
             tooltip: tr(context, 'wmap.title', 'Word Map'),
             icon: const Icon(Icons.grid_on_rounded),

@@ -6,7 +6,7 @@ import WordSheet from '~/components/WordSheet'
 import MapSection from '~/components/wordmap/MapSection'
 import MapStats from '~/components/wordmap/MapStats'
 import AddToDeck from '~/components/hsk/AddToDeck'
-import { useKnownWords, migrateLegacyLevel } from '~/components/hsk/known-store'
+import { useKnownWords, loadLegacyKnownIds } from '~/components/hsk/known-store'
 import { Button, Field, Chip, Segmented, EmptyState, PageLoader } from '~/components/ui'
 import { useAuth } from '~/lib/contexts/AuthContext'
 import { useSettings } from '~/lib/contexts/SettingsContext'
@@ -112,13 +112,13 @@ export default function HskMapPage() {
     })
     api
       .get('/words', { params: { pack: hskPackId(lvl) } })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const words = Array.isArray(data?.items) ? data.items : []
         setPacks((prev) => ({ ...prev, [lvl]: { status: 'ready', words, error: '' } }))
 
         // Keep known-map migration behavior identical to the list view
         // (the merged ids are also pushed to the account via the store).
-        const migratedIds = migrateLegacyLevel(lvl, words)
+        const migratedIds = await loadLegacyKnownIds(lvl)
         if (migratedIds && migratedIds.length > 0) addKnownIds(migratedIds)
       })
       .catch((err) => {

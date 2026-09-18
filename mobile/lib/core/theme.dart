@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'typography.dart';
 
 /// Design tokens — Flutter port of docs/DESIGN.md ("Ink & Cinnabar").
 
@@ -80,15 +80,7 @@ Color accentSoftOf(BuildContext context) =>
 Color onAccent(Color accent) =>
     accent.computeLuminance() > 0.55 ? _lightText : Colors.white;
 
-/// Serif style for hanzi — Noto Serif SC (`--font-hanzi`).
-/// Every Chinese string in the UI should use this (or [GoogleFonts.notoSerifSc]).
-///
-/// NOTE: fonts are bundled as assets and runtime fetching is disabled
-/// (fonts.gstatic.com is unreachable in China). NotoSerifSC ships **only in
-/// its SemiBold (w600) cut** to keep the APK small — do not pass other
-/// [weight] values here without adding the matching file to `google_fonts/`
-/// (see `tool/fetch_fonts.py`), otherwise the text silently falls back to
-/// the system font. Manrope ships in w400–w800, JetBrainsMono in w600/w700.
+/// All learning text uses the offline hanzi family selected in Settings.
 TextStyle hanziStyle(
   BuildContext context, {
   double size = 24,
@@ -96,7 +88,10 @@ TextStyle hanziStyle(
   Color? color,
   double? height,
 }) {
-  return GoogleFonts.notoSerifSc(
+  return TextStyle(
+    fontFamily: (Theme.of(context).extension<AppTypography>() ??
+            const AppTypography()).hanziFamily,
+    fontFamilyFallback: const ['HanziWeb', 'sans-serif'],
     fontSize: size,
     fontWeight: weight ?? FontWeight.w600,
     color: color ?? Theme.of(context).colorScheme.onSurface,
@@ -112,7 +107,8 @@ TextStyle monoStyle(
   Color? color,
   double letterSpacing = 1.6,
 }) {
-  return GoogleFonts.jetBrainsMono(
+  return TextStyle(
+    fontFamily: Theme.of(context).textTheme.bodyMedium?.fontFamily,
     fontSize: size,
     fontWeight: weight ?? FontWeight.w600,
     letterSpacing: letterSpacing,
@@ -121,7 +117,11 @@ TextStyle monoStyle(
 }
 
 /// Builds the Material 3 theme for the given brightness + accent.
-ThemeData buildTheme(Brightness brightness, Color accent) {
+ThemeData buildTheme(Brightness brightness, Color accent, {
+  String hanziFont = 'songti', String interfaceFont = 'manrope',
+}) {
+  final typography = AppTypography(hanzi: hanziFont, ui: interfaceFont);
+  final fontFamily = typography.uiFamily;
   final isDark = brightness == Brightness.dark;
   final bg = isDark ? inkCanvas : paperCanvas;
   final text = isDark ? _darkText : _lightText;
@@ -152,8 +152,9 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
   );
 
   final baseTextTheme = ThemeData(brightness: brightness).textTheme;
-  final textTheme = GoogleFonts.manropeTextTheme(baseTextTheme)
-      .apply(bodyColor: text, displayColor: text);
+  final textTheme = baseTextTheme.apply(
+    fontFamily: fontFamily, bodyColor: text, displayColor: text,
+  );
 
   // Opaque blend of the card surface over the canvas (for bars/sheets).
   final solidSurface = Color.alphaBlend(surface2, bg);
@@ -165,6 +166,8 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
     scaffoldBackgroundColor: bg,
     canvasColor: bg,
     textTheme: textTheme,
+    fontFamily: fontFamily,
+    extensions: [typography],
     splashFactory: InkRipple.splashFactory,
     dividerTheme: DividerThemeData(color: hairline, thickness: 1, space: 1),
     appBarTheme: AppBarTheme(
@@ -174,7 +177,7 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: GoogleFonts.manrope(
+      titleTextStyle: TextStyle(fontFamily: fontFamily,
         fontSize: 17,
         fontWeight: FontWeight.w700,
         color: text,
@@ -206,7 +209,7 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
         ),
       ),
       labelTextStyle: WidgetStateProperty.resolveWith(
-        (states) => GoogleFonts.manrope(
+        (states) => TextStyle(fontFamily: fontFamily,
           fontSize: 12,
           fontWeight: states.contains(WidgetState.selected)
               ? FontWeight.w700
@@ -248,14 +251,14 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
         foregroundColor: onAccentColor,
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-        textStyle: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700),
+        textStyle: TextStyle(fontFamily: fontFamily, fontSize: 15, fontWeight: FontWeight.w700),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: accent,
         shape: const StadiumBorder(),
-        textStyle: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600),
+        textStyle: TextStyle(fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w600),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -266,7 +269,7 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
             : const Color(0xFF1C1914).withValues(alpha: 0.18)),
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-        textStyle: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600),
+        textStyle: TextStyle(fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w600),
       ),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
@@ -281,7 +284,7 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       backgroundColor: isDark ? const Color(0xFF23282C) : _lightText,
-      contentTextStyle: GoogleFonts.manrope(
+      contentTextStyle: TextStyle(fontFamily: fontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: isDark ? _darkText : paperCanvas,
@@ -305,12 +308,12 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
       backgroundColor: solidSurface,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-      titleTextStyle: GoogleFonts.manrope(
+      titleTextStyle: TextStyle(fontFamily: fontFamily,
         fontSize: 18,
         fontWeight: FontWeight.w700,
         color: text,
       ),
-      contentTextStyle: GoogleFonts.manrope(fontSize: 14.5, color: text2),
+      contentTextStyle: TextStyle(fontFamily: fontFamily, fontSize: 14.5, color: text2),
     ),
     listTileTheme: ListTileThemeData(
       iconColor: text2,
@@ -321,7 +324,7 @@ ThemeData buildTheme(Brightness brightness, Color accent) {
       backgroundColor: surface,
       selectedColor: accent.withValues(alpha: 0.14),
       side: BorderSide(color: hairline),
-      labelStyle: GoogleFonts.manrope(
+      labelStyle: TextStyle(fontFamily: fontFamily,
         fontSize: 13.5,
         fontWeight: FontWeight.w600,
         color: text,

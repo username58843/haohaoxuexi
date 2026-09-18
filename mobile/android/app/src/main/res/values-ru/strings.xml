@@ -1,0 +1,5 @@
+<resources>
+    <string name="incomplete_install_title">Приложение установлено не полностью</string>
+    <string name="incomplete_install_message">В установке отсутствует движок Flutter. Обновите приложение через Google Play или установите полный универсальный APK. Отдельного base.apk из пакета приложения недостаточно. Сначала попробуйте обновление без удаления, чтобы сохранить локальные настройки. Данные вашего аккаунта не сброшены.</string>
+    <string name="incomplete_install_store">Открыть Google Play</string>
+</resources>

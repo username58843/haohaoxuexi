@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
@@ -111,7 +110,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                               tr(context, 'auth.reset.done',
                                   'Your password has been reset. Sign in with your new password.'),
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(
                                   fontSize: 14, color: text2Of(context)),
                             ),
                             const SizedBox(height: 20),
@@ -129,7 +128,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             Text(
                               tr(context, 'auth.reset.title',
                                   'New password'),
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -181,7 +180,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             if (_error != null) ...[
                               const SizedBox(height: 8),
                               Text(_error!,
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(
                                       fontSize: 13, color: dangerColor)),
                             ],
                             const SizedBox(height: 12),

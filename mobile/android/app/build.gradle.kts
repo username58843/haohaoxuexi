@@ -49,6 +49,8 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    buildFeatures { buildConfig = true }
+
     defaultConfig {
         // Play Store application id. Renamed from com.haohaoxuexi.app — a new
         // Firebase Android app and a new Play Console listing are required for
@@ -95,6 +97,7 @@ flutter {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
     // Java 8+ API backport required by flutter_local_notifications
     // (needs 2.1.4+, see the plugin's Android setup notes).
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")

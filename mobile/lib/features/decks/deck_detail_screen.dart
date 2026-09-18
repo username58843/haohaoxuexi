@@ -83,6 +83,49 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
     }
   }
 
+  Future<void> _showActions() async {
+    final deck = _deck;
+    if (deck == null) return;
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(deck.name, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: Text(tr(context, 'deck.rename', 'Rename deck')),
+              onTap: () => Navigator.pop(sheetContext, 'rename'),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: dangerColor),
+              title: Text(tr(context, 'deck.delete', 'Delete deck'),
+                  style: const TextStyle(color: dangerColor)),
+              subtitle: Text(tr(context, 'deck.delete.text',
+                  'This deck and its word list will be deleted permanently.')),
+              onTap: () => Navigator.pop(sheetContext, 'delete'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(sheetContext),
+              child: Text(tr(context, 'common.cancel', 'Cancel')),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted) return;
+    if (action == 'rename') await _rename();
+    if (action == 'delete') await _confirmDelete();
+  }
+
   Future<void> _removeAt(int index) async {
     final deck = _deck;
     if (deck == null || index < 0 || index >= deck.words.length) return;
@@ -212,28 +255,10 @@ class _DeckDetailScreenState extends ConsumerState<DeckDetailScreen> {
               ),
         actions: [
           if (deck != null)
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                switch (value) {
-                  case 'rename':
-                    _rename();
-                  case 'delete':
-                    _confirmDelete();
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'rename',
-                  child: Text(tr(context, 'deck.rename', 'Rename deck')),
-                ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text(
-                    tr(context, 'deck.delete', 'Delete deck'),
-                    style: const TextStyle(color: dangerColor),
-                  ),
-                ),
-              ],
+            IconButton(
+              tooltip: tr(context, 'deck.actions', 'Deck actions'),
+              icon: const Icon(Icons.tune_rounded),
+              onPressed: _showActions,
             ),
         ],
       ),

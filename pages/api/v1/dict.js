@@ -1,5 +1,6 @@
 import { createApiHandler } from '~/lib/server/api'
 import { getDictionary } from '~/lib/server/dict'
+import { isLegacyCatalogRequest } from '~/lib/hsk-catalog'
 
 /**
  * GET /api/v1/dict — the reader dictionary (see lib/server/dict.js).
@@ -10,7 +11,7 @@ export default createApiHandler({
   GET: {
     rateLimit: { name: 'dict', max: 30, windowMs: 60 * 1000 },
     handler: async (req, res) => {
-      const { body, etag } = getDictionary()
+      const { body, etag } = getDictionary({ legacy: isLegacyCatalogRequest(req) })
       res.setHeader('ETag', etag)
       res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800')
       if (req.headers['if-none-match'] === etag) {

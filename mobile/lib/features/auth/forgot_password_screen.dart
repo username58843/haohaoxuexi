@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/captcha.dart';
 import '../../core/i18n.dart';
-import '../../core/providers.dart';
 import '../../core/theme.dart';
 import '../../core/widgets.dart';
 
@@ -106,7 +104,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               tr(context, 'auth.forgot.sent',
                                   'If an account exists, a reset link has been sent. Check your inbox.'),
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(
                                   fontSize: 14, color: text2Of(context)),
                             ),
                             const SizedBox(height: 20),
@@ -124,7 +122,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             Text(
                               tr(context, 'auth.forgot.title',
                                   'Forgot password?'),
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -135,7 +133,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               tr(context, 'auth.forgot.hint',
                                   "Enter your email and we'll send a reset link."),
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(
                                   fontSize: 14, color: text2Of(context)),
                             ),
                             const SizedBox(height: 20),
@@ -158,7 +156,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             if (_error != null) ...[
                               const SizedBox(height: 8),
                               Text(_error!,
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(
                                       fontSize: 13, color: dangerColor)),
                             ],
                             const SizedBox(height: 12),
@@ -176,7 +174,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                 onTap: () => context.go('/auth'),
                                 child: Text(
                                   tr(context, 'auth.submitLogin', 'Sign in'),
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(
                                       fontSize: 14, color: accent),
                                 ),
                               ),

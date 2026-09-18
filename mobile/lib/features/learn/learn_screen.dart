@@ -16,7 +16,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
@@ -324,7 +323,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           Text(
             tr(context, 'learn.title', 'Learn'),
             style:
-                GoogleFonts.manrope(fontSize: 24, fontWeight: FontWeight.w800),
+                TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 16),
           if (continueReady) ...[
@@ -365,7 +364,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                   _describe(context, cfg, titles),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                       fontSize: 13.5, fontWeight: FontWeight.w600),
                 ),
               ],
@@ -417,7 +416,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                 children: [
                   Text(
                     tr(context, 'learn.dueCards', 'cards due for review'),
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                         fontSize: 14.5, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 3),
@@ -428,7 +427,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                       'Due cards always come first — new cards from your '
                           'packs fill the rest.',
                     ),
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                         fontSize: 12.5, height: 1.35, color: text2Of(context)),
                   ),
                 ],
@@ -462,7 +461,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           tr(context, 'learn.reviewHint',
               'Nothing due yet — select a pack to add new cards.'),
           textAlign: TextAlign.center,
-          style: GoogleFonts.manrope(fontSize: 12.5, color: text2Of(context)),
+          style: TextStyle(fontSize: 12.5, color: text2Of(context)),
         ),
       ],
     ];
@@ -562,7 +561,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           tr(context, 'learn.quizHint',
               'Pick at least one source and one question type.'),
           textAlign: TextAlign.center,
-          style: GoogleFonts.manrope(fontSize: 12.5, color: text2Of(context)),
+          style: TextStyle(fontSize: 12.5, color: text2Of(context)),
         ),
       ],
     ];
@@ -599,7 +598,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
               children: [
                 Text(
                   '${tr(context, 'learn.textbookPacks', 'Textbook packs')} (${packs.length})',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                     color: text2Of(context),
@@ -738,7 +737,7 @@ class _ModeTabs extends StatelessWidget {
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w700,
                           color: key == value

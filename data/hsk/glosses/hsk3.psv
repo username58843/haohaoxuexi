@@ -1,0 +1,501 @@
+number|headword|en|ru|tk
+501|阿姨|aunt; auntie (polite address for a woman)|тётя; тётушка (вежливое обращение)|daýza; aýala sypaýy ýüzlenme
+502|矮|short (in height); low|низкий; невысокий, низкорослый|pes; gysga boýly
+503|爱人|spouse; husband or wife|супруг, супруга|ýanýoldaş; är ýa-da aýal
+504|安静|quiet; peaceful|тихий; спокойный|ümsüm; asuda
+505|安全|safe; safety|безопасный; безопасность|howpsuz; howpsuzlyk
+506|把|hold; handle; classifier for handled objects; object-marking particle|держать; ручка; счётное слово для предметов с ручкой; показатель вынесенного дополнения|tutmak; tutawaç; tutawaçly zatlaryň san sözi; obýekti işligiň öňüne çykarýan kömekçi söz
+507|搬|move; carry to another place|переносить; переезжать|daşamak; göçmek
+508|班级|school class; group of students|школьный класс; учебная группа|synp; okuwçylar topary
+509|搬家|move house|переезжать на новое жильё|başga jaýa göçmek
+510|办|handle a matter; arrange; run|заниматься делом; организовывать; оформлять|bir işi çözmek; guramak; resmileşdirmek
+511|办法|way; method; solution|способ; метод; решение|usul; çäre; çözgüt
+512|办公室|office|офис; рабочий кабинет|iş otagy; edara otagy
+513|半天|half a day; a long time|полдня; долгое время|ýarym gün; uzak wagt
+514|帮助|help; assistance|помогать; помощь|kömek etmek; kömek
+515|饱|full after eating|сытый; наесться|dok; doýmak
+516|报纸|newspaper|газета|gazet
+517|北|north|север; северный|demirgazyk
+518|北方|the north; northern regions|север; северные районы|demirgazyk; demirgazyk sebitler
+519|被|passive marker; quilt|показатель пассива; одеяло|passiw gurluşyň kömekçi sözi; ýorgan
+520|笔记|notes; take notes|записи, конспект; записывать|bellikler; bellik etmek
+521|比较|compare; relatively; rather|сравнивать; сравнительно, довольно|deňeşdirmek; birneme; otnositel
+522|笔记本|notebook; laptop|блокнот, тетрадь; ноутбук|depder; noutbuk
+523|比如|for example|например|mysal üçin
+524|比赛|match; competition; compete|соревнование, матч; соревноваться|ýaryş; bäsleşik; ýaryşmak
+525|必须|must; have to|обязательно; необходимо; должен|hökman; zerur; etmeli
+526|变|change; become different|меняться; изменять|üýtgemek; üýtgetmek
+527|遍|time (a complete repetition)|раз (полное повторение действия)|gezek (hereketiň başdan ahyra gaýtalanmagy)
+528|变成|turn into; become|превращаться в; становиться|öwrülmek; başga bir zada öwrülmek
+529|变化|change; vary|изменение; изменяться|üýtgeşme; üýtgemek
+530|表演|perform; performance|выступать, исполнять; выступление|çykyş etmek; sahnada ýerine ýetirmek; çykyş
+531|别的|other; another|другой; прочий|başga; beýleki
+532|别人|other people; someone else|другие люди; кто-то другой|başgalar; başga adam
+533|宾馆|hotel; guesthouse|гостиница; отель|myhmanhana
+534|冰|ice|лёд|buz
+535|冰激凌|ice cream|мороженое|doňdurma
+536|冰箱|refrigerator|холодильник|sowadyjy
+537|病人|patient; sick person|больной; пациент|näsag; syrkaw adam
+538|不但|not only|не только|diňe bir ... däl
+539|不见|not see; disappear; be missing|не видеть; пропадать; отсутствовать|görmezlik; ýitmek; görünmezlik
+540|不用|need not; no need to|не нужно; не надо|gerek däl; zerur däl
+541|不同|different; not the same|разный; отличающийся|dürli; tapawutly
+542|不久|soon; not long afterwards|скоро; вскоре; недолго|tiz wagtdan; kän wagt geçmän
+543|不行|not allowed; will not do; cannot|нельзя; не годится; не получится|bolmaz; ýaramaýar; mümkin däl
+544|才1|only; only then; not until|только; лишь тогда; только после|diňe; diňe şondan soň
+545|菜单|menu|меню|menýu
+546|参加|take part in; participate|участвовать; принимать участие|gatnaşmak
+547|草|grass|трава|ot; ot-çöp
+548|草地|lawn; grassland|газон; луг|otluk ýer; çemenlik
+549|层|floor; layer|этаж; слой|gat; gatlak
+550|查|check; look up; investigate|проверять; искать в справочнике; исследовать|barlamak; gözläp tapmak; derňemek
+551|差|poor; differ; fall short of|плохой; отличаться; недоставать|ýaramaz; tapawutlanmak; ýetmezlik
+552|差不多|almost; about the same|почти; примерно одинаковый|takmynan; tas; diýen ýaly birmeňzeş
+553|尝|taste; try food|пробовать на вкус|dadyp görmek
+554|常|often; usual; regular|часто; обычный; постоянный|ýygy-ýygydan; adaty; hemişelik
+555|常见|common; frequently seen|распространённый; часто встречающийся|köp duş gelýän; giň ýaýran
+556|常用|commonly used|часто употребляемый|köp ulanylýan
+557|常常|often; frequently|часто; нередко|köplenç; ýygy-ýygydan
+558|衬衫|shirt; blouse|рубашка; блузка|köýnek; bluzka
+559|成绩|result; grade; achievement|результат; оценка; достижение|netije; baha; üstünlik
+560|城市|city; town|город|şäher
+561|迟到|be late|опаздывать|gijä galmak
+562|出发|set off; depart|отправляться; выезжать|ýola düşmek; ugramak
+563|出生|be born|родиться|dogulmak
+564|出院|be discharged from hospital|выписываться из больницы|hassahanadan çykmak
+565|初中|junior secondary school|младшая ступень средней школы (в Китае)|orta mekdebiň aşaky basgançagy
+566|除了|except for; apart from; besides|кроме; помимо|...-dan başga; ...-dan daşary
+567|船|boat; ship|лодка; корабль|gaýyk; gämi
+568|春天|spring (season)|весна|bahar; ýaz
+569|词典|dictionary|словарь|sözlük
+570|聪明|clever; intelligent|умный; сообразительный|akylly; ugurtapyjy
+571|打扫|clean; sweep|убирать; подметать|arassalamak; süpürmek
+572|打算|plan; intend; intention|планировать; намереваться; намерение|meýilleşdirmek; niýet etmek; niýet
+573|大概|probably; roughly; approximately|вероятно; примерно|ähtimal; takmynan
+574|大人|adult; grown-up|взрослый|uly adam; ulular
+575|大小|size|размер; величина|ölçeg; ululyk
+576|大熊猫|giant panda|большая панда|uly panda
+577|大衣|overcoat|пальто|palto
+578|带|take along; bring; lead; belt|брать с собой; приносить; вести; пояс|ýany bilen almak; getirmek; alyp barmak; guşak
+579|担心|worry; be concerned|беспокоиться; волноваться|alada etmek; gaýgy etmek
+580|蛋糕|cake|торт; пирожное|tort; süýji köke
+581|当然|of course; naturally|конечно; естественно|elbetde; tebigy ýagdaýda
+582|到处|everywhere|повсюду; везде|hemme ýerde; ähli ýerde
+583|得|get; obtain; win|получать; приобретать; выигрывать|almak; gazanmak
+584|得到|get; obtain; receive|получать; добиваться|almak; gazanmak; ýetmek
+585|得分|score points; score|набирать очки; количество очков|utuk gazanmak; toplanan utuk
+586|的话|if (after a conditional clause)|если (после условной части)|eger (şertli sözlemiň soňunda)
+587|得|must; have to|должен; приходится; надо|etmeli; mejbur bolmak; gerek
+588|灯|lamp; light|лампа; светильник|çyra
+589|地|ground; land; field|земля; почва; поле|ýer; toprak; meýdan
+590|地点|place; location|место; местоположение|ýer; ýerleşýän ýeri
+591|地方|place; area|место; район; местность|ýer; sebit
+592|地图|map|карта|karta; ýer kartasy
+593|电|electricity|электричество|elektrik
+594|电梯|lift; elevator|лифт|lift
+595|电子书|e-book|электронная книга|elektron kitap
+596|丢|lose; throw away|терять; выбрасывать|ýitirmek; taşlamak
+597|东|east|восток; восточный|gündogar
+598|东北|northeast; Northeast China|северо-восток; Северо-Восточный Китай|demirgazyk-gündogar; Hytaýyň demirgazyk-gündogary
+599|东方|the east|восток|gündogar
+600|东南|southeast|юго-восток|günorta-gündogar
+601|冬天|winter|зима|gyş
+602|懂得|understand; know|понимать; знать|düşünmek; bilmek
+603|动物|animal|животное|haýwan
+604|动物园|zoo|зоопарк|haýwanat bagy
+605|短|short; brief|короткий; краткий|gysga
+606|短裤|shorts|шорты|şortik; gysga balak
+607|段|section; stretch; period; classifier for sections|отрезок; раздел; период; счётное слово для частей|bölek; parça; döwür; bölekleriň san sözi
+608|锻炼|exercise; train|заниматься физкультурой; тренировать|maşk etmek; türgenleşmek
+609|对话|dialogue; converse|диалог; беседовать|söhbet; gepleşik; söhbetdeş bolmak
+610|饿|hungry|голодный; голодать|aç; ajykmak
+611|而且|moreover; and also|к тому же; и притом|üstesine-de; şeýle hem
+612|耳朵|ear|ухо|gulak
+613|耳机|headphones; earphones|наушники|gulaklyk
+614|发|send; issue; give out|отправлять; выпускать; выдавать|ibermek; neşir etmek; paýlamak
+615|发烧|have a fever|температурить; иметь жар|gyzgynyň galmagy; gyzdyrmak
+616|发生|happen; occur|происходить; случаться|bolup geçmek; ýüze çykmak
+617|发现|discover; notice; find|обнаруживать; замечать; находить|açmak; ýüze çykarmak; duýmak
+618|发展|develop; development|развивать; развиваться; развитие|ösdürmek; ösmek; ösüş
+619|方便|convenient|удобный|amatly
+620|方便面|instant noodles|лапша быстрого приготовления|tiz taýýarlanýan unaş
+621|方法|method; way|метод; способ|usul; ýol
+622|方向|direction|направление|ugur
+623|房子|house; building|дом; здание|jaý; bina
+624|放|put; place; let go|класть; ставить; отпускать|goýmak; goýbermek
+625|放假|have a holiday; go on vacation|уходить на каникулы; отдыхать в выходные|dynç alyşa çykmak; kanikula çykmak
+626|放心|feel reassured; stop worrying|успокоиться; не беспокоиться|arkaýyn bolmak; alada etmezlik
+627|放学|finish school for the day|закончить занятия в школе (за день)|mekdepde sapaklaryň gutarmagy
+628|分开|separate; part; apart|разделять; расставаться; отдельно|aýyrmak; aýrylyşmak; aýry
+629|风|wind|ветер|ýel
+630|封|seal; classifier for letters|запечатывать; счётное слово для писем|möhürlemek; hatlaryň san sözi
+631|夫妻|married couple; husband and wife|супруги; муж и жена|är-aýal; ýanýoldaşlar
+632|服务|serve; service|обслуживать; обслуживание; услуга|hyzmat etmek; hyzmat
+633|附近|nearby; neighbourhood|поблизости; окрестности|golaýda; töwerek
+634|复习|review; revise lessons|повторять изученное|öwrenileni gaýtalamak
+635|该1|should; ought to; it is one's turn|следует; пора; чья-либо очередь|etmeli; wagty gelmek; nobaty ýetmek
+636|干净|clean|чистый|arassa
+637|感兴趣|be interested in|интересоваться|gyzyklanmak
+638|感到|feel; sense|чувствовать; ощущать|duýmak; duýgulamak
+639|感冒|catch a cold; common cold|простудиться; простуда|sowuklamak; sowuklama
+640|干|do; work|делать; работать|etmek; işlemek
+641|刚|just; only just|только что; только-только|ýaňy; edil ýaňy
+642|刚才|just now; a moment ago|только что; минуту назад|ýaňy; biraz öň
+643|刚刚|just now; just recently|только что; совсем недавно|edil ýaňy; ýaňy-ýakynda
+644|高铁|high-speed railway; high-speed train|высокоскоростная железная дорога; скоростной поезд|ýokary tizlikli demir ýol; çalt otly
+645|根据|according to; based on; basis|согласно; на основании; основание|...-a görä; esaslanmak; esas
+646|更|more; even more|ещё; ещё более|has; has-da
+647|公斤|kilogram|килограмм|kilogram
+648|公园|park|парк|seýilgäh
+649|工作日|working day|рабочий день|iş güni
+650|故事|story|история; рассказ|hekaýa
+651|刮|blow (wind); scrape; shave|дуть (о ветре); скоблить; брить|öwüsmek; gazamak; syrmak
+652|关|close; shut; turn off|закрывать; выключать|ýapmak; öçürmek
+653|关机|turn off a device|выключать устройство|enjamy öçürmek
+654|关系|relationship; connection|отношение; связь|gatnaşyk; baglanyşyk
+655|关心|care about; show concern for|заботиться; интересоваться|alada etmek; gyzyklanmak
+656|关于|about; concerning|о; относительно; касательно|hakynda; barada
+657|关注|pay attention to; follow closely|уделять внимание; следить за|üns bermek; yzarlamak
+658|国家|country; nation; state|страна; государство|ýurt; döwlet
+659|过节|celebrate a festival|отмечать праздник|baýram bellemek
+660|过去2|the past; formerly|прошлое; прежде|geçmiş; ozal
+661|海|sea|море|deňiz
+662|害怕|be afraid; fear|бояться; страшиться|gorkmak
+663|好多|many; a lot|много; очень много|köp; ep-esli
+664|好久|a long time|долго; долгое время|uzak wagt
+665|好像|seem; appear; as if|кажется; похоже; как будто|ýaly; meňzemek; öýdýän
+666|号码|number (phone, room, etc.)|номер (телефона, комнаты и т. п.)|belgi; telefon ýa-da otag belgisi
+667|河|river|река|derýa
+668|合适|suitable; appropriate|подходящий; уместный|laýyk; ýerlikli
+669|黑板|blackboard|классная доска|synp tagtasy
+670|红绿灯|traffic lights|светофор|ýol çyrasy; svetofor
+671|后来|later; afterwards|потом; впоследствии|soň; soňra
+672|后年|the year after next|через два года; год после следующего|indiki ýyldan soňky ýyl
+673|后天|the day after tomorrow|послезавтра|birigün
+674|护照|passport|паспорт|pasport
+675|花园|garden|сад|bag; gül bagy
+676|画家|painter; artist|художник|suratkeş
+677|欢迎|welcome|приветствовать; добро пожаловать|hoş garşylamak; hoş geldiňiz
+678|还|return; give back; repay|возвращать; отдавать долг|yzyna bermek; gaýtarmak; bergini üzmek
+679|环境|environment; surroundings|среда; окружающая обстановка|gurşaw; daş-töwerek
+680|换|change; exchange; replace|менять; обменивать; заменять|çalşyrmak; alyşmak
+681|黄色|yellow (colour)|жёлтый цвет|sary reňk
+682|回答|answer; reply|отвечать; ответ|jogap bermek; jogap
+683|会2|meeting; gathering|собрание; встреча|ýygnak; duşuşyk
+684|会议|meeting; conference|собрание; конференция|ýygnak; maslahat
+685|或|or; perhaps|или; возможно|ýa-da; belki
+686|或者|or; perhaps|или; либо; возможно|ýa-da; belki
+687|鸡|chicken; hen|курица; петух|towuk
+688|几乎|almost; nearly|почти; едва ли не|diýen ýaly; tas
+689|机会|opportunity; chance|возможность; случай; шанс|mümkinçilik; pursat
+690|极|extremely; utmost; pole|крайне; предельный; полюс|örän; iň ýokary dereje; polýus
+691|急|urgent; anxious; in a hurry|срочный; спешить; волноваться|gyssagly; howlukmak; aladalanmak
+692|记|remember; record; make a note|запоминать; записывать|ýatda saklamak; ýazyp almak
+693|季|season; quarter of a year|сезон; время года; квартал|pasyl; möwsüm; çärýek
+694|季节|season|время года; сезон|pasyl; möwsüm
+695|加|add; increase; plus|добавлять; увеличивать; плюс|goşmak; artdyrmak; goşmak belgisi
+696|假期|holiday; vacation|каникулы; отпуск|dynç alyş; kanikul; zähmet rugsady
+697|坚持|persist; keep at; insist on|упорно продолжать; придерживаться; настаивать|tutanýerli dowam etmek; ygrarly bolmak; talap etmek
+698|检查|check; inspect; examine|проверять; осматривать|barlamak; gözden geçirmek
+699|简单|simple; easy|простой; несложный|ýönekeý; aňsat
+700|检票|check tickets|проверять билеты|petekleri barlamak
+701|健康|healthy; health|здоровый; здоровье|sagdyn; saglyk
+702|见面|meet; see each other|встречаться; видеться|duşuşmak; görüşmek
+703|讲|speak; explain; tell|говорить; объяснять; рассказывать|gürlemek; düşündirmek; gürrüň bermek
+704|角|jiao (one tenth of a yuan)|цзяо (одна десятая юаня)|jiao (ýuanyň ondan biri)
+705|脚|foot|ступня; нога|aýak
+706|接|receive; pick up; answer; connect|принимать; встречать; отвечать; соединять|kabul etmek; garşylamak; jogap bermek; birikdirmek
+707|街|street|улица|köçe
+708|节|festival; section; classifier for lessons|праздник; отрезок; счётное слово для уроков|baýram; bölek; sapaklaryň san sözi
+709|结婚|get married; marry|жениться; выходить замуж|durmuş gurmak; öýlenmek; durmuşa çykmak
+710|节目|programme; show; performance item|программа; передача; номер выступления|gepleşik; tomaşa; çykyş
+711|节日|festival; holiday|праздник|baýram
+712|结束|end; finish; conclusion|заканчивать; заканчиваться; конец|tamamlamak; gutarmak; tamamlanma
+713|解决|solve; resolve; settle|решать; разрешать проблему|çözmek; meseläni çözmek
+714|姐妹|sisters|сёстры|uýalar; aýal doganlar
+715|借|borrow; lend|брать взаймы; давать взаймы|karz almak; karz bermek
+716|斤|jin (500 grams in mainland China)|цзинь (500 граммов в КНР)|jin (Hytaýda 500 gram)
+717|经过|pass through; undergo; course of events|проходить через; переживать; ход событий|geçmek; başdan geçirmek; wakalaryň gidişi
+718|经理|manager|менеджер; управляющий|dolandyryjy; menejer
+719|久|a long time; long-lasting|долго; длительный|uzak wagt; uzak dowam edýän
+720|酒|alcoholic drink; wine|алкогольный напиток; вино|alkogolly içgi; şerap
+721|旧|old; used; former|старый; подержанный; прежний|köne; ulanylan; öňki
+722|句|sentence; classifier for sentences|предложение; счётное слово для фраз|sözlem; sözlemleriň san sözi
+723|句子|sentence|предложение; фраза|sözlem
+724|决定|decide; decision|решать; решение|karar etmek; karar
+725|卡|card|карта; карточка|kart; kartoçka
+726|开花|bloom; flower|цвести; расцветать|güllemek; gül açmak
+727|开会|hold or attend a meeting|проводить собрание; участвовать в совещании|ýygnak geçirmek; ýygnaga gatnaşmak
+728|开机|switch on a device; start a computer|включать устройство; запускать компьютер|enjamy açmak; kompýuteri işletmek
+729|开心|happy; delighted|радостный; веселиться|şat; begenmek
+730|看来|it seems; apparently|по-видимому; кажется|görnüşine görä; öýdýän
+731|可|but; really (for emphasis)|но; ведь; очень (для усиления)|ýöne; ahyryn; örän (nygtamak üçin)
+732|渴|thirsty|хотеть пить; испытывать жажду|suwsamak; suwsan
+733|可爱|cute; lovable|милый; прелестный|mähirli; ýakymly; owadan
+734|可是|but; however|но; однако|ýöne; emma
+735|刻|quarter of an hour; engrave|четверть часа; вырезать, гравировать|çärýek sagat; oýup ýazmak
+736|课本|textbook|учебник|okuw kitaby
+737|客人|guest; visitor; customer|гость; посетитель; клиент|myhman; müşderi
+738|课文|text in a textbook|учебный текст|okuw teksti
+739|空调|air conditioner; air conditioning|кондиционер; кондиционирование|kondisioner; howany sazlamak
+740|哭|cry; weep|плакать|aglamak
+741|筷子|chopsticks|палочки для еды|nahar iýilýän taýajyklar
+742|矿泉水|mineral water|минеральная вода|mineral suw
+743|来自|come from; originate from|происходить из; быть родом из|...-dan gelmek; asly ...-dan bolmak
+744|蓝|blue|синий; голубой|gök
+745|老|old; elderly; familiar prefix before a name|старый; пожилой; дружеский префикс перед именем|garry; köne; atdan öň gelýän ýakynlyk bildirýän goşulma
+746|老人|elderly person; the elderly|пожилой человек; старики|garry adam; ýaşuly
+747|离开|leave; depart|покидать; уходить|gitmek; terk etmek
+748|礼物|gift; present|подарок|sowgat
+749|历史|history|история|taryh
+750|脸|face|лицо|ýüz
+751|练|practise; train|тренироваться; упражняться|maşk etmek; türgenleşmek
+752|练习|practise; exercise|упражняться; упражнение|maşk etmek; maşk
+753|凉快|pleasantly cool|прохладный; прохладно|salkyn
+754|辆|classifier for vehicles|счётное слово для транспортных средств|ulaglaryň san sözi
+755|聊|chat; talk|болтать; беседовать|söhbet etmek; gürrüňleşmek
+756|聊天儿|chat; have a conversation|болтать; разговаривать|gürrüňdeş bolmak; söhbetdeş bolmak
+757|了解|understand; know about|понимать; знать о; знакомиться с|düşünmek; habarly bolmak; tanamak
+758|邻居|neighbour|сосед|goňşy
+759|留学|study abroad|учиться за границей|daşary ýurtda okamak
+760|留学生|international student; student studying abroad|иностранный студент; учащийся за рубежом|daşary ýurtly talyp; daşary ýurtda okaýan talyp
+761|楼梯|stairs; staircase|лестница|basgançak; merdiwan
+762|路边|roadside|обочина; край дороги|ýoluň gyrasy
+763|路口|road junction; intersection|перекрёсток; пересечение дорог|ýol çatrygy
+764|马|horse|лошадь|at
+765|马路|road; street|дорога; улица|ýol; köçe
+766|马上|immediately; right away|сейчас же; немедленно|derrew; häzir
+767|满意|satisfied; pleased|довольный; удовлетворённый|kanagatlanan; hoşal
+768|毛|hair; fur; mao (one tenth of a yuan)|волос; шерсть; мао (одна десятая юаня)|tüý; ýüň; mao (ýuanyň ondan biri)
+769|米|rice; metre|рис; метр|tüwi; metr
+770|面前|in front of; before|перед; перед лицом|öňünde
+771|明白|understand; clear|понимать; ясный|düşünmek; düşnükli
+772|名单|list of names|список имён|atlaryň sanawy
+773|名人|famous person; celebrity|знаменитость; известный человек|meşhur adam
+774|南|south|юг; южный|günorta
+775|难|difficult; hard|трудный; сложный|kyn
+776|南方|the south; southern regions|юг; южные районы|günorta; günorta sebitler
+777|难过|sad; upset; feel bad|грустить; расстраиваться; тяжело переживать|gynanmak; gamlanmak; özüni erbet duýmak
+778|难看|ugly; unpleasant to look at|некрасивый; неприятный на вид|gelşiksiz; görmäge ýakymsyz
+779|男人|man; male adult|мужчина|erkek adam
+780|男生|male student; boy|ученик; студент; мальчик|oglan okuwçy; oglan talyp
+781|难题|difficult problem|трудная задача; сложный вопрос|kyn mesele; kyn sorag
+782|难听|unpleasant to hear; offensive|неприятный на слух; обидный|eşitmäge ýakymsyz; gödek
+783|年级|school year; grade|класс; год обучения|synp; okuw ýyly
+784|年轻|young|молодой|ýaş
+785|牛|cow; ox; cattle|корова; бык; крупный рогатый скот|sygyr; öküz; gara mal
+786|努力|make an effort; hard-working|стараться; прилагать усилия; усердный|çalyşmak; tagalla etmek; zähmetsöýer
+787|女人|woman|женщина|aýal
+788|女生|female student; girl|ученица; студентка; девочка|gyz okuwçy; gyz talyp
+789|爬|climb; crawl|лезть; взбираться; ползать|dyrmaşmak; emedeklemek
+790|怕|fear; be afraid of|бояться; опасаться|gorkmak; çekinmek
+791|拍照|take a photograph|фотографировать|surata düşürmek
+792|盘子|plate; dish|тарелка; блюдо|tabak
+793|胖|fat; plump|толстый; полный|semiz
+794|啤酒|beer|пиво|piwo
+795|平时|usually; in ordinary times|обычно; в обычное время|adatça; adaty wagtlarda
+796|瓶子|bottle|бутылка|çüýşe
+797|骑|ride a bicycle or animal|ездить верхом; ездить на велосипеде|at münmek; welosiped sürmek
+798|奇怪|strange; odd; find strange|странный; удивляться|geň; geň galmak
+799|其实|actually; in fact|на самом деле; в действительности|aslynda; hakykatda
+800|其他|other; the others|другой; остальные|başga; beýlekiler
+801|起|rise; get up; start|подниматься; вставать; начинаться|turmak; ýokary galmak; başlanmak
+802|起飞|take off (an aircraft)|взлетать|uçup howa galmak
+803|汽车|car; motor vehicle|автомобиль; машина|awtoulag; maşyn
+804|铅笔|pencil|карандаш|galam
+805|前年|the year before last|позапрошлый год|öňki ýyldan öňki ýyl
+806|前天|the day before yesterday|позавчера|öňňin
+807|清楚|clear; distinct; understand clearly|ясный; отчётливый; ясно понимать|düşnükli; aýdyň; anyk bilmek
+808|请假|ask for leave|отпрашиваться; просить отпуск|rugsat soramak; işden ýa-da okuwdan rugsat almak
+809|请客|treat someone; invite guests|угощать; приглашать в гости|myhman çagyrmak; myhman etmek
+810|秋天|autumn|осень|güýz
+811|球场|sports field; court|спортивная площадка; поле; корт|sport meýdançasy; top oýnalýan meýdança
+812|裙子|skirt|юбка|ýubka
+813|然后|then; afterwards|затем; потом|soň; soňra
+814|热情|enthusiastic; warm; enthusiasm|душевный; радушный; энтузиазм|mähirli; hyjuwly; yhlas
+815|认得|recognise; know by sight|узнавать; знать в лицо|tanamak
+816|认为|think; consider; believe|считать; полагать|hasaplamak; pikir etmek
+817|认真|serious; conscientious; attentive|серьёзный; добросовестный; внимательный|çynlakaý; yhlasly; ünsli
+818|容易|easy; likely to|лёгкий; легко; склонный к|aňsat; ýeňil; aňsatlyk bilen
+819|如果|if|если|eger
+820|伞|umbrella|зонт|saýawan
+821|扫|sweep; scan|мести; подметать; сканировать|süpürmek; skanirlemek
+822|沙发|sofa|диван|diwan
+823|山|mountain; hill|гора; холм|dag; depe
+824|上衣|upper-body garment; jacket; top|верхняя одежда; куртка; верх костюма|bedeniň ýokarky bölegine geýilýän eşik; penjek
+825|勺子|spoon|ложка|çemçe
+826|身边|at one's side; nearby|рядом с собой; при себе|ýanynda; golaýynda
+827|身高|height (of a person)|рост человека|adamyň boýy
+828|声|sound; voice; classifier for sounds|звук; голос; счётное слово для звуков|ses; sesleriň san sözi
+829|生活|life; live|жизнь; жить|durmuş; ýaşamak
+830|生气|be angry; get angry|сердиться; злиться|gaharlanmak
+831|声音|sound; voice|звук; голос|ses; owaz
+832|市|city; market|город; рынок|şäher; bazar
+833|试|try; test|пробовать; испытывать|synap görmek; barlamak
+834|室|room|комната; помещение|otag
+835|世界|world|мир|dünýä
+836|收|receive; collect; put away|получать; собирать; убирать|kabul etmek; ýygnamak; ýerleşdirmek
+837|收到|receive; get|получать|almak; kabul etmek
+838|受|receive; undergo; suffer|получать; подвергаться; терпеть|almak; başdan geçirmek; sezewar bolmak
+839|瘦|thin; slim; lose weight|худой; стройный; худеть|hor; inçe; horlanmak
+840|受到|receive; be subjected to|получать; испытывать; подвергаться|almak; duçar bolmak; başdan geçirmek
+841|叔叔|uncle; polite address for a man|дядя; вежливое обращение к мужчине|aga; daýy; erkek adama sypaýy ýüzlenme
+842|树|tree|дерево|agaç
+843|数学|mathematics|математика|matematika
+844|刷|brush; scrub; swipe|чистить щёткой; тереть; проводить картой|çotgalamak; sürtmek; karty geçirmek
+845|双|pair; double; classifier for pairs|пара; двойной; счётное слово для парных предметов|jübüt; goşa; jübüt zatlaryň san sözi
+846|水平|level; standard; horizontal|уровень; стандарт; горизонтальный|dereje; ölçeg; kese
+847|司机|driver|водитель|sürüji
+848|四季|the four seasons|четыре времени года|dört pasyl
+849|太阳|sun|солнце|gün
+850|糖|sugar; sweets|сахар; конфеты|şeker; süýji
+851|特别|special; especially; particularly|особенный; особенно; очень|aýratyn; esasan-da; örän
+852|提高|improve; raise; increase|повышать; улучшать|ýokarlandyrmak; kämilleşdirmek
+853|体育|sport; physical education|спорт; физкультура|sport; bedenterbiýe
+854|体育馆|gymnasium; sports hall|спортивный зал; спорткомплекс|sport zaly; sport toplumy
+855|甜|sweet|сладкий|süýji
+856|跳|jump; leap|прыгать; скакать|bökmek
+857|听说|hear that; be told|слышать о; слышал, что|eşitmek; eşidişime görä
+858|挺|quite; rather; straighten up|довольно; очень; выпрямлять|ep-esli; gaty; dikeltmek
+859|同事|colleague; co-worker|коллега; сослуживец|işdeş; kärdeş
+860|同意|agree; consent|соглашаться; одобрять|razy bolmak; makullamak
+861|头发|hair on the head|волосы на голове|saç
+862|突然|sudden; suddenly|внезапный; вдруг|duýdansyz; birden
+863|图书馆|library|библиотека|kitaphana
+864|腿|leg|нога|aýak
+865|外地|another place; out of town|другая местность; другой город|başga ýer; başga şäher
+866|外卖|takeaway food; food delivery|еда навынос; доставка еды|alyp gidilýän nahar; nahar eltip bermek
+867|外语|foreign language|иностранный язык|daşary ýurt dili
+868|完成|complete; finish; accomplish|завершать; выполнять|tamamlamak; ýerine ýetirmek
+869|碗|bowl|миска; пиала|käse; jam
+870|晚点|be delayed; run late|опаздывать (о транспорте); задерживаться|gijä galmak (ulag barada)
+871|晚会|evening party; evening show|вечер; праздничное представление|agşamky şenlik; agşamky tomaşa
+872|网球|tennis|теннис|tennis
+873|网站|website|веб-сайт|web-saýt
+874|忘记|forget|забывать|ýatdan çykarmak; unutmak
+875|为|for; for the sake of; on behalf of|для; ради; за; от имени|üçin; hatyrasyna; adyndan
+876|为了|in order to; for the sake of|для того чтобы; ради|... üçin; maksady bilen
+877|卫生间|toilet; bathroom|туалет; санузел|hajathana; ýuwunylýan otag
+878|文化|culture|культура|medeniýet
+879|屋子|room; house|комната; дом|otag; jaý
+880|西|west|запад; западный|günbatar
+881|西北|northwest; Northwest China|северо-запад; Северо-Западный Китай|demirgazyk-günbatar; Hytaýyň demirgazyk-günbatary
+882|西方|the west; Western countries|запад; западные страны|günbatar; Günbatar ýurtlary
+883|西瓜|watermelon|арбуз|garpyz
+884|西南|southwest|юго-запад|günorta-günbatar
+885|习惯|habit; be used to|привычка; привыкать|endik; öwrenişmek
+886|喜爱|like very much; love|любить; обожать|gowy görmek; halamak
+887|洗衣机|washing machine|стиральная машина|kir ýuwujy maşyn
+888|洗澡|bathe; take a shower|мыться; принимать душ|ýuwunmak; suwa düşmek
+889|夏天|summer|лето|tomus
+890|先|first; beforehand|сначала; прежде; сперва|ilki; öňünden
+891|香蕉|banana|банан|banan
+892|相信|believe; trust|верить; доверять|ynanmak
+893|箱子|box; suitcase|ящик; коробка; чемодан|guty; çemodan
+894|向|towards; face; to|к; по направлению к; в сторону|tarap; garap; ...-a
+895|像|resemble; be like; image|быть похожим; словно; изображение|meňzemek; ýaly; şekil
+896|相机|camera|фотоаппарат; камера|fotoapparat; kamera
+897|小区|residential area; housing estate|жилой микрорайон; жилой комплекс|ýaşaýyş toplumy; ýaşaýyş etrapçasy
+898|小心|be careful; careful|осторожно; быть внимательным|seresap bolmak; ünsli
+899|校园|campus; school grounds|кампус; территория школы|okuw mekdebiniň çägi; uniwersitet şäherçesi
+900|校长|head teacher; school principal; university president|директор школы; ректор|mekdep müdiri; rektor
+901|鞋|shoe; footwear|обувь; туфля|aýakgap
+902|心里|in one's heart; in one's mind|в душе; в мыслях|ýüreginde; pikirinde
+903|新年|New Year|Новый год|Täze ýyl
+904|新闻|news|новости|habarlar
+905|新鲜|fresh; new; novel|свежий; новый; необычный|täze; ter; täsin
+906|信|letter; believe; trust|письмо; верить; доверие|hat; ynanmak; ynam
+907|信用卡|credit card|кредитная карта|kredit karty
+908|行|all right; acceptable; can do; go|можно; годится; идти; действовать|bolýar; ýaraýar; ýöremek; başarmak
+909|行李|luggage; baggage|багаж|goş; ýol goşlary
+910|兴趣|interest|интерес; увлечение|gyzyklanma; höwes
+911|休假|take leave; be on holiday|брать отпуск; находиться в отпуске|zähmet rugsadyna çykmak; dynç almak
+912|需要|need; require|нуждаться; требоваться|mätäç bolmak; gerek bolmak
+913|选|choose; select|выбирать; отбирать|saýlamak
+914|选择|choose; choice|выбирать; выбор|saýlamak; saýlaw
+915|学期|term; semester|семестр; учебное полугодие|okuw ýarymýyllygy; semestr
+916|牙|tooth|зуб|diş
+917|牙刷|toothbrush|зубная щётка|diş çotgasy
+918|羊|sheep; goat|овца; коза|goýun; geçi
+919|养|raise; bring up; keep an animal|растить; воспитывать; содержать животное|ulaltmak; terbiýelemek; mal saklamak
+920|要求|request; require; requirement|требовать; просить; требование|talap etmek; haýyş etmek; talap
+921|页|page|страница|sahypa
+922|一定|certainly; surely; definite|обязательно; непременно; определённый|hökman; elbetde; belli
+923|一共|altogether; in total|всего; в общей сложности|jemi; hemmesi bilelikde
+924|一块儿|together|вместе|bile; bilelikde
+925|一样|the same; alike|одинаковый; такой же|birmeňzeş; deň
+926|以后|after; later; in the future|после; потом; в будущем|soň; soňra; geljekde
+927|以前|before; previously|до; раньше; прежде|öň; ozal
+928|以上|above; more than; the above-mentioned|выше; свыше; вышеупомянутый|ýokary; artyk; ýokarda agzalan
+929|以外|outside; apart from; besides|за пределами; кроме; помимо|daşynda; ...-dan başga
+930|以为|think; assume (often mistakenly)|считать; полагать (часто ошибочно)|öýtmek; çaklamak (köplenç ýalňyş)
+931|以下|below; less than; the following|ниже; менее; нижеследующий|aşak; az; aşakda getirilen
+932|一般|ordinary; general; usually|обычный; общий; обычно|adaty; umumy; adatça
+933|一边|one side; while doing something|одна сторона; одновременно с действием|bir tarap; bir işi edýän wagtynda
+934|一直|continuously; all along; straight ahead|всё время; постоянно; прямо|üznüksiz; hemişe; göni
+935|音乐|music|музыка|saz; aýdym-saz
+936|银行|bank|банк|bank
+937|银行卡|bank card|банковская карта|bank karty
+938|饮料|beverage; drink|напиток|içgi
+939|应该|should; ought to|следует; должен|etmeli; gerek
+940|影响|influence; affect; effect|влиять; влияние; воздействие|täsir etmek; täsir
+941|用|use; with; need|использовать; с помощью; нуждаться|ulanmak; bilen; gerek bolmak
+942|邮件|mail; email|почта; электронное письмо|poçta; elektron hat
+943|游客|tourist; visitor|турист; посетитель|syýahatçy; gezelenç edýän adam
+944|游戏|game; play games|игра; играть|oýun; oýnamak
+945|邮箱|mailbox; email inbox|почтовый ящик; электронный почтовый ящик|poçta gutusy; elektron poçta gutusy
+946|有关|be related to; concerning|иметь отношение к; связанный с|baglanyşykly bolmak; degişli
+947|有名|famous; well-known|известный; знаменитый|meşhur; belli
+948|有用|useful|полезный|peýdaly
+949|又|again; also; both ... and ...|снова; ещё; и ... и ...|ýene; hem; hem ... hem ...
+950|羽毛球|badminton; shuttlecock|бадминтон; волан|badminton; badminton topy
+951|语言|language|язык|dil
+952|雨衣|raincoat|дождевик; плащ от дождя|ýagyşlyk; ýagyş geçirmeýän eşik
+953|遇到|meet; encounter|встретить; столкнуться с|duş gelmek; gabat gelmek
+954|遇见|meet; come across|встретить; повстречаться|duş gelmek; gabatlaşmak
+955|园|garden; park|сад; парк|bag; seýilgäh
+956|员|member; suffix for a person doing a job|член; суффикс названия профессии или участника|agza; hünäri ýa-da gatnaşyjyny bildirýän goşulma
+957|愿意|be willing; wish; want to|желать; быть готовым; хотеть|islemek; razy bolmak; höwesli bolmak
+958|越|the more ... the more ...; exceed; cross|чем ... тем ...; превышать; пересекать|näçe ... şonça ...; aşmak; geçmek
+959|月亮|moon|луна|aý
+960|运动会|sports meeting; athletic meet|спортивные соревнования; спартакиада|sport ýaryşlary
+961|运动员|athlete; sports player|спортсмен|türgen; sportsmen
+962|咱们|we; us (including the person addressed)|мы (включая собеседника)|biz (diňleýjini hem goşmak bilen)
+963|脏|dirty|грязный|hapa
+964|怎么办|what to do; how to deal with it|что делать; как поступить|näme etmeli; nädip çözmeli
+965|怎样|how; in what way|как; каким образом|nähili; nädip
+966|站2|stand; stand up|стоять; вставать|durmak; dik durmak
+967|张|classifier for flat objects; spread open|счётное слово для плоских предметов; раскрывать|tekiz zatlaryň san sözi; açmak
+968|长|grow; develop; older; chief|расти; вырастать; старший; руководитель|ösmek; ulalmak; uly; ýolbaşçy
+969|着急|be anxious; worry; be in a hurry|тревожиться; волноваться; торопиться|aladalanmak; howlukmak
+970|照|shine; take a photograph; according to|светить; фотографировать; согласно|şöhle saçmak; surata düşürmek; ...-a görä
+971|照顾|take care of; look after|заботиться; ухаживать|alada etmek; ideg etmek
+972|照片|photograph|фотография|surat; fotosurat
+973|照相|take a photograph|фотографировать|surata düşürmek
+974|直到|until; right up to|до; вплоть до|...-a çenli
+975|只|only; just|только; лишь|diňe; bary-ýogy
+976|纸|paper|бумага|kagyz
+977|只能|can only; have no choice but to|можно только; приходится|diňe ... edip bilmek; mejbur bolmak
+978|只是|only; merely; but|только; всего лишь; однако|diňe; bary-ýogy; ýöne
+979|只要|as long as; provided that|если только; лишь бы|eger; ... bolsa ýeterlik
+980|只有|only have; only if|иметь только; только если|diňe bar bolmak; diňe ... bolsa
+981|中|middle; centre; in; during|середина; центр; в; во время|orta; merkez; içinde; dowamynda
+982|中间|middle; between|середина; между|orta; arasynda
+983|终于|finally; at last|наконец; в конце концов|ahyry; ahyrsoňy
+984|种|kind; type; seed|вид; сорт; семя|görnüş; sort; tohum
+985|重要|important|важный|möhüm
+986|周末|weekend|конец недели; выходные|dynç günleri; hepdäniň ahyry
+987|主要|main; principal|главный; основной|esasy
+988|注意|pay attention; take care|обращать внимание; быть внимательным|üns bermek; ünsli bolmak
+989|住院|be in hospital; be hospitalised|лежать в больнице; госпитализироваться|hassahana ýerleşmek; hassahanada ýatmak
+990|字典|character dictionary|словарь иероглифов|hytaý nyşanlarynyň sözlügi
+991|自行车|bicycle|велосипед|welosiped
+992|子|noun-forming suffix|суффикс существительных|at ýasaýjy goşulma
+993|总|always; overall; total|всегда; общий; всего|hemişe; umumy; jemi
+994|总是|always|всегда; постоянно|hemişe; elmydama
+995|嘴|mouth; beak|рот; клюв|agyz; çüňk
+996|最好|best; had better|лучший; лучше всего; лучше бы|iň gowy; gowusy
+997|最后|last; final; finally|последний; в конце; наконец|soňky; ahyrky; ahyrynda
+998|最近|recently; lately; nearest|недавно; в последнее время; ближайший|ýaňy-ýakynda; soňky wagtlarda; iň golaý
+999|做客|be a guest; visit someone|быть в гостях; гостить|myhman bolmak; myhmançylyga barmak
+1000|作业|homework; assignment|домашнее задание; учебная работа|öý işi; ýumuş

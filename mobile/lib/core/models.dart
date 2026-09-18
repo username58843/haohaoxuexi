@@ -64,12 +64,12 @@ class WordExample {
   }
 
   Map<String, dynamic> toJson() => {
-        'zh': zh,
-        if (py.isNotEmpty) 'py': py,
-        if (en.isNotEmpty) 'en': en,
-        if (ru.isNotEmpty) 'ru': ru,
-        if (tk.isNotEmpty) 'tk': tk,
-      };
+    'zh': zh,
+    if (py.isNotEmpty) 'py': py,
+    if (en.isNotEmpty) 'en': en,
+    if (ru.isNotEmpty) 'ru': ru,
+    if (tk.isNotEmpty) 'tk': tk,
+  };
 }
 
 /// A vocabulary word (full pack entry or deck/SRS snapshot).
@@ -86,6 +86,8 @@ class Word {
     this.hsk,
     this.strokes,
     this.radicals,
+    this.idPinyin,
+    this.sense,
   });
 
   final String simplified;
@@ -106,16 +108,25 @@ class Word {
   final int? hsk;
   final int? strokes;
   final String? radicals;
+  final String? idPinyin;
+  final int? sense;
 
   /// Canonical id, see [makeWordId].
-  String get id => makeWordId(simplified, pinyin);
+  String get id =>
+      '${makeWordId(simplified, idPinyin ?? pinyin)}${sense != null && sense! >= 2 && sense! <= 9 ? '~$sense' : ''}';
 
   factory Word.fromJson(Map<String, dynamic> json) {
     final translations = json['translations'];
     return Word(
       simplified: (json['simplified'] ?? '').toString().trim(),
-      traditional: (json['traditional'] ?? json['simplified'] ?? '').toString().trim(),
+      traditional: (json['traditional'] ?? json['simplified'] ?? '')
+          .toString()
+          .trim(),
       pinyin: (json['pinyin'] ?? '').toString().trim(),
+      idPinyin: json['idPinyin'] is String
+          ? (json['idPinyin'] as String).trim()
+          : null,
+      sense: json['sense'] is int ? json['sense'] as int : null,
       definitions: _strList(json['definitions']),
       en: translations is Map ? _strList(translations['en']) : const [],
       ru: translations is Map ? _strList(translations['ru']) : const [],
@@ -129,38 +140,42 @@ class Word {
 
   /// Full JSON shape (mirrors the pack entry).
   Map<String, dynamic> toJson() => {
-        'simplified': simplified,
-        'traditional': traditional,
-        'pinyin': pinyin,
-        'definitions': definitions,
-        'translations': {
-          if (en.isNotEmpty) 'en': en,
-          if (ru.isNotEmpty) 'ru': ru,
-          if (tk.isNotEmpty) 'tk': tk,
-        },
-        if (example != null) 'example': example!.toJson(),
-        if (hsk != null) 'hsk': hsk,
-        if (strokes != null) 'strokes': strokes,
-        if (radicals != null) 'radicals': radicals,
-      };
+    'simplified': simplified,
+    'traditional': traditional,
+    'pinyin': pinyin,
+    if (idPinyin != null) 'idPinyin': idPinyin,
+    if (sense != null) 'sense': sense,
+    'definitions': definitions,
+    'translations': {
+      if (en.isNotEmpty) 'en': en,
+      if (ru.isNotEmpty) 'ru': ru,
+      if (tk.isNotEmpty) 'tk': tk,
+    },
+    if (example != null) 'example': example!.toJson(),
+    if (hsk != null) 'hsk': hsk,
+    if (strokes != null) 'strokes': strokes,
+    if (radicals != null) 'radicals': radicals,
+  };
 
   /// Deck/SRS snapshot shape (§5): only the server-validated snapshot fields.
   /// `hsk` must be included — the server's byLevel progress (srs summary)
   /// counts cards by `word.hsk`. The example rides along so review
   /// flashcards can show it.
   Map<String, dynamic> toSnapshotJson() => {
-        'simplified': simplified,
-        'traditional': traditional,
-        'pinyin': pinyin,
-        'definitions': definitions,
-        'translations': {
-          if (en.isNotEmpty) 'en': en,
-          if (ru.isNotEmpty) 'ru': ru,
-          if (tk.isNotEmpty) 'tk': tk,
-        },
-        if (example != null) 'example': example!.toJson(),
-        if (hsk != null) 'hsk': hsk,
-      };
+    'simplified': simplified,
+    'traditional': traditional,
+    'pinyin': pinyin,
+    if (idPinyin != null) 'idPinyin': idPinyin,
+    if (sense != null) 'sense': sense,
+    'definitions': definitions,
+    'translations': {
+      if (en.isNotEmpty) 'en': en,
+      if (ru.isNotEmpty) 'ru': ru,
+      if (tk.isNotEmpty) 'tk': tk,
+    },
+    if (example != null) 'example': example!.toJson(),
+    if (hsk != null) 'hsk': hsk,
+  };
 
   @override
   bool operator ==(Object other) => other is Word && other.id == id;
@@ -206,7 +221,8 @@ class SrsCard {
       state: (json['state'] ?? 'new').toString(),
       ease: (json['ease'] as num?)?.toDouble() ?? 2.5,
       intervalDays: (json['intervalDays'] as num?)?.toDouble() ?? 0,
-      due: DateTime.tryParse(json['due']?.toString() ?? '')?.toUtc() ??
+      due:
+          DateTime.tryParse(json['due']?.toString() ?? '')?.toUtc() ??
           DateTime.now().toUtc(),
       reps: (json['reps'] as num?)?.toInt() ?? 0,
       lapses: (json['lapses'] as num?)?.toInt() ?? 0,
@@ -251,10 +267,13 @@ class UserProfile {
       name: (json['name'] ?? '').toString(),
       role: (json['role'] ?? 'user').toString(),
       isPremium: json['isPremium'] == true,
-      premiumExpiresAt:
-          DateTime.tryParse(json['premiumExpiresAt']?.toString() ?? ''),
+      premiumExpiresAt: DateTime.tryParse(
+        json['premiumExpiresAt']?.toString() ?? '',
+      ),
       isBanned: json['isBanned'] == true,
-      settings: settings is Map ? Map<String, dynamic>.from(settings) : const {},
+      settings: settings is Map
+          ? Map<String, dynamic>.from(settings)
+          : const {},
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
     );
   }
@@ -307,10 +326,10 @@ class LevelProgress {
   final int mature;
 
   factory LevelProgress.fromJson(Map<String, dynamic> json) => LevelProgress(
-        total: (json['total'] as num?)?.toInt() ?? 0,
-        seen: (json['seen'] as num?)?.toInt() ?? 0,
-        mature: (json['mature'] as num?)?.toInt() ?? 0,
-      );
+    total: (json['total'] as num?)?.toInt() ?? 0,
+    seen: (json['seen'] as num?)?.toInt() ?? 0,
+    mature: (json['mature'] as num?)?.toInt() ?? 0,
+  );
 }
 
 /// `GET /srs/summary` response.
@@ -342,7 +361,8 @@ class SrsSummary {
   final Map<int, LevelProgress> byLevel;
 
   bool get goalMet => goal > 0 && todayReviews >= goal;
-  double get goalProgress => goal > 0 ? (todayReviews / goal).clamp(0, 1).toDouble() : 0;
+  double get goalProgress =>
+      goal > 0 ? (todayReviews / goal).clamp(0, 1).toDouble() : 0;
 
   factory SrsSummary.fromJson(Map<String, dynamic> json) {
     final byState = json['byState'];
@@ -352,11 +372,14 @@ class SrsSummary {
       byLevelRaw.forEach((key, value) {
         final level = int.tryParse(key.toString());
         if (level != null && value is Map) {
-          byLevel[level] = LevelProgress.fromJson(Map<String, dynamic>.from(value));
+          byLevel[level] = LevelProgress.fromJson(
+            Map<String, dynamic>.from(value),
+          );
         }
       });
     }
-    int stateOf(String key) => byState is Map ? (byState[key] as num?)?.toInt() ?? 0 : 0;
+    int stateOf(String key) =>
+        byState is Map ? (byState[key] as num?)?.toInt() ?? 0 : 0;
     return SrsSummary(
       dueCount: (json['dueCount'] as num?)?.toInt() ?? 0,
       todayReviews: (json['todayReviews'] as num?)?.toInt() ?? 0,
@@ -382,8 +405,8 @@ class ActivityDay {
   final int correct;
 
   factory ActivityDay.fromJson(Map<String, dynamic> json) => ActivityDay(
-        day: (json['day'] ?? '').toString(),
-        reviews: (json['reviews'] as num?)?.toInt() ?? 0,
-        correct: (json['correct'] as num?)?.toInt() ?? 0,
-      );
+    day: (json['day'] ?? '').toString(),
+    reviews: (json['reviews'] as num?)?.toInt() ?? 0,
+    correct: (json['correct'] as num?)?.toInt() ?? 0,
+  );
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
@@ -177,7 +176,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 child: Text(
                   initial,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.w800,
                     color: accentOf(context),
@@ -187,7 +186,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 12),
               Text(
                 user.email,
-                style: GoogleFonts.manrope(
+                style: TextStyle(
                   fontSize: 14,
                   color: text2Of(context),
                 ),
@@ -333,7 +332,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       'profile.delete.text',
                       'Deletes your account, decks and learning progress on '
                           'all devices. This cannot be undone.'),
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 13.5,
                     height: 1.5,
                     color: text2Of(context),
@@ -398,7 +397,7 @@ class _Badge extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: GoogleFonts.manrope(
+        style: TextStyle(
           fontSize: 11.5,
           fontWeight: FontWeight.w700,
           color: accentOf(context),
@@ -469,7 +468,7 @@ class _DeleteAccountDialogState extends ConsumerState<_DeleteAccountDialog> {
                   'profile.delete.text',
                   'Deletes your account, decks and learning progress on '
                       'all devices. This cannot be undone.'),
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 13.5,
                 height: 1.5,
                 color: text2Of(context),
@@ -516,7 +515,7 @@ class _DeleteAccountDialogState extends ConsumerState<_DeleteAccountDialog> {
               const SizedBox(height: 10),
               Text(
                 _error!,
-                style: GoogleFonts.manrope(fontSize: 13, color: dangerColor),
+                style: TextStyle(fontSize: 13, color: dangerColor),
               ),
             ],
           ],

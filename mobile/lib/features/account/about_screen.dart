@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/i18n.dart';
 import '../../core/theme.dart';
@@ -56,7 +55,7 @@ class AboutScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               Text(
                 'HaoHao XueXi',
-                style: GoogleFonts.manrope(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).colorScheme.onSurface,
@@ -75,7 +74,7 @@ class AboutScreen extends ConsumerWidget {
                     'HSK 1–6 words, collect them into decks, and memorize them '
                     'with spaced-repetition flashcards and quizzes.'),
             textAlign: TextAlign.center,
-            style: GoogleFonts.manrope(
+            style: TextStyle(
               fontSize: 14.5,
               height: 1.55,
               color: text2Of(context),
@@ -99,7 +98,7 @@ class AboutScreen extends ConsumerWidget {
                       '"Study well, and every day you will improve" — the '
                           'classic proverb this app is named after.'),
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 13.5,
                     height: 1.5,
                     color: text2Of(context),
@@ -152,7 +151,7 @@ class _LinkItem extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.manrope(
+          style: TextStyle(
             fontSize: 12.5,
             fontWeight: FontWeight.w600,
             color: text2Of(context),
@@ -161,7 +160,7 @@ class _LinkItem extends StatelessWidget {
         const SizedBox(height: 3),
         SelectableText(
           value,
-          style: GoogleFonts.manrope(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: accentOf(context),

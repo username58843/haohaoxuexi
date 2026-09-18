@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/api.dart';
@@ -375,7 +374,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                   child: Text(
                                     tr(context, 'auth.forgotPassword',
                                         'Forgot password?'),
-                                    style: GoogleFonts.manrope(
+                                    style: TextStyle(
                                         fontSize: 13, color: accentOf(context)),
                                   ),
                                 ),
@@ -526,7 +525,7 @@ class _VerifyCodeInputState extends State<_VerifyCodeInput> {
               Expanded(
                 child: Text(
                   tr(context, 'auth.verify.title', 'Check your email'),
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                     color: accent,
@@ -538,7 +537,7 @@ class _VerifyCodeInputState extends State<_VerifyCodeInput> {
           const SizedBox(height: 6),
           Text(
             '${tr(context, 'auth.verify.sent', 'We sent a verification code to')} $email',
-            style: GoogleFonts.manrope(
+            style: TextStyle(
                 fontSize: 13, height: 1.4, color: text2Of(context)),
           ),
           const SizedBox(height: 12),
@@ -551,7 +550,7 @@ class _VerifyCodeInputState extends State<_VerifyCodeInput> {
             onSubmitted: (_) {
               if (canSubmit) onVerify();
             },
-            style: GoogleFonts.manrope(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
               letterSpacing: 8,
@@ -560,7 +559,7 @@ class _VerifyCodeInputState extends State<_VerifyCodeInput> {
             decoration: InputDecoration(
               counterText: '',
               hintText: '000000',
-              hintStyle: GoogleFonts.manrope(
+              hintStyle: TextStyle(
                   fontSize: 28,
                   letterSpacing: 8,
                   color: text3Of(context).withValues(alpha: 0.5)),
@@ -594,8 +593,8 @@ class _VerifyCodeInputState extends State<_VerifyCodeInput> {
           if (error != null) ...[
             const SizedBox(height: 6),
             Text(
-              error!,
-              style: GoogleFonts.manrope(fontSize: 13, color: dangerColor),
+              error,
+              style: TextStyle(fontSize: 13, color: dangerColor),
             ),
           ],
           const SizedBox(height: 10),
@@ -617,7 +616,7 @@ class _VerifyCodeInputState extends State<_VerifyCodeInput> {
                             : _resending
                                 ? tr(context, 'auth.verify.sending', 'Sending…')
                                 : tr(context, 'auth.verify.resend', 'Resend'),
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                             fontSize: 13,
                             color: (verifying || _resending || _cooldown > 0)
                                 ? text3Of(context)
@@ -679,7 +678,7 @@ class _SegmentedModeSwitch extends StatelessWidget {
             child: Center(
               child: Text(
                 label,
-                style: GoogleFonts.manrope(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: selected ? onAccent(accent) : text2Of(context),
@@ -725,7 +724,7 @@ class _LegalLinks extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(languageProvider);
     final accent = accentOf(context);
-    final textStyle = GoogleFonts.manrope(
+    final textStyle = TextStyle(
       fontSize: 12.5,
       height: 1.45,
       color: text3Of(context),
@@ -738,7 +737,7 @@ class _LegalLinks extends ConsumerWidget {
     final privacyLabel =
         tr(context, 'auth.legal.privacy', 'Privacy Policy');
 
-    final linkStyle = GoogleFonts.manrope(
+    final linkStyle = TextStyle(
       fontSize: 12.5,
       height: 1.45,
       color: accent,
@@ -812,7 +811,7 @@ class _ErrorBanner extends StatelessWidget {
                 if (title != null) ...[
                   Text(
                     title!,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w700,
                       color: dangerColor,
@@ -823,7 +822,7 @@ class _ErrorBanner extends StatelessWidget {
                 if (title == null || message != title)
                   Text(
                     message,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(
                       fontSize: 13.5,
                       height: 1.4,
                       color: dangerColor,

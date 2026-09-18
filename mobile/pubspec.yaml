@@ -63,6 +63,48 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
 
+  fonts:
+    - family: HanziSongti
+      fonts:
+        - asset: google_fonts/ZCOOLXiaoWei-Regular.ttf
+    - family: HanziWeb
+      fonts:
+        - asset: google_fonts/NotoSerifSC-SemiBold.ttf
+          weight: 600
+    - family: HanziKai
+      fonts:
+        - asset: google_fonts/MaShanZheng-Regular.ttf
+    - family: HanziSans
+      fonts:
+        - asset: google_fonts/NotoSansSC-Regular.ttf
+    - family: AppManrope
+      fonts:
+        - asset: google_fonts/Manrope-Regular.ttf
+        - asset: google_fonts/Manrope-Medium.ttf
+          weight: 500
+        - asset: google_fonts/Manrope-SemiBold.ttf
+          weight: 600
+        - asset: google_fonts/Manrope-Bold.ttf
+          weight: 700
+        - asset: google_fonts/Manrope-ExtraBold.ttf
+          weight: 800
+    - family: AppInter
+      fonts:
+        - asset: google_fonts/Inter-Regular.ttf
+        - asset: google_fonts/Inter-Bold.ttf
+          weight: 700
+    - family: AppLora
+      fonts:
+        - asset: google_fonts/Lora-Regular.ttf
+        - asset: google_fonts/Lora-Bold.ttf
+          weight: 700
+    - family: AppMono
+      fonts:
+        - asset: google_fonts/JetBrainsMono-SemiBold.ttf
+          weight: 600
+        - asset: google_fonts/JetBrainsMono-Bold.ttf
+          weight: 700
+
   assets:
     # Bundled font files picked up by the google_fonts package (exact
     # gstatic files it would otherwise download at runtime). Runtime
@@ -79,3 +121,5 @@ flutter:
     - assets/words/hsk5.json
     - assets/words/hsk6.json
     - assets/words/hsk7-9.json
+    - assets/hsk/syllabus-zh.json
+    - assets/learning/

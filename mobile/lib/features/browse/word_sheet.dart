@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
@@ -81,7 +80,7 @@ class _WordSheetState extends State<_WordSheet> {
             Text(
               word.pinyin,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: accent,
@@ -215,7 +214,7 @@ class _WordSheetState extends State<_WordSheet> {
               Expanded(
                 child: Text(
                   line,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(
                     fontSize: 14.5,
                     height: 1.4,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -286,7 +285,7 @@ class WordRow extends StatelessWidget {
                           word.pinyin,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.manrope(
+                          style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w600,
                             color: accentOf(context),
@@ -301,7 +300,7 @@ class WordRow extends StatelessWidget {
                       firstDef,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(
                         fontSize: 13,
                         color: text2Of(context),
                       ),
@@ -473,7 +472,7 @@ class _AddToDeckSheetState extends ConsumerState<_AddToDeckSheet> {
                           tr(context, 'decks.none',
                               'No decks yet — create one below.'),
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.manrope(
+                          style: TextStyle(
                             fontSize: 14,
                             color: text2Of(context),
                           ),
@@ -494,7 +493,7 @@ class _AddToDeckSheetState extends ConsumerState<_AddToDeckSheet> {
                               deck.name,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(
                                   fontWeight: FontWeight.w600),
                             ),
                             trailing: contains
@@ -545,7 +544,7 @@ class _AddToDeckSheetState extends ConsumerState<_AddToDeckSheet> {
                       leading: Icon(Icons.add, color: accentOf(context)),
                       title: Text(
                         tr(context, 'decks.new', 'New deck'),
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           color: accentOf(context),
                         ),

@@ -1,0 +1,71 @@
+{
+  "version": "2026-07",
+  "total": 11000,
+  "levels": {
+    "1": {
+      "total": 300,
+      "en": 300,
+      "ru": 300,
+      "tk": 300,
+      "authoredGlosses": 300,
+      "examples": 300,
+      "completeExamples": 300
+    },
+    "2": {
+      "total": 200,
+      "en": 200,
+      "ru": 200,
+      "tk": 200,
+      "authoredGlosses": 200,
+      "examples": 200,
+      "completeExamples": 200
+    },
+    "3": {
+      "total": 500,
+      "en": 500,
+      "ru": 500,
+      "tk": 500,
+      "authoredGlosses": 500,
+      "examples": 442,
+      "completeExamples": 353
+    },
+    "4": {
+      "total": 1000,
+      "en": 1000,
+      "ru": 591,
+      "tk": 23,
+      "authoredGlosses": 0,
+      "examples": 611,
+      "completeExamples": 1
+    },
+    "5": {
+      "total": 1600,
+      "en": 1600,
+      "ru": 970,
+      "tk": 8,
+      "authoredGlosses": 0,
+      "examples": 1015,
+      "completeExamples": 1
+    },
+    "6": {
+      "total": 1800,
+      "en": 1800,
+      "ru": 892,
+      "tk": 1,
+      "authoredGlosses": 0,
+      "examples": 953,
+      "completeExamples": 0
+    },
+    "7": {
+      "total": 5600,
+      "en": 5600,
+      "ru": 1502,
+      "tk": 5,
+      "authoredGlosses": 0,
+      "examples": 1722,
+      "completeExamples": 4
+    }
+  },
+  "status": "editorial-review-required",
+  "contentSha256": "675f0e8b1737a48532e923a73cf15a5112a2d0d6da294c07ff1c5ff325deb0c3"
+}

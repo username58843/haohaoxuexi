@@ -1,0 +1,56 @@
+.learning-page { max-width: 960px; margin: 0 auto; padding: 28px 24px 120px; }
+.learning-page .btn, .hsk-guide .btn { max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere; text-align: center; }
+.learning-back { display: inline-block; margin-bottom: 20px; color: var(--text-2); }
+.learning-eyebrow { font-family: var(--font-mono); color: var(--accent); font-size: 12px; letter-spacing: .1em; }
+.learning-muted { color: var(--text-2); }
+.learning-notice { padding: 14px 16px; border: 1px solid var(--hairline); border-radius: 12px; background: var(--surface-2); font-size: 13px; line-height: 1.65; }
+.learning-actions, .learning-pagination { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.learning-pagination { justify-content: space-between; margin-top: 24px; }
+.hsk-guide { padding: 24px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px; line-height: 1.75; overflow-wrap: anywhere; }
+.hsk-guide--compact { margin: 18px 0; padding: 18px; }
+.hsk-guide h2 { font-size: clamp(22px, 4vw, 30px); line-height: 1.3; margin: 10px 0; }
+.hsk-guide p { margin: 12px 0; }
+.hsk-guide__overview details { border-top: 1px solid var(--hairline); padding: 14px 0; }
+.hsk-guide__overview summary { cursor: pointer; font-weight: 700; }
+.hsk-guide__original { margin-top: 20px; }
+.hsk-guide select, .memorize-controls select { display: block; width: 100%; min-height: 44px; padding: 8px 12px; margin-top: 6px; background: var(--surface-2); color: var(--text); border: 1px solid var(--hairline); border-radius: 10px; font: inherit; }
+.hsk-guide__source { font-family: var(--font-hanzi); font-size: 18px; line-height: 1.9; }
+.hsk-guide__source p { white-space: pre-wrap; }
+.hsk-guide__table { overflow-x: auto; margin: 20px 0; }
+.hsk-guide__table table { border-collapse: collapse; min-width: 100%; }
+.hsk-guide__table td { border: 1px solid var(--hairline); padding: 10px; min-width: 100px; white-space: pre-wrap; vertical-align: top; }
+.memorize-header { margin-bottom: 28px; line-height: 1.8; }
+.memorize-header h1 { font-size: clamp(32px, 6vw, 48px); line-height: 1.15; margin: 12px 0; }
+.memorize-header h2 { font-size: 18px; margin: 24px 0 6px; }
+.memorize-subtitle { font-size: 18px; color: var(--text-2); }
+.memorize-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 22px; border: 1px solid var(--hairline); border-radius: 20px; background: var(--surface); }
+.memorize-controls label { font-size: 14px; line-height: 1.5; min-width: 0; }
+.memorize-controls input { accent-color: var(--accent); }
+.memorize-toggle { display: flex; gap: 10px; align-items: center; cursor: pointer; min-height: 44px; }
+.memorize-toggle input { width: 20px; height: 20px; flex-shrink: 0; }
+.memorize-size { grid-column: 1 / -1; }
+.memorize-size output { float: right; font-variant-numeric: tabular-nums; }
+.memorize-size input { display: block; width: 100%; min-height: 44px; }
+.memorize-hint { margin: 16px 0 24px; font-size: 13px; line-height: 1.6; }
+.memorize-coverage > div { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+.memorize-coverage progress { width: 100%; height: 8px; margin: 12px 0; accent-color: var(--accent); }
+.memorize-coverage .learning-notice { margin: 0 0 18px; }
+.memorize-audio { margin: 20px 0; }
+.memorize-story { border: 1px solid var(--hairline); border-radius: 24px; padding: clamp(18px, 4vw, 36px); background: var(--surface); }
+.memorize-story h2 { margin: 12px 0; font-size: clamp(22px, 4vw, 30px); scroll-margin-top: 24px; line-height: 1.4; }
+.memorize-story h2:focus { outline: none; }
+.memorize-story .learning-eyebrow { letter-spacing: .03em; line-height: 1.7; }
+.memorize-sentence { margin: 24px 0; }
+.memorize-chinese { font-family: var(--font-hanzi); font-size: var(--reading-size); line-height: 2; overflow-wrap: anywhere; }
+.memorize-chinese.has-pinyin { line-height: 2.8; }
+.memorize-word { appearance: none; background: none; border: none; color: inherit; font: inherit; padding: 1px 2px; margin: 0; border-radius: 5px; cursor: pointer; max-width: 100%; overflow-wrap: anywhere; vertical-align: baseline; }
+.memorize-word:hover, .memorize-word:focus-visible { background: var(--accent-soft); outline: 2px solid var(--accent); outline-offset: 1px; }
+.memorize-word rt { font-family: var(--font-ui); font-size: 12px; font-weight: 500; color: var(--text-2); line-height: 1.4; }
+.memorize-translation { color: var(--text-2); font-size: 15px; line-height: 1.85; margin-top: 10px; padding-left: 14px; border-left: 2px solid var(--hairline); }
+@media (max-width: 600px) {
+  .learning-page { padding: 18px 12px 110px; }
+  .hsk-guide { padding: 16px; }
+  .memorize-controls { grid-template-columns: minmax(0, 1fr); padding: 16px; gap: 12px; }
+  .memorize-story { border-radius: 16px; }
+  .memorize-coverage > div { font-size: 14px; }
+}

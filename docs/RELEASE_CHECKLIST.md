@@ -29,6 +29,18 @@
    flutter build appbundle --release --dart-define=API_BASE_URL=https://haohaoxuexi.vercel.app
    ```
    Output: `build/app/outputs/bundle/release/app-release.aab`.
+   From the repository root, verify every supported architecture before upload:
+   ```bash
+   python3 scripts/verify-android-artifact.py mobile/build/app/outputs/bundle/release/app-release.aab
+   ```
+   For direct downloads, use `flutter build apk --release` (without
+   `--split-per-abi`) and verify `mobile/build/app/outputs/flutter-apk/app-release.apk`
+   with the same script. Never redistribute only `base.apk` extracted from
+   an AAB: its ABI split can contain **all** native libraries. Install AABs
+   through Play/bundletool, not an APK extractor. The native launcher checks
+   both base and installed split APKs before starting Flutter and displays
+   localized recovery instructions if `libflutter.so` is missing. It cannot
+   restore a missing engine; the packaging check is the release safeguard.
 3. Play Console → create app (`cn.haohaoxuexi.chinese`), fill:
    - Store listing from `docs/store/PLAY_STORE_LISTING.md`
    - Data safety from `docs/store/DATA_SAFETY.md`

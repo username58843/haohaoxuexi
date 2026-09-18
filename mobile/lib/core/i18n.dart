@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'providers.dart';
+import 'learning_i18n.dart';
 
 /// Lightweight i18n, mirroring the web `t('key', 'English default')` pattern.
 ///
@@ -42,6 +43,7 @@ final languageProvider = Provider<String>(
 /// uniform call sites; the language itself comes from [I18n.language].
 String tr(Object? contextOrRef, String key, String enDefault) {
   final lang = I18n.language;
+  if (learningTranslations[lang]?[key] case final String value) return value;
   if (lang == 'en') return enDefault;
   return _overrides[lang]?[key] ?? enDefault;
 }
@@ -49,6 +51,11 @@ String tr(Object? contextOrRef, String key, String enDefault) {
 /// Override maps. en is always the inline default at the call site.
 const Map<String, Map<String, String>> _overrides = {
   'ru': {
+    'deck.actions': 'Управление словарём',
+    'settings.hanziFont': 'Шрифт иероглифов',
+    'settings.interfaceFont': 'Шрифт интерфейса',
+    'settings.font.system': 'Системный шрифт',
+    'settings.font.offline': 'Шрифты хранятся на устройстве и работают без интернета.',
     'app.title': '好好学习汉语',
     'nav.home': 'Главная',
     'nav.learn': 'Учить',
@@ -387,6 +394,11 @@ const Map<String, Map<String, String>> _overrides = {
     'accent.cyan': 'Голубой',
   },
   'tk': {
+    'deck.actions': 'Sözlügi dolandyrmak',
+    'settings.hanziFont': 'Hytaý nyşanlarynyň şrifti',
+    'settings.interfaceFont': 'Interfeýs şrifti',
+    'settings.font.system': 'Ulgam şrifti',
+    'settings.font.offline': 'Şriftler enjamda saklanýar we internetsiz işleýär.',
     'nav.home': 'Baş sahypa',
     'nav.learn': 'Öwren',
     'nav.hsk': 'HSK',
@@ -724,6 +736,11 @@ const Map<String, Map<String, String>> _overrides = {
     'accent.cyan': 'Açyk gök',
   },
   'zh': {
+    'deck.actions': '管理词库',
+    'settings.hanziFont': '汉字字体',
+    'settings.interfaceFont': '界面字体',
+    'settings.font.system': '系统字体',
+    'settings.font.offline': '字体保存在设备上，无需联网即可使用。',
     'nav.home': '首页',
     'nav.learn': '学习',
     'nav.hsk': 'HSK',

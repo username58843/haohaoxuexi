@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAuth } from '~/lib/contexts/AuthContext'
@@ -10,6 +10,7 @@ const TABS = [
   { key: 'learn', href: '/learn', Icon: IconLearn, labelKey: 'navLearn', label: 'Learn' },
   { key: 'decks', href: '/decks', Icon: IconBook, labelKey: 'navDecks', label: 'Decks' },
   { key: 'hsk', href: '/hsk', Icon: IconGrid, labelKey: 'navHsk', label: 'HSK' },
+  { key: 'memorize', href: '/memorize', Icon: IconReader, labelKey: 'memorize.title', label: 'Memorize' },
   { key: 'books', href: '/books', Icon: IconReader, labelKey: 'navBooks', label: 'Books', badge: 'BETA' },
   { key: 'notes', href: '/notes', Icon: IconNote, labelKey: 'navNotes', label: 'Notes' },
   { key: 'more', href: '/more', Icon: IconUser, labelKey: 'navMore', label: 'More' },
@@ -20,6 +21,7 @@ function activeTab(pathname) {
   if (pathname.startsWith('/learn')) return 'learn'
   if (pathname.startsWith('/decks')) return 'decks'
   if (pathname.startsWith('/hsk')) return 'hsk'
+  if (pathname.startsWith('/memorize')) return 'memorize'
   if (pathname.startsWith('/books')) return 'books'
   if (pathname.startsWith('/notes')) return 'notes'
   if (
@@ -42,6 +44,13 @@ export default function AppShell({ children, bare = false }) {
 
   const showChrome = !!user && !bare && router.pathname !== '/auth'
   const current = activeTab(router.pathname)
+  const dock = useRef(null)
+  useEffect(() => {
+    const item = dock.current?.querySelector('[aria-current="page"]')
+    if (item && dock.current) {
+      dock.current.scrollTo({ left: item.offsetLeft - (dock.current.clientWidth - item.clientWidth) / 2 })
+    }
+  }, [current, t])
 
   if (!showChrome) {
     return <div className="app-shell">{children}</div>
@@ -77,7 +86,7 @@ export default function AppShell({ children, bare = false }) {
         {children}
       </main>
 
-      <nav className="dock" aria-label={t('navPrimary', 'Primary')}>
+      <nav ref={dock} className="dock" aria-label={t('navPrimary', 'Primary')}>
         {TABS.map(({ key, href, Icon, labelKey, label, badge }) => (
           <Link
             key={key}
