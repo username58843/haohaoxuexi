@@ -1199,3 +1199,303 @@ number|headword|en|ru|tk
 4798|示范|demonstrate; set an example|показывать образец; демонстрировать|nusga görkezmek; görelde bolmak
 4799|释放|release; set free; emit|освобождать; выпускать; выделять|azat etmek; goýbermek; çykarmak
 4800|事后|after the event|после события; впоследствии|wakadan soň
+4801|视觉|sight; visual perception|зрение; зрительное восприятие|görüş; görüp duýmak
+4802|势力|power; influence; influential group|сила; влияние; влиятельная группировка|güýç; täsir; täsirli topar
+4803|视力|eyesight; visual acuity|острота зрения; зрение|gözüň görüş ukyby
+4804|试图|attempt; try to|пытаться; намереваться|synanyşmak; çalyşmak
+4805|事务|affairs; matters; routine work|дела; текущие обязанности|işler; gündelik wezipeler
+4806|事项|item; matter; point on an agenda|вопрос; пункт; дело|mesele; bent; iş
+4807|适宜|suitable; appropriate|подходящий; уместный|laýyk; amatly
+4808|收藏|collect; keep; add to favourites|коллекционировать; хранить; добавлять в избранное|ýygnamak; saklamak; halanýanlara goşmak
+4809|收购|purchase; acquire a company|закупать; приобретать предприятие|satyn almak; kärhanany edinmek
+4810|收取|collect; charge a fee|взимать; получать|almak; töleg ýygnamak
+4811|收益|earnings; returns; benefit|доход; прибыль; выгода|girdeji; peýda
+4812|手臂|arm|рука от плеча до кисти|gol
+4813|手法|technique; method|приём; способ|usul; tär
+4814|手势|hand gesture|жест рукой|el hereketi; el yşaraty
+4815|首要|primary; foremost|главнейший; первоочередной|iň möhüm; ilkinji nobatdaky
+4816|寿命|lifespan; service life|продолжительность жизни; срок службы|ömür; hyzmat möhleti
+4817|受灾|suffer from a disaster|пострадать от бедствия|betbagtçylykdan ejir çekmek
+4818|输出|output; export|выводить; экспортировать|daşyna çykarmak; eksport etmek
+4819|书画|calligraphy and painting|каллиграфия и живопись|hatdatlyk we suratkeşlik
+4820|书籍|books; publications|книги; издания|kitaplar; neşirler
+4821|书面|written; in writing|письменный|ýazmaça
+4822|输送|transport; convey; supply|перевозить; передавать; поставлять|daşamak; geçirmek; ýetirmek
+4823|书写|write; put in writing|писать; записывать|ýazmak; ýazga geçirmek
+4824|属|belong to; be under; be born in a zodiac year|принадлежать; относиться; родиться в год животного|degişli bolmak; belli haýwan ýylynda dogulmak
+4825|薯片|potato crisps; potato chips|картофельные чипсы|ýeralma çipsi
+4826|竖|vertical; erect; vertical stroke|вертикальный; ставить вертикально; вертикальная черта|dik; dikeltmek; dik çyzyk
+4827|树立|establish; set up as an example|утверждать; создавать; ставить в пример|berkitmek; döretmek; görelde görkezmek
+4828|数目|number; amount|число; количество|san; mukdar
+4829|数字化|digitise|цифровизировать; оцифровывать|sanly görnüşe geçirmek
+4830|衰老|aged; senescent|стареющий; дряхлый|garran; tapdan düşen
+4831|率领|lead; command|возглавлять; вести|ýolbaşçylyk etmek; alyp barmak
+4832|率先|take the lead; be the first to|первым; раньше других|ilkinji bolup; öňürti
+4833|水稻|rice plant; paddy rice|рис как культура|şaly
+4834|水库|reservoir|водохранилище|suw howdany
+4835|水流|water flow; current|поток воды; течение|suw akymy
+4836|水面|water surface|поверхность воды|suwuň ýüzi
+4837|水泥|cement|цемент|sement
+4838|瞬间|instant; moment|мгновение; миг|pursat; göz açyp-ýumasy salym
+4839|思路|train of thought; line of reasoning|ход мысли; логика рассуждения|pikir ýörediş; pikir ugry
+4840|思念|miss; long for|тосковать по; скучать по|küýsemek; ýatlamak
+4841|死亡|die; perish|умирать; погибать|ölmek; heläk bolmak
+4842|松|loose; relaxed; loosen|свободный; расслабленный; ослаблять|gowşak; rahat; gowşatmak
+4843|艘|classifier for ships|счётное слово для судов|gämiler üçin san sözi
+4844|搜集|collect; gather information or items|собирать; разыскивать и накапливать|gözläp ýygnamak
+4845|塑造|mould; shape; portray|формировать; создавать образ|kemala getirmek; keşp döretmek
+4846|素质|qualities; competence; basic disposition|качества; подготовка; задатки|häsiýetler; taýýarlyk; başarnyk
+4847|算了|forget it; let it go; enough|ладно; забудь; довольно|bolýa; goý; bes
+4848|算是|count as; be considered; at last|считаться; можно сказать; наконец|hasaplanmak; diýip bolar; ahyrsoňy
+4849|虽|although; even though|хотя; несмотря на то что|bolsa-da
+4850|岁数|age; number of years|возраст; число лет|ýaş; ýyl sany
+4851|岁月|years; passage of time|годы; время|ýyllar; zaman
+4852|损坏|damage; break|повреждать; портить|zaýalamak; döwmek
+4853|损伤|injure; damage|травмировать; повреждать|ýaralamak; zeper ýetirmek
+4854|所2|particle forming a noun phrase or a passive construction|частица именной или страдательной конструкции|at söz düzümini ýa-da passiw gurluşy ýasaýan ownuk bölek
+4855|踏实|steady; down-to-earth; at ease|основательный; добросовестный; спокойный|ygtybarly; yhlasly; arkaýyn
+4856|塔|tower; pagoda|башня; пагода|minara; pagoda
+4857|台风|typhoon|тайфун|taýfun
+4858|台球|billiards; pool|бильярд|bilýard
+4859|太空|outer space|космос|kosmos
+4860|太阳能|solar energy|солнечная энергия|gün energiýasy
+4861|谈论|discuss; talk about|обсуждать; говорить о|ara alyp maslahatlaşmak; gürrüňini etmek
+4862|谈判|negotiate|вести переговоры|gepleşik geçirmek
+4863|弹性|elasticity; flexibility|эластичность; гибкость|maýyşgaklyk; çeýelik
+4864|探索|explore; investigate|исследовать; искать пути|gözlemek; barlamak
+4865|探讨|discuss in depth; investigate|углублённо обсуждать; изучать|içgin ara alyp maslahatlaşmak; öwrenmek
+4866|汤圆|tangyuan; glutinous rice balls in soup|танъюань; шарики из клейкого риса в отваре|çorbada berilýän ýelmeşegen tüwi hamyr togalaklary
+4867|糖果|sweets; candy|конфеты; сладости|süýji; süýjülik
+4868|烫|scald; iron; very hot|обжигать; гладить; обжигающе горячий|ýakmak; ütüklemek; örän gyzgyn
+4869|掏|take out; dig out|вынимать; выгребать|çykarmak; gazyp almak
+4870|逃|escape; flee|бежать; спасаться бегством|gaçmak
+4871|逃跑|run away; escape|убегать; сбегать|gaçyp gitmek
+4872|淘气|naughty; mischievous|озорной; непослушный|garagol
+4873|淘汰|eliminate; phase out|отсеивать; выводить из употребления|saýlap aýyrmak; ulanyşdan aýyrmak
+4874|套餐|set meal; package deal|комплексный обед; пакет услуг|toplumlaýyn nahar; hyzmatlar toplumy
+4875|特|especially; very|особенно; очень|aýratyn; örän
+4876|特长|special skill; strong point|особая способность; сильная сторона|aýratyn ukyp; güýçli tarap
+4877|特地|specially; for a particular purpose|специально; нарочно|ýörite
+4878|特定|specific; designated|определённый; специально установленный|belli bir; ýörite bellenen
+4879|特性|characteristic; property|характерное свойство|aýratyn häsiýet
+4880|特意|deliberately; specially|намеренно; специально|bilgeşleýin; ýörite
+4881|题材|subject matter; theme|тематика; материал произведения|eser temasy; mazmun üçin material
+4882|提取|extract; withdraw|извлекать; снимать деньги|çykaryp almak; puly almak
+4883|提示|prompt; give a hint; remind|подсказывать; напоминать|yşarat bermek; ýatlatmak
+4884|体操|gymnastics|гимнастика|gimnastika
+4885|体积|volume; physical size|объём; физический размер|göwrüm
+4886|体系|system; framework|система; структура|ulgam; gurluş
+4887|添|add; increase|добавлять; прибавлять|goşmak; artdyrmak
+4888|天才|genius; natural talent|гений; природный талант|zehinli adam; tebigy zehin
+4889|添加|add; insert|добавлять; включать|goşmak; girizmek
+4890|天然|natural|природный; натуральный|tebigy
+4891|天然气|natural gas|природный газ|tebigy gaz
+4892|天文|astronomy; celestial phenomena|астрономия; небесные явления|astronomiýa; asman hadysalary
+4893|天下|the world; all under heaven|мир; Поднебесная|dünýä; bütin älem
+4894|天真|innocent; naive|невинный; наивный|päkgöwünli; sada
+4895|田|field; farmland|поле; пашня|ekin meýdany
+4896|田径|track and field; athletics|лёгкая атлетика|ýeňil atletika
+4897|调节|adjust; regulate|регулировать; настраивать|sazlamak; kadalaşdyrmak
+4898|跳水|dive into water|прыгать в воду|suwa bökmek
+4899|贴近|be close to; near|приближаться; тесно прилегающий|ýakynlaşmak; ýakyn
+4900|听话|obedient; well-behaved|послушный|gep diňleýän; gulak asýan
+4901|听觉|hearing; auditory sense|слух; слуховое восприятие|eşidiş; eşidiş duýgusy
+4902|听取|listen to; hear a report or opinion|выслушивать; заслушивать|diňlemek; pikiri diňläp almak
+4903|通道|passage; channel|проход; канал|geçelge; kanal
+4904|通风|ventilate; air out|проветривать; вентилировать|howalandyrmak
+4905|通话|talk by phone; communicate by voice|разговаривать по телефону|telefon arkaly gepleşmek
+4906|通信|correspond; communicate|переписываться; поддерживать связь|hat alyşmak; aragatnaşyk saklamak
+4907|通讯|communications; news report|связь; корреспонденция|aragatnaşyk; habar ýazgysy
+4908|通用|be in common use; be universally applicable|быть общепринятым; применяться повсеместно|umumy ulanylmak; hemme ýerde ýaramak
+4909|铜|copper|медь|mis
+4910|同伴|companion; partner|спутник; товарищ|ýoldaş; bile gidýän adam
+4911|同行|be in the same trade; fellow professional|работать в одной отрасли; коллега по профессии|bir hünärde işlemek; kärdeş
+4912|童话|fairy tale|сказка|erteki
+4913|同类|of the same kind; the same category|однородный; тот же вид|birmeňzeş; şol bir görnüş
+4914|铜牌|bronze medal|бронзовая медаль|bürünç medal
+4915|痛快|hearty; satisfying; straightforward|приятный; от души; решительный|göwnühoş; ýakymly; göni
+4916|偷|steal; secretly|красть; тайком|ogurlamak; gizlin
+4917|偷偷|secretly; stealthily|тайком; украдкой|gizlin; bukulyp
+4918|头脑|mind; brain; intelligence|ум; голова; мышление|akyl; beýni
+4919|投票|vote; cast a ballot|голосовать|ses bermek
+4920|投诉|make a complaint|подавать жалобу|şikaýat etmek
+4921|投资|invest; investment|инвестировать; инвестиция|maýa goýmak; maýa goýum
+4922|透|penetrate; pass through; thorough|проникать; проходить насквозь; полный|deşip geçmek; içinden geçmek; düýpli
+4923|透过|pass through; see through|проходить сквозь; видеть через|içinden geçmek; içinden görmek
+4924|透露|reveal; disclose|раскрывать; разглашать|aýan etmek; habar bermek
+4925|透明|transparent; clear|прозрачный|dury; aýdyň
+4926|突发|break out suddenly|внезапно возникать|duýdansyz ýüze çykmak
+4927|突破|break through; overcome a limit|прорываться; преодолевать предел|böwsüp geçmek; çäkden geçmek
+4928|图案|pattern; design|узор; рисунок|nagyş; şekil
+4929|图表|chart; diagram|график; диаграмма|çyzgy; diagramma
+4930|徒弟|apprentice; disciple|ученик мастера; подмастерье|şägirt
+4931|途径|way; approach; channel|путь; способ|ýol; usul
+4932|图像|image; picture|изображение|şekil; surat
+4933|吐|spit out; utter|выплёвывать; произносить|tüýkürmek; söz aýtmak
+4934|土壤|soil|почва|toprak
+4935|吐|vomit; throw up|рвать; извергать из желудка|gusmak
+4936|团结|unite; united|объединяться; сплочённый|birleşmek; agzybir
+4937|团体|group; organisation|коллектив; организация|topar; gurama
+4938|团圆|reunite as a family|воссоединяться семьёй|maşgala bolup birleşmek
+4939|推测|infer; conjecture|предполагать; делать вывод|çaklamak; netije çykarmak
+4940|推销|promote sales; sell actively|сбывать; рекламировать для продажи|satmaga hödürlemek
+4941|推行|implement; carry out|внедрять; проводить в жизнь|amala aşyrmak; durmuşa geçirmek
+4942|退税|refund tax|возвращать налог|salgydy yzyna gaýtarmak
+4943|吞|swallow; gulp down|глотать; проглатывать|ýuwutmak
+4944|拖|drag; pull; delay|тащить; тянуть; затягивать|süýremek; çekmek; gijikdirmek
+4945|拖延|delay; procrastinate|затягивать; откладывать|gijikdirmek; soňa goýmak
+4946|托运|consign for shipment; check in baggage|сдавать для перевозки; отправлять багажом|daşamak üçin tabşyrmak; ýük hökmünde ibermek
+4947|挖|dig; excavate|копать; выкапывать|gazmak
+4948|哇|wah; sound of crying|уа: звук плача|wa: agynyň sesi
+4949|娃娃|baby; child; doll|малыш; ребёнок; кукла|bäbek; çaga; gurjak
+4950|歪|crooked; tilted|кривой; косой|egri; gyşyk
+4951|外表|appearance; exterior|внешность; наружность|daşky keşp; görnüş
+4952|外交|diplomacy; foreign affairs|дипломатия; внешние сношения|diplomatiýa; daşary aragatnaşyk
+4953|外界|outside world; external environment|внешний мир; окружающая среда|daşky dünýä; daşky gurşaw
+4954|外科|surgery; surgical department|хирургия; хирургическое отделение|hirurgiýa; hirurgiýa bölümi
+4955|外来|coming from outside; external|пришлый; внешний; привнесённый|daşardan gelen
+4956|外甥|sister's son; nephew|племянник: сын сестры|uýaň ogly; ýegen
+4957|弯曲|curved; bent|изогнутый; кривой|egri; bükülen
+4958|顽强|tenacious; indomitable|упорный; несгибаемый|tutanýerli; boýun egmeýän
+4959|万物|all things; everything in nature|всё сущее; всё в природе|ähli zatlar; tebigatdaky ähli zat
+4960|王子|prince|принц|şazada
+4961|网|net; network; catch in a net|сеть; ловить сетью|tor; tor bilen tutmak
+4962|往后|from now on; later|в дальнейшем; впредь|mundan beýläk; soň
+4963|往来|come and go; maintain relations|ходить туда и обратно; поддерживать связи|gatnamak; aragatnaşyk saklamak
+4964|往年|past years; previous years|прошлые годы|geçen ýyllar
+4965|望|gaze; look towards; hope|смотреть вдаль; надеяться|uzaga seretmek; umyt etmek
+4966|危机|crisis|кризис|krizis; howply ýagdaý
+4967|微小|tiny; minute|мельчайший; ничтожный|örän ownuk; kiçijik
+4968|违规|violate regulations|нарушать правила|düzgüni bozmak
+4969|维护|maintain; safeguard|поддерживать; охранять; обслуживать|goramak; saklamak; hyzmat etmek
+4970|为难|in a difficult position; make things difficult for|затруднённый; ставить в трудное положение|kyn ýagdaýdaky; kyn ýagdaýa salmak
+4971|围棋|Go; the board game of encirclement|го: настольная игра|go tagta oýny
+4972|为期|last for a specified period|длиться определённый срок|belli möhlet dowam etmek
+4973|维生素|vitamin|витамин|witamin
+4974|为止|end at; up to|до; вплоть до; заканчиваться на|çenli; şol ýerde gutarmak
+4975|委屈|wronged; aggrieved; cause someone hardship|обиженный; несправедливо притеснять|öýkeli; adalatsyz kemsitmek
+4976|委托|entrust; commission|поручать; доверять выполнение|tabşyrmak; ynanyp bermek
+4977|未|not; not yet|не; ещё не|däl; entek däl
+4978|未必|not necessarily|не обязательно; вряд ли|hökmany däl; bolaýmasa gerek
+4979|未成年人|minor; person under legal age|несовершеннолетний|kämillik ýaşyna ýetmedik adam
+4980|为此|for this reason; to this end|поэтому; с этой целью|şonuň üçin; şu maksat bilen
+4981|为何|why; for what reason|почему; по какой причине|näme üçin
+4982|味觉|sense of taste|вкус как чувство|tagam duýgusy
+4983|胃口|appetite; taste; liking|аппетит; вкус; склонность|işdä; isleg
+4984|温和|mild; gentle|умеренный; мягкий; кроткий|aram; mylaýym
+4985|温柔|gentle; tender|нежный; мягкий|mähirli; näzik
+4986|文档|document; file|документ; файл|resminama; faýl
+4987|文具|stationery|канцелярские принадлежности|ýazuw esbaplary
+4988|文科|humanities; liberal arts|гуманитарные науки|ynsanperwer ylymlar
+4989|文明|civilisation; civilised; courteous|цивилизация; цивилизованный; культурный|siwilizasiýa; medeni; edepli
+4990|闻名|be famous; be well known|славиться; быть известным|meşhur bolmak
+4991|文物|cultural relic; historical artefact|памятник культуры; исторический артефакт|medeni ýadygärlik; taryhy zat
+4992|文献|literature; written sources|литература по теме; письменные источники|ýazma çeşmeler; ylmy edebiýat
+4993|文艺|literature and art|литература и искусство|edebiýat we sungat
+4994|乌龟|turtle; tortoise|черепаха|pyşbaga
+4995|污水|wastewater; sewage|сточные воды|hapa suw; lagym suwy
+4996|无所谓|not matter; be indifferent|не иметь значения; быть безразличным|tapawudy bolmazlyk; parhsyz bolmak
+4997|无疑|be beyond doubt|не вызывать сомнений|şübhesiz bolmak
+4998|武器|weapon|оружие|ýarag
+4999|误|make a mistake; delay; miss|ошибаться; задерживать; упускать|ýalňyşmak; gijikdirmek; goýbermek
+5000|误解|misunderstand; misunderstanding|неверно понимать; недоразумение|ýalňyş düşünmek; düşünişmezlik
+5001|物体|object; physical body|физическое тело; предмет|jisim; zat
+5002|吸取|absorb; draw a lesson from|впитывать; извлекать урок|siňdirmek; sapak almak
+5003|媳妇|daughter-in-law; wife|невестка; жена|gelin; aýal
+5004|习俗|custom; tradition|обычай; традиция|däp-dessur
+5005|喜剧|comedy|комедия|komediýa
+5006|喜事|happy event; wedding|радостное событие; свадьба|şatlykly waka; toý
+5007|洗漱|wash one's face and rinse one's mouth|умываться и чистить зубы|el-ýüzüňi ýuwmak we dişiňi arassalamak
+5008|细胞|cell in biology|клетка организма|öýjük
+5009|细菌|bacterium; bacteria|бактерия; бактерии|bakteriýa; bakteriýalar
+5010|系列|series; range|серия; ряд|tapgyr; toplum
+5011|戏曲|traditional Chinese opera|традиционный китайский музыкальный театр|adaty hytaý opera sungaty
+5012|细致|meticulous; detailed|тщательный; подробный|jikme-jik; yhlasly
+5013|吓|frighten; scare|пугать|gorkuzmak
+5014|下功夫|put in effort; work hard at|прилагать усилия; усердно работать|yhlas etmek; jan etmek
+5015|下单|place an order|делать заказ|sargyt etmek
+5016|夏令营|summer camp|летний лагерь|tomusky dynç alyş lageri
+5017|下线|go offline; roll off a production line|выходить из сети; сходить с конвейера|tordan çykmak; önümçilik liniýasyndan çykmak
+5018|下旬|last ten or eleven days of a month|последняя декада месяца|aýyň soňky on ýa-da on bir güni
+5019|鲜明|clear-cut; vivid|яркий; чёткий; отчётливый|aýdyň; ýiti
+5020|先前|previously; before|раньше; прежде|öň; ozal
+5021|鲜艳|bright-coloured; vivid|яркий; сочный о цвете|açyk reňkli; al-elwan
+5022|嫌|dislike; object to; find fault with|быть недовольным; не любить|halamazlyk; kemçilik tapmak
+5023|显|obvious; show; reveal|явный; проявлять; показывать|aýdyň; görkezmek; ýüze çykarmak
+5024|险|dangerous; nearly|опасный; чуть не|howply; tas
+5025|显著|significant; marked|значительный; заметный|aýdyň; ep-esli
+5026|限|limit; restrict|ограничивать|çäklendirmek
+5027|线|line; thread; classifier for transport lines|линия; нить; счётное слово для линий|çyzyk; sapak; liniýalar üçin san sözi
+5028|现存|exist at present; survive to this day|существовать в настоящее время; сохраниться|häzir bar bolmak; saklanyp galmak
+5029|限度|limit; extent|предел; граница|çäk; dereje
+5030|现货|goods in stock; spot goods|товар в наличии|ammarda bar bolan haryt
+5031|陷入|fall into; sink into|попадать в; погружаться|düşmek; batmak
+5032|线索|clue; lead|зацепка; нить расследования|yz; ugrukdyryjy maglumat
+5033|限于|be limited to; be confined by|ограничиваться; быть ограниченным|bilen çäklenmek
+5034|相差|differ; be apart by|различаться; иметь разницу|tapawutlanmak
+5035|香肠|sausage|колбаса; сосиска|şöhlat; kolbasa
+5036|相传|be passed down; legend has it|передаваться из поколения в поколение; по преданию|nesilden-nesle geçmek; rowaýata görä
+5037|相等|be equal|равняться; быть равным|deň bolmak
+5038|相连|be connected|соединяться; быть связанным|birleşmek; baglanyşykly bolmak
+5039|香水|perfume|духи|atyr
+5040|相应|correspond; match|соответствовать; согласовываться|laýyk gelmek
+5041|项链|necklace|ожерелье; цепочка на шею|monjuk; boýun zynjyry
+5042|象棋|Chinese chess; xiangqi|китайские шахматы; сянци|hytaý küşt oýny; sýansi
+5043|相声|xiangsheng; comic dialogue performance|сяншэн: китайский комический диалог|sýanşen: hytaý gülkünç gepleşik tomaşasy
+5044|向往|yearn for; aspire to|стремиться к; тосковать по|arzuw etmek; ymtylmak
+5045|消除|eliminate; remove|устранять; ликвидировать|aradan aýyrmak; ýok etmek
+5046|消毒|disinfect; sterilise|дезинфицировать; обеззараживать|zyýansyzlandyrmak; mikroblary ýok etmek
+5047|消防|prevent and fight fires|предотвращать и тушить пожары|ýangynyň öňüni almak we söndürmek
+5048|消耗|consume; use up|расходовать; истощать|sarp etmek; tüketmek
+5049|消灭|eliminate; eradicate|уничтожать; искоренять|ýok etmek; köküni kesmek
+5050|小麦|wheat|пшеница|bugdaý
+5051|小气|stingy; petty|скупой; мелочный|gysganç; ownukçyl
+5052|小偷儿|thief|вор|ogry
+5053|笑容|smile; smiling expression|улыбка|ýylgyryş
+5054|效应|effect; resulting phenomenon|эффект; воздействие|täsir; ýüze çykýan netije
+5055|歇|rest; stop for a while|отдыхать; делать перерыв|dynç almak; arakesme etmek
+5056|携带|carry; take along|носить с собой; брать с собой|ýanyň bilen alyp gitmek
+5057|协会|association; society|ассоциация; общество|assosiasiýa; birleşik
+5058|协调|coordinated; coordinate; harmonise|согласованный; координировать|sazlaşykly; utgaşdyrmak
+5059|协助|assist; help|содействовать; помогать|ýardam etmek
+5060|心爱|beloved; cherished|любимый; дорогой сердцу|söýgüli; eziz
+5061|心底|depths of one's heart|глубина души|ýüregiň törü
+5062|新款|new model; latest design|новая модель; новый фасон|täze model; täze biçüw
+5063|心灵|soul; mind; inner spirit|душа; внутренний мир|ruh; içki dünýä
+5064|新媒体|new media; digital media|новые медиа; цифровые СМИ|täze mediýa; sanly habar serişdeleri
+5065|心目|one's mind; one's view of someone|сознание; представление о ком-либо|pikir; göz öňüne getiriş
+5066|新能源|new energy sources|новые источники энергии|täze energiýa çeşmeleri
+5067|薪水|salary; wages|зарплата|aýlyk; iş haky
+5068|心疼|feel tender concern; begrudge waste|болеть душой за; жалеть тратить|nebsiň agyrmak; sarp etmäge gynanmak
+5069|新兴|newly emerging; burgeoning|новый; зарождающийся|täze döreýän; ösüp gelýän
+5070|新颖|novel; original|новый; оригинальный|täzeçe; özboluşly
+5071|心愿|heartfelt wish|заветное желание|ýürek arzuwy
+5072|心脏|heart as an organ|сердце как орган|ýürek
+5073|信赖|trust; rely on|доверять; полагаться|ynam bildirmek; bil baglamak
+5074|信念|conviction; belief|убеждение; вера|ynam; berk ynanç
+5075|兴起|rise; emerge; become popular|возникать; подниматься; распространяться|döremek; ösüp çykmak; ýaýramak
+5076|型号|model number; type|модель; типоразмер|model; görnüş belgisi
+5077|形态|form; shape; state|форма; вид; состояние|şekil; görnüş; ýagdaý
+5078|性价比|value for money; price-performance ratio|соотношение цены и качества|baha bilen hiliň gatnaşygy
+5079|性能|performance; technical characteristics|эксплуатационные характеристики; производительность|tehniki häsiýetler; öndürijilik
+5080|胸|chest; breast|грудь|döş; gursak
+5081|修订|revise; amend a text|пересматривать; вносить исправления|täzeden seredip düzetmek
+5082|修复|repair; restore|восстанавливать; реставрировать|dikeltmek; abatlamak
+5083|袖子|sleeve|рукав|ýeň
+5084|许可|permit; allow|разрешать; допускать|rugsat bermek
+5085|叙述|narrate; recount|излагать; рассказывать|beýan etmek; gürrüň bermek
+5086|旋转|rotate; revolve|вращаться; вращать|aýlanmak; aýlamak
+5087|选拔|select; choose through competition|отбирать; выбирать по конкурсу|saýlap almak; bäsleşik arkaly saýlamak
+5088|选修|take an elective course|изучать предмет по выбору|saýlama dersini okamak
+5089|学会|academic society; learned association|научное общество|ylmy jemgyýet
+5090|学位|academic degree|академическая степень|akademik dereje
+5091|学问|learning; scholarship; knowledge|учёность; знания|bilim; ylym
+5092|学员|trainee; course participant|слушатель курсов; обучающийся|okuwçy; kurs diňleýjisi
+5093|血管|blood vessel|кровеносный сосуд|gan damary
+5094|血型|blood type|группа крови|gan topary
+5095|血压|blood pressure|кровяное давление|gan basyşy
+5096|血液|blood|кровь|gan
+5097|循环|circulate; cycle|циркулировать; повторяться циклически|aýlanyp durmak; gaýtalanmak
+5098|寻求|seek; look for|искать; стремиться найти|gözlemek; tapmaga çalyşmak
+5099|压缩|compress; condense|сжимать; сокращать|gysmak; gysgaltmak
+5100|亚军|runner-up; second-place winner|серебряный призёр; второе место|ikinji ornuň eýesi
